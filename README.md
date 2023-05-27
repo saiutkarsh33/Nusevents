@@ -70,6 +70,12 @@ As a person creating an event, be it individual or otherwise, I want my event to
 
 As a person who has created an event, be it individual or otherwise, I want there to be an “I’m in” button, which will enable me to gauge the number of people coming. 
 
+## ER Diagram
+
+The following is our ER Diagram for our Login page.
+
+![Project Image](https://raw.githubusercontent.com/saiutkarsh33/Nusevents/main/Screenshot%202023-05-27%20at%203.04.03%20PM.png)
+
 
 
 
