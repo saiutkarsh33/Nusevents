@@ -54,7 +54,9 @@ Naturally, there will be a "Individual Events" page where one can view the same 
 
 For all events, when clicked on, will reveal more information. There will also be an "I'm in" button, which when pressed will register the Personal Account's attendance for the event.
 
-Finally, there is an "All" page, where accounts can follow/unfollow/favourite/unfavourite Business Accounts tied to their residency.
+There is an "All" page, where accounts can follow/unfollow/favourite/unfavourite Business Accounts tied to their residency.
+
+For both accounts, there is a settings page where one can change profile picture, email, password or delete account.
 
 
 
