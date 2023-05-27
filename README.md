@@ -77,6 +77,15 @@ The following is our ER Diagram for our Login page.
 ![Project Image](Screenshot%202023-05-27%20at%203.04.03%20PM.png)
 
 
+## Application Design Flow for Business Account
+
+![Project Image](Screenshot%202023-05-27%20at%206.19.18%20PM.png)
+
+## Application Design Flow for Personal Account
+
+![Project Image](Screenshot%202023-05-27%20at%206.19.53%20PM.png)
+
+
 
 
 
