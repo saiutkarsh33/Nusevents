@@ -74,7 +74,8 @@ As a person who has created an event, be it individual or otherwise, I want ther
 
 The following is our ER Diagram for our Login page.
 
-![Project Image](https://raw.githubusercontent.com/saiutkarsh33/Nusevents/main/Screenshot%202023-05-27%20at%203.04.03%20PM.png)
+![Project Image](Screenshot%202023-05-27%20at%203.04.03%20PM.png)
+
 
 
 
