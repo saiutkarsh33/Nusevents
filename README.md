@@ -54,7 +54,9 @@ Naturally, there will be a "Individual Events" page where one can view the same 
 
 For all events, when clicked on, will reveal more information. There will also be an "I'm in" button, which when pressed will register the Personal Account's attendance for the event.
 
-Finally, there is an "All" page, where accounts can follow/unfollow/favourite/unfavourite Business Accounts tied to their residency.
+There is an "All" page, where accounts can follow/unfollow/favourite/unfavourite Business Accounts tied to their residency.
+
+For both accounts, there is a settings page where one can change profile picture, email, password or delete account.
 
 
 
@@ -67,6 +69,22 @@ As an individual, I want a separate page to view, create and interact with Indiv
 As a person creating an event, be it individual or otherwise, I want my event to be effectively publicised to students in my residency.
 
 As a person who has created an event, be it individual or otherwise, I want there to be an “I’m in” button, which will enable me to gauge the number of people coming. 
+
+## ER Diagram
+
+The following is our ER Diagram for our Login page.
+
+![Project Image](Screenshot%202023-05-27%20at%203.04.03%20PM.png)
+
+
+## Application Design Flow for Business Account
+
+![Project Image](Screenshot%202023-05-27%20at%206.19.18%20PM.png)
+
+## Application Design Flow for Personal Account
+
+![Project Image](Screenshot%202023-05-27%20at%206.19.53%20PM.png)
+
 
 
 
