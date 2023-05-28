@@ -70,7 +70,7 @@ export default function NewTodo() {
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
       <Text>Title: </Text>
-      <TextInput value={title} onChangeText={setTitle} />
+      <TextInput value={title} onChangeText={setTitle} mode="outlined" />
       {errMsg !== "" && <Text>{errMsg}</Text>}
       <Button onPress={handleAddImage}>Add Image</Button>
       {image && (

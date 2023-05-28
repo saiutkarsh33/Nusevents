@@ -1,8 +1,9 @@
-import { View } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -31,28 +32,57 @@ export default function LoginPage() {
     }
   };
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
-      <Text>Email</Text>
-      <TextInput
-        autoCapitalize="none"
-        textContentType="emailAddress"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Text>Password</Text>
-      <TextInput
-        secureTextEntry
-        autoCapitalize="none"
-        textContentType="password"
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button onPress={handleSubmit}>Submit</Button>
-      {errMsg !== "" && <Text>{errMsg}</Text>}
-      {loading && <ActivityIndicator />}
-      <Link href="/register">
-        <Button>Go to register</Button>
-      </Link>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+        <Image
+          source={require("frontend-mobile-app/assets/NUSevents-icon.jpg")}
+          style={styles.image}
+        />
+        <Text style={styles.welcome}>Welcome Back!</Text>
+        <Text style={styles.details}>
+          Please fill your details to access your account
+        </Text>
+        <Text>Email</Text>
+        <TextInput
+          autoCapitalize="none"
+          textContentType="emailAddress"
+          value={email}
+          onChangeText={setEmail}
+          mode="outlined"
+        />
+        <Text>Password</Text>
+        <TextInput
+          secureTextEntry
+          autoCapitalize="none"
+          textContentType="password"
+          value={password}
+          onChangeText={setPassword}
+          mode="outlined"
+        />
+        <Button onPress={handleSubmit}>Submit</Button>
+        {errMsg !== "" && <Text>{errMsg}</Text>}
+        {loading && <ActivityIndicator />}
+        <Link href="/register">
+          <Button>Go to register</Button>
+        </Link>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  image: {
+    marginTop: 50,
+    marginBottom: 50,
+    width: "100%",
+    height: 100,
+  },
+  welcome: {
+    paddingBottom: 10,
+    fontSize: 40,
+    fontWeight: "bold",
+  },
+  details: {
+    paddingBottom: 60,
+  },
+});
