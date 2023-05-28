@@ -86,6 +86,10 @@ The following is our ER Diagram for our Login page.
 ![Project Image](Screenshot%202023-05-27%20at%206.19.53%20PM.png)
 
 
+## Mockups for some pages
+
+![Project Image](Screenshot%202023-05-28%20at%2011.33.33%20AM.png)
+
 
 
 
