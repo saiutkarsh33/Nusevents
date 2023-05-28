@@ -90,6 +90,18 @@ The following is our ER Diagram for our Login page.
 
 ![Project Image](Screenshot%202023-05-28%20at%2011.33.33%20AM.png)
 
+## Technical Proof-of-concept
+
+We created a login / registration page. If one signs in with the correct, non empty password and email,
+one logs in.
+One can also register with a non empty email and password (Other information such as Account Type and Residency Name will be required in future
+versions of our registration page). We used Supabase, and creating an account will create a new entry in the "Accounts" table, with keys ID, email and password.
+
+## How we plan to do System Testing
+
+We wish to use Jest.
+
+
 
 
 
