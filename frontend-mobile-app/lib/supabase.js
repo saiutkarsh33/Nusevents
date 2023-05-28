@@ -1,8 +1,12 @@
 import 'react-native-url-polyfill/auto'
-
-import {createClient} from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const supabaseUrl = process.env.SUPERBASE_PROJECT_URL
 const supabaseKey = process.env.SUPERBASE_PROJECT_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        storeage: AsyncStorage,
+    }
+})
