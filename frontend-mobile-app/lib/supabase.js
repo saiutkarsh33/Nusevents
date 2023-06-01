@@ -7,6 +7,6 @@ const supabaseKey = process.env.SUPABASE_KEY
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
     auth: {
-        storeage: AsyncStorage,
+        storage: AsyncStorage,
     }
 })
