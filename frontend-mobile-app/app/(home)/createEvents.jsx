@@ -6,17 +6,26 @@ import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
-export default function createEvents() {
+export default function CreateEvents() {
   const [eventName, setEventName] = useState("");
-  const [venue, setVenue] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [eventVenue, setEventVenue] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [eventTime, setEventTime] = useState("");
   const [description, setDescription] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const { user } = useAuth();
   const router = useRouter();
+
+  const handleAddImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const handleCreateEvent = async () => {
     setErrMsg("");
@@ -29,7 +38,7 @@ export default function createEvents() {
     if (image != null) {
       const { data, error } = await supabase.storage
         .from("images")
-        .upload(`${new Date().getTime()}`, {
+        .upload(`${new eventDate().getTime()}`, {
           uri: image,
           type: "jpg",
           name: "name.jpg",
@@ -47,20 +56,27 @@ export default function createEvents() {
       uploadedImage = publicUrl;
     }
     const { error } = await supabase
-    .from("events")
-    .insert({ task: title, user_id: user.id, image_url: uploadedImage })
-    .select()
-    .single();
+      .from("events")
+      .insert({
+        event: eventName,
+        user_id: user.id,
+        image_url: uploadedImage,
+        eventDate: eventDate,
+        eventTime: eventTime,
+        venue: eventVenue,
+        desc: description,
+      })
+      .select()
+      .single();
 
-  if (error != null) {
+    if (error != null) {
+      setLoading(false);
+      console.log(error);
+      setErrMsg(error.message);
+      return;
+    }
     setLoading(false);
-    console.log(error);
-    setErrMsg(error.message);
-    return;
-  }
-  setLoading(false);
-  router.push("/");
-};
+    router.push("/");
   };
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
@@ -70,12 +86,24 @@ export default function createEvents() {
         onChangeText={setEventName}
         mode="outlined"
       />
-      <Text>Venue</Text>
-      <TextInput value={venue} onChangeText={setVenue} mode="outlined" />
-      <Text>Date</Text>
-      <TextInput value={date} onChangeText={setDate} mode="outlined" />
-      <Text>Time</Text>
-      <TextInput value={time} onChangeText={setTime} mode="outlined" />
+      <Text>eventVenue</Text>
+      <TextInput
+        value={eventVenue}
+        onChangeText={setEventVenue}
+        mode="outlined"
+      />
+      <Text>eventDate</Text>
+      <TextInput
+        value={eventDate}
+        onChangeText={setEventDate}
+        mode="outlined"
+      />
+      <Text>eventTime</Text>
+      <TextInput
+        value={eventTime}
+        onChangeText={setEventTime}
+        mode="outlined"
+      />
       <Text>Description</Text>
       <TextInput
         value={description}
