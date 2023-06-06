@@ -8,3 +8,5 @@ export default function ProfileScreen() {
     </View>
   );
 }
+
+// Profile page will have 
