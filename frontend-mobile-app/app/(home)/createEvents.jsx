@@ -59,7 +59,7 @@ export default function CreateEvents() {
       const { error } = await supabase
         .from("events")
         .insert({
-          event: eventName,
+          name: eventName,
           user_id: user.id,
           image_url: uploadedImage,
           date: eventDate,

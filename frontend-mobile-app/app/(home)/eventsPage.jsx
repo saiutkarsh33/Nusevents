@@ -1,7 +1,6 @@
-import { View, StatusBar, TouchableOpacity, Stylesheet } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { Avatar, Button, Card, Text } from "react-native-paper";
-import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 
@@ -11,32 +10,63 @@ import { useState, useEffect } from "react";
 
 // Also take note that "I'm im" causes the props.selected to be true. In future, can make it such that its removed.
 
-
-function MyCard(props) {
-    return (<Card>
-
-        <Card.Content>
-          <Text variant="titleLarge">{props.name} • {props.date} </Text>
-          <Text variant="bodyMedium">Time: {props.time} • Venue: {props.venue} </Text>
-        </Card.Content>
-
-        <TouchableOpacity>
-        <Card.Cover source= {props.image} />
-        
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-  <Card.Actions>
-    <Button onPress={props.onImInPress}> I&apos;m in</Button>
-    <Button mode = "contained">
-      <Link href="../components/eventsDesc">View More</Link>
-    </Button>
-  </Card.Actions>
-</TouchableOpacity>
-
-      </Card> )
-        
-}
+const styles = StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'white',
+      padding: 16,
+    },
+  });
+  
+  function MyCard(props) {
+    const [modalVisible, setModalVisible] = useState(false);
+  
+    const handleViewMorePress = () => {  
+      setModalVisible(true);
+    };
+  
+    const handleCloseModal = () => {
+      setModalVisible(false);
+    };
+  
+    return (
+      <>
+        <Card>
+          <Card.Content>
+            <Text variant="titleLarge">
+              {props.name} • {props.date}
+            </Text>
+            <Text variant="bodyMedium">
+              Time: {props.time} • Venue: {props.venue}
+            </Text>
+          </Card.Content>
+  
+          <TouchableOpacity>
+            <Card.Cover source={{ uri: props.image_url }} />
+          </TouchableOpacity>
+  
+          <TouchableOpacity>
+            <Card.Actions>
+              <Button onPress={props.onImInPress}>I&apos;m in</Button>
+              <Button onPress={handleViewMorePress}>View More</Button>
+            </Card.Actions>
+          </TouchableOpacity>
+        </Card>
+  
+        <Modal visible={modalVisible} animationType="slide" onRequestClose={handleCloseModal}>
+          <SafeAreaView style={styles.modalContainer}>
+            <View>
+              <Text>{props.desc}</Text>
+              <Button onPress={handleCloseModal}>Close</Button>
+            </View>
+          </SafeAreaView>
+        </Modal>
+      </>
+    );
+  }
+  
     
 // <Card.Cover source={{ uri: "file:///Users/saiutkarsh33/Desktop/Nusevents/frontend-mobile-app/assets/tfamily.jpg" }} />
 
@@ -71,22 +101,45 @@ export default function EventsPage() {
   console.log('eventsData:', eventsData);
   
 
-const handleImInPress = (eventId) => {
-  setEventsData((prevEventsData) => {
-    return prevEventsData.map((event) => {
-      if (event.id === eventId) {
-        return {
-          ...event,
-          selected: true,
-        };
+  const handleImInPress = async (eventId) => {
+    try {
+      // Update the event with the new value of selected in the Supabase table
+      const { error } = await supabase
+        .from('events')
+        .update({ selected: true })
+        .eq('id', eventId);
+    
+      if (error) {
+        console.error('Error updating event:', error);
+      } else {
+        // Update the selected value in the local state
+        setEventsData((prevEventsData) => {
+          return prevEventsData.map((event) => {
+            if (event.id === eventId) {
+              return {
+                ...event,
+                selected: true,
+              };
+            }
+            return event;
+          });
+        });
       }
-      return event;
-    });
-  });
-};
+    } catch (error) {
+      console.error('Error updating event:', error);
+    }
+  };
+  
+  
+  
+  
+  
+  
+  console.log(eventsData.map((card) => card.image_url ))
 
  return (
-  <View>
+  <SafeAreaView>
+    <ScrollView>
       {eventsData.map((card) => (
         <MyCard
           key={card.id}
@@ -96,12 +149,15 @@ const handleImInPress = (eventId) => {
           venue={card.venue}
           selected = {card.selected}
           important = {card.important}
-          image={require("frontend-mobile-app/assets/tfamily.jpg")} // Replace with the actual image URL 
+          image_url = {card.image_url}
+          desc = {card.desc}
+          //image={require("frontend-mobile-app/assets/tfamily.jpg")} // Replace with the actual image URL 
           // itself, from supabase.
           onImInPress={() => handleImInPress(card.id)}
         />
       ))}
-  </View>
+      </ScrollView>
+  </SafeAreaView>
 
  )
 

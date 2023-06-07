@@ -28,25 +28,35 @@ export default function EventsCalendar() {
     const markedDates = {};
 
     eventsData.forEach((event) => {
-
-    if (event.selected === true) {  
-    const eventDate = event.date; 
-
-
-    if (!markedDates[eventDate] ) {
-      markedDates[eventDate] = {
-        marked: true, dotColor: 'green', selected: true
-      };
-    }
-  }});
-
+      if (event.selected === true) {
+      const eventDate = event.date;
+    
+      if (!markedDates[eventDate]) {
+        markedDates[eventDate] = {
+          marked: true,
+          dotColor: 'green'
+        };
+      } else {
+        // If the date is already marked, update the dotColor to 'green'
+        markedDates[eventDate].dotColor = 'green';
+      }
+    }});
  
 
-  const handleDayPress = (day) => {
-  const { dateString } = day;
-  setSelectedDate(dateString);
-  setIsPopupVisible(true);
-};
+    const handleDayPress = (day) => {
+      
+
+      const { dateString } = day;
+
+      if (markedDates[dateString]) {
+      
+      if (selectedDate === dateString) {
+        setIsPopupVisible(true);
+      } else {
+        setSelectedDate(dateString);
+        setIsPopupVisible(true);
+      }
+    }};
 
   const getEventsForDate = async (selectedDate) => {
 
@@ -75,10 +85,16 @@ export default function EventsCalendar() {
 
   useEffect(() => {
     async function fetchEventsForSelectedDate() {
-      const events = await getEventsForDate(selectedDate);
-      setEventsForSelectedDate(events);
+      try {
+        const events = await getEventsForDate(selectedDate);
+        console.log('Events for selected date:', events);
+        setEventsForSelectedDate(events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        // Handle the error if needed
+      }
     }
-
+  
     if (selectedDate) {
       fetchEventsForSelectedDate();
     }
@@ -92,18 +108,21 @@ export default function EventsCalendar() {
       // Handle the case when events data is not yet available
       return null;
     }
+    
+    console.log(eventsForSelectedDate);
 
     return (
       <SafeAreaView style={{ flex: 1 }} >
+      {eventsForSelectedDate.length > 0 && (  
       <Modal visible={isPopupVisible}  animationType="slide">
         <SafeAreaView style={{ flex: 1 }}>
           {/* Render the events data in the popup */}
-          {eventsForSelectedDate.map((event) => (
-            <Text key={event.id}>{event.title}</Text>
+          {eventsForSelectedDate.map((event, index) => (
+            <Text key={index}> {event.name} </Text>
           ))}
           <Button title="Close" onPress={() => setIsPopupVisible(false)} />
         </SafeAreaView>
-      </Modal>
+      </Modal>)}
       </SafeAreaView>
     );
   };

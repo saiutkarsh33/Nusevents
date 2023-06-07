@@ -10,7 +10,7 @@ export default function EventsDesc(props) {
     return (
         <SafeAreaView>
             <Text>
-                {props.description}
+                {props.desc}
             </Text>
         </SafeAreaView>
      )
