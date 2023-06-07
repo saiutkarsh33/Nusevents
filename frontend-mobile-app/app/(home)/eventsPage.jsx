@@ -1,6 +1,6 @@
-import {View, StatusBar, TouchableOpacity, Stylesheet} from "react-native";
+import { View, StatusBar, TouchableOpacity, Stylesheet } from "react-native";
 import { supabase } from "../../lib/supabase";
-import { Avatar, Button, Card, Text } from 'react-native-paper';
+import { Avatar, Button, Card, Text } from "react-native-paper";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
@@ -107,6 +107,3 @@ const handleImInPress = (eventId) => {
 
  } 
     
-
-
-
