@@ -5,6 +5,7 @@ export default function HomeScreen() {
     <Tabs>
       <Tabs.Screen name="index" options={{ title: "Todos" }} />
       <Tabs.Screen name="newTodo" options={{ title: "New Todo" }} />
+      <Tabs.Screen name="createEvents" options={{ title: "Create Events" }} />
       <Tabs.Screen name="profile" />
     </Tabs>
   );
