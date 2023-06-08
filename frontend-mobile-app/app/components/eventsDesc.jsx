@@ -1,5 +1,6 @@
 import { Text} from "react-native";
 import {  SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "../../lib/supabase";
 
 // Show description of event in another page. 
 // I think good to figure out how this works and how to put in the props element in a different page,
