@@ -109,6 +109,7 @@ export default function CreateEvents() {
         value={eventDate}
         onChangeText={setEventDate}
         mode="outlined"
+        placeholder="DD-MM-YY"
       />
       <Text>Time</Text>
       <TextInput
