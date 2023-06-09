@@ -12,6 +12,7 @@ export default function CreateEvents() {
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [description, setDescription] = useState("");
+  const [important, setImportant] = useState(false)
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
@@ -66,6 +67,7 @@ export default function CreateEvents() {
           time: eventTime,
           venue: eventVenue,
           desc: description,
+          important : important
         })
         .select()
         .single();
@@ -83,6 +85,11 @@ export default function CreateEvents() {
     }
   };
 
+
+  const handleImportant = () => {
+    setImportant(!important);
+  };
+
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
       <Text>Name of Event</Text>
@@ -97,7 +104,7 @@ export default function CreateEvents() {
         onChangeText={setEventVenue}
         mode="outlined"
       />
-      <Text>Date</Text>
+      <Text>Date (in YYYY-MM-DD) </Text>
       <TextInput
         value={eventDate}
         onChangeText={setEventDate}
@@ -122,6 +129,13 @@ export default function CreateEvents() {
       )}
       <Button onPress={handleCreate}>Create</Button>
       {loading && <ActivityIndicator />}
+      <Button
+        onPress={handleImportant}
+        mode={important ? "contained" : "outlined"}
+        style={{ backgroundColor: important ? "yellow" : "white" }}
+      >
+        Important
+      </Button>
     </View>
   );
 }
