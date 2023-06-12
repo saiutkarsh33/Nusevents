@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { View, Image } from "react-native";
+import { Image } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
@@ -86,7 +87,7 @@ export default function CreateEvents() {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
       <Text>Name of Event</Text>
       <TextInput
         value={eventName}
@@ -132,6 +133,6 @@ export default function CreateEvents() {
       >
         Important
       </Button>
-    </View>
+    </SafeAreaView>
   );
 }
