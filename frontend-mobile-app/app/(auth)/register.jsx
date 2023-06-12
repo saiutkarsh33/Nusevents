@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabase";
 import { StyleSheet } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "../../contexts/auth";
+// import { useAuth } from "../../contexts/auth";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -13,7 +13,6 @@ export default function Register() {
   const [userAccountType, setUserAccountType] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  const { user } = useAuth();
 
   const handleSubmit = async () => {
     if (email == "") {
@@ -37,28 +36,20 @@ export default function Register() {
       return;
     }
     setLoading(true);
-
-    const { detailsError } = await supabase
-      .from("accounts")
-      .insert({
-        name: userName,
-        user_id: user.id,
-        residence: userResidence,
-        account_type: userAccountType,
-      })
-      .select()
-      .single();
-
-    if (detailsError != null) {
-      console.log(detailsError);
-      setErrMsg(detailsError.message);
-      setLoading(false);
-      return;
-    }
-    const { authError } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          name: userName,
+          account_type: userAccountType,
+          residence: userResidence,
+        },
+      },
+    });
     setLoading(false);
-    if (authError) {
-      setErrMsg(authError.message);
+    if (error) {
+      setErrMsg(error.message);
       return;
     }
   };
