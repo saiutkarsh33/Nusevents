@@ -29,60 +29,56 @@ export default function CreateEvents() {
   };
 
   const handleCreate = async () => {
-    try {
-      setErrMsg("");
-      if (eventName === "") {
-        setErrMsg("Event name cannot be empty");
-        return;
-      }
-      setLoading(true);
-      let uploadedImage = null;
-      if (image != null) {
-        const { data, error } = await supabase.storage
-          .from("images")
-          .upload(`${new Date().getTime()}`, {
-            uri: image,
-            type: "jpg",
-            name: "name.jpg",
-          });
-
-        if (error != null) {
-          console.log(error);
-          setErrMsg(error.message);
-          setLoading(false);
-          return;
-        }
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("images").getPublicUrl(data.path);
-        uploadedImage = publicUrl;
-      }
-      const { error } = await supabase
-        .from("events")
-        .insert({
-          name: eventName,
-          user_id: user.id,
-          image_url: uploadedImage,
-          date: eventDate,
-          time: eventTime,
-          venue: eventVenue,
-          desc: description,
-          important: important,
-        })
-        .select()
-        .single();
+    setErrMsg("");
+    if (eventName === "") {
+      setErrMsg("Event name cannot be empty");
+      return;
+    }
+    setLoading(true);
+    let uploadedImage = null;
+    if (image != null) {
+      const { data, error } = await supabase.storage
+        .from("images")
+        .upload(`${new Date().getTime()}`, {
+          uri: image,
+          type: "jpg",
+          name: "name.jpg",
+        });
 
       if (error != null) {
-        setLoading(false);
         console.log(error);
         setErrMsg(error.message);
+        setLoading(false);
         return;
       }
-      setLoading(false);
-      router.push("/"); // go back to homepage
-    } catch (err) {
-      console.error(err);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("images").getPublicUrl(data.path);
+      uploadedImage = publicUrl;
     }
+    const { error } = await supabase
+      .from("events")
+      .insert({
+        name: eventName,
+        user_id: user.id,
+        image_url: uploadedImage,
+        date: eventDate,
+        time: eventTime,
+        venue: eventVenue,
+        desc: description,
+        important: important,
+      })
+      .select()
+      .single();
+
+    if (error != null) {
+      setLoading(false);
+      console.log(error);
+      setErrMsg(error.message);
+      return;
+    }
+    setLoading(false);
+    router.push("/"); // go back to homepage
   };
 
   const handleImportant = () => {
@@ -108,7 +104,7 @@ export default function CreateEvents() {
         value={eventDate}
         onChangeText={setEventDate}
         mode="outlined"
-        placeholder="DD-MM-YY"
+        placeholder="YYYY-DD-MM"
       />
       <Text>Time</Text>
       <TextInput

@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+} from "react-native";
 import { supabase } from "../../lib/supabase";
-import { Avatar, Button, Card, Text } from "react-native-paper";
+import { Button, Card, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 16,
   },
 });
@@ -31,17 +37,17 @@ function MyCard(props) {
       const newSelected = !selected;
 
       const { error } = await supabase
-        .from('events')
+        .from("events")
         .update({ selected: newSelected })
-        .eq('id', props.id);
+        .eq("id", props.id);
 
       if (error) {
-        console.error('Error updating event:', error);
+        console.error("Error updating event:", error);
       } else {
         setSelected(newSelected);
       }
     } catch (error) {
-      console.error('Error updating event:', error);
+      console.error("Error updating event:", error);
     }
   };
 
@@ -75,7 +81,11 @@ function MyCard(props) {
         </TouchableOpacity>
       </Card>
 
-      <Modal visible={modalVisible} animationType="slide" onRequestClose={handleCloseModal}>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={handleCloseModal}
+      >
         <SafeAreaView style={styles.modalContainer}>
           <View>
             <Text>{props.desc}</Text>
@@ -92,10 +102,10 @@ export default function EventsPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const { data, error } = await supabase.from('events').select('*');
+      const { data, error } = await supabase.from("events").select("*");
 
       if (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
       } else {
         setEventsData(data);
       }
@@ -124,7 +134,3 @@ export default function EventsPage() {
     </SafeAreaView>
   );
 }
-
- 
-    
-    

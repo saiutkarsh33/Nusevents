@@ -17,10 +17,29 @@ function useProtectedRoute(user) {
     console.log(`useProtectedRoute useEffect called`);
     const inAuthGroup = segments[0] === "(auth)";
     if (!user && !inAuthGroup) {
+      // !user means if user === null
       console.log(`inAuthGroup: ${inAuthGroup}`);
       router.replace("/login");
     } else if (user && inAuthGroup) {
-      router.replace("/");
+      console.log(`inAuthGroup: ${inAuthGroup}`);
+      const filterData = async () => {
+        const { data, error } = await supabase
+          .from("accounts")
+          .select()
+          .eq("user_id", user.id)
+          .single();
+
+        if (error != null) {
+          console.log(error);
+          return;
+        }
+        if (data.account_type === "Business") {
+          router.replace("/(businessAcc)/");
+        } else if (data.account_type === "Personal") {
+          router.replace("/(personalAcc)/");
+        }
+      };
+      filterData();
     }
   }, [user, segments, router]);
 }
