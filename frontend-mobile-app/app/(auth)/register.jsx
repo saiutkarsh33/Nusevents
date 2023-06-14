@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   Text,
   TextInput,
@@ -9,20 +9,18 @@ import {
   Provider,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DropDown from "react-native-paper-dropdown";
+import DropDownPicker from "react-native-dropdown-picker";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userResidence, setUserResidence] = useState("");
   const [userName, setUserName] = useState("");
-  const [userAccountType, setUserAccountType] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  const [showDropDown, setShowDropDown] = useState(false);
-  const [showResidenceDropDown, setShowResidenceDropDown] = useState(false);
 
-  const accountTypeList = [
+  const [accountTypeOpen, setAccountTypeOpen] = useState(false);
+  const [accountTypeValue, setAccountTypeValue] = useState(null);
+  const [accountType, setAccountType] = useState([
     {
       label: "Personal",
       value: "Personal",
@@ -31,9 +29,11 @@ export default function Register() {
       label: "Business",
       value: "Business",
     },
-  ];
+  ]);
 
-  const residenceList = [
+  const [residenceOpen, setResidenceTypeOpen] = useState(false);
+  const [residenceValue, setResidenceValue] = useState(null);
+  const [residence, setResidence] = useState([
     {
       label: "Tembusu",
       value: "Tembusu",
@@ -42,7 +42,7 @@ export default function Register() {
       label: "Sheares",
       value: "Sheares",
     },
-  ];
+  ]);
 
   const handleSubmit = async () => {
     if (email == "") {
@@ -57,11 +57,11 @@ export default function Register() {
       setErrMsg("name cannot be empty");
       return;
     }
-    if (userAccountType == "") {
+    if (!accountTypeValue) {
       setErrMsg("account type cannot be empty");
       return;
     }
-    if (userResidence == "") {
+    if (!residenceValue) {
       setErrMsg("name of residence cannot be empty");
       return;
     }
@@ -72,8 +72,8 @@ export default function Register() {
       options: {
         data: {
           name: userName,
-          account_type: userAccountType,
-          residence: userResidence,
+          account_type: accountTypeValue,
+          residence: residenceValue,
         },
       },
     });
@@ -85,80 +85,74 @@ export default function Register() {
   };
 
   return (
-    <Provider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <Text style={styles.welcome}>Welcome!</Text>
-        <Text>Please fill in your details to create your account</Text>
-        <TextInput
-          autoCapitalize="none"
-          value={userName}
-          onChangeText={setUserName}
-          mode="outlined"
-          placeholder="Name"
-          style={styles.details}
-        />
-        <DropDown
-          label={"Account Type"}
-          mode={"outlined"}
-          visible={showDropDown}
-          showDropDown={() => setShowDropDown(true)}
-          onDismiss={() => setShowDropDown(false)}
-          value={userAccountType}
-          setValue={setUserAccountType}
-          list={accountTypeList}
-        />
-        <View style={styles.spacerStyle} />
-        <DropDown
-          label={"Name of Residence"}
-          mode={"outlined"}
-          visible={showResidenceDropDown}
-          showDropDown={() => setShowResidenceDropDown(true)}
-          onDismiss={() => setShowResidenceDropDown(false)}
-          value={userResidence}
-          setValue={setUserResidence}
-          list={residenceList}
-        />
-        <TextInput
-          autoCapitalize="none"
-          textContentType="emailAddress"
-          value={email}
-          onChangeText={setEmail}
-          mode="outlined"
-          placeholder="Email"
-          style={styles.details}
-        />
-        <TextInput
-          secureTextEntry
-          autoCapitalize="none"
-          textContentType="password"
-          value={password}
-          onChangeText={setPassword}
-          mode="outlined"
-          placeholder="Password"
-          style={styles.passwordTextInput}
-        />
-        <Button onPress={handleSubmit}>Submit</Button>
-        {errMsg !== "" && <Text>{errMsg}</Text>}
-        {loading && <ActivityIndicator />}
-      </SafeAreaView>
-    </Provider>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <Text style={styles.welcome}>Welcome!</Text>
+      <Text>Please fill in your details to create your account</Text>
+      <TextInput
+        autoCapitalize="none"
+        value={userName}
+        onChangeText={setUserName}
+        mode="outlined"
+        placeholder="Name"
+        style={styles.details}
+      />
+      <DropDownPicker
+        open={accountTypeOpen}
+        value={accountTypeValue}
+        items={accountType}
+        setOpen={setAccountTypeOpen}
+        setValue={setAccountTypeValue}
+        setItems={setAccountType}
+        placeholder="Select Account Type"
+        zIndex={3000}
+        zIndexInverse={1000}
+        style={styles.details}
+      />
+      <DropDownPicker
+        open={residenceOpen}
+        value={residenceValue}
+        items={residence}
+        setOpen={setResidenceTypeOpen}
+        setValue={setResidenceValue}
+        setItems={setResidence}
+        placeholder="Select Name of Residence"
+        zIndex={1000}
+        zIndexInverse={3000}
+        style={styles.details}
+      />
+      <TextInput
+        autoCapitalize="none"
+        textContentType="emailAddress"
+        value={email}
+        onChangeText={setEmail}
+        mode="outlined"
+        placeholder="Email"
+        style={styles.details}
+      />
+      <TextInput
+        secureTextEntry
+        autoCapitalize="none"
+        textContentType="password"
+        value={password}
+        onChangeText={setPassword}
+        mode="outlined"
+        placeholder="Password"
+        style={styles.details}
+      />
+      <Button onPress={handleSubmit}>Submit</Button>
+      {errMsg !== "" && <Text>{errMsg}</Text>}
+      {loading && <ActivityIndicator />}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   welcome: {
-    paddingTop: 50,
-    paddingBottom: 20,
     fontSize: 40,
     fontWeight: "bold",
+    paddingBottom: 20,
   },
   details: {
-    marginVertical: 20,
-  },
-  spacerStyle: {
     marginVertical: 10,
-  },
-  passwordTextInput: {
-    marginBottom: 20,
   },
 });
