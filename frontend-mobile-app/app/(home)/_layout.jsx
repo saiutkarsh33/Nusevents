@@ -8,6 +8,7 @@ export default function HomeScreen() {
       <Tabs.Screen name="profile" options = {{ title: "Settings" }}/>
       <Tabs.Screen name="eventsPage" options = {{ title: "Events" }}/>
       <Tabs.Screen name="eventsCalendar" options = {{ title: "Calendar" }}/>
+      <Tabs.Screen name="myEvents" options = {{ title: "My Events" }}/>
     </Tabs>
   );
 }

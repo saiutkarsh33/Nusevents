@@ -7,6 +7,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
 
@@ -19,8 +20,13 @@ export default function Register() {
       setErrMsg("password cannot be empty");
       return;
     }
+    if (name == "") {
+      setErrMsg("username cannot be empty");
+      return;
+    }  
+
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({ email, password, name });
     setLoading(false);
     if (error) {
       setErrMsg(error.message);
@@ -50,6 +56,16 @@ export default function Register() {
           textContentType="password"
           value={password}
           onChangeText={setPassword}
+          mode="outlined"
+        />
+
+        <Text>Name</Text>
+        <TextInput
+          secureTextEntry
+          autoCapitalize="none"
+          textContentType="name"
+          value={name}
+          onChangeText={setName}
           mode="outlined"
         />
         <Button onPress={handleSubmit}>Submit</Button>

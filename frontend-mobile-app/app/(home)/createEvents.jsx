@@ -12,7 +12,7 @@ export default function CreateEvents() {
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [description, setDescription] = useState("");
-  const [important, setImportant] = useState(false)
+  const [important, setImportant] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
@@ -67,7 +67,7 @@ export default function CreateEvents() {
           time: eventTime,
           venue: eventVenue,
           desc: description,
-          important : important
+          important: important,
         })
         .select()
         .single();
@@ -79,12 +79,11 @@ export default function CreateEvents() {
         return;
       }
       setLoading(false);
-      router.push("/");
+      router.push("/"); // go back to homepage
     } catch (err) {
       console.error(err);
     }
   };
-
 
   const handleImportant = () => {
     setImportant(!important);
