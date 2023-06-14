@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "../contexts/auth";
-import { PaperProvider } from "react-native-paper";
+import { Provider } from "react-native-paper";
 
 const customTheme = {
   colors: {
@@ -10,10 +10,10 @@ const customTheme = {
 
 export default function RootLayout() {
   return (
-    <PaperProvider theme={customTheme}>
+    <Provider theme={customTheme}>
       <AuthProvider>
         <Stack screenOptions={{ headerShown: false }} />
       </AuthProvider>
-    </PaperProvider>
+    </Provider>
   );
 }

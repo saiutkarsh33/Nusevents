@@ -20,7 +20,25 @@ function useProtectedRoute(user) {
       console.log(`inAuthGroup: ${inAuthGroup}`);
       router.replace("/login");
     } else if (user && inAuthGroup) {
-      router.replace("/");
+      console.log(`inAuthGroup: ${inAuthGroup}`);
+      const loginRoute = async () => {
+        const { data, error } = await supabase
+          .from("users")
+          .select()
+          .eq("id", user.id)
+          .single();
+
+        if (error != null) {
+          console.log(error);
+          return;
+        }
+        if (data.account_type === "Business") {
+          router.replace("/(businessAcc)/");
+        } else if (data.account_type === "Personal") {
+          router.replace("/(personalAcc)/");
+        }
+      };
+      loginRoute();
     }
   }, [user, segments, router]);
 }
