@@ -214,6 +214,8 @@ export default function EventsPage() {
     }
 
     async function fetchUserData() {
+
+    if (user) {  
       const { data, error } = await supabase
         .from('users')
         .select('selected_events')
@@ -225,10 +227,11 @@ export default function EventsPage() {
         setUserData(data);
       }
     }
+  }
 
     fetchData();
     fetchUserData();
-  }, [user.id]);
+  }, [user]);
 
   if (!userData) {
     return <Text>Loading account data...</Text>;

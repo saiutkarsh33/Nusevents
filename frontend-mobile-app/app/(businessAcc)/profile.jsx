@@ -14,8 +14,13 @@ export default function ProfileScreen() {
         console.error('Error resetting password:', error);
         // Handle error
       } else {
-        console.log('Password reset email sent successfully');
-        // Password reset email sent, inform the user
+        Alert.alert(
+          "Password Reset",
+          "Password reset email sent. Please check your email.",
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+        );
       }
     } catch (error) {
       console.error('Error resetting password:', error);

@@ -16,6 +16,8 @@ export default function EventsCalendar() {
   useEffect(() => {
     // Fetch data from Supabase
     async function fetchData() {
+
+    if (user) {  
       try {
         const { data, error } = await supabase.from('events').select('*');
         if (error) {
@@ -39,10 +41,11 @@ export default function EventsCalendar() {
         console.error('Error fetching data:', error);
       }
     }
-
+  } 
     fetchData();
-  }, [user]);
 
+  }, [user]);
+  
   const markedDates = {};
 
   eventsData.forEach((event) => {

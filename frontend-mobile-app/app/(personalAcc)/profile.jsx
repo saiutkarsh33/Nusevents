@@ -1,42 +1,30 @@
-import { View, TextInput, Button, Alert } from "react-native";
+import { View, Button} from "react-native";
 import { supabase } from "../../lib/supabase";
-import { useState } from "react";
+import { useAuth } from "../../contexts/auth";
 
 export default function ProfileScreen() {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  
+  const { user } = useAuth();
 
-  const handleChangePassword = async () => {
+  const handleChangePassword = async (email) => {
     try {
-      const { error } = await supabase.auth.update({
-        password: newPassword,
-      });
-
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) {
-        throw error;
+        console.error('Error resetting password:', error);
+        // Handle error
+      } else {
+        console.log('Password reset email sent successfully');
+        // Password reset email sent, inform the user
       }
-
-      Alert.alert("Success", "Password updated successfully");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      console.error('Error resetting password:', error);
+      // Handle error
     }
-  };
+  }
 
   return (
     <View>
-      <TextInput
-        secureTextEntry
-        placeholder="Current Password"
-        value={currentPassword}
-        onChangeText={setCurrentPassword}
-      />
-      <TextInput
-        secureTextEntry
-        placeholder="New Password"
-        value={newPassword}
-        onChangeText={setNewPassword}
-      />
-      <Button title="Change Password" onPress={handleChangePassword} />
+      <Button title="Change Password" onPress={() => handleChangePassword(user.email)} />
       <Button title="Logout" onPress={() => supabase.auth.signOut()} />
     </View>
   );

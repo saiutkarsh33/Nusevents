@@ -43,6 +43,8 @@ function MyCard(props) {
     };
   
     const handleDonePress = async () => {
+
+     if (user) { 
       try {
         // Perform the update in the Supabase table
         const { error } = await supabase
@@ -66,6 +68,7 @@ function MyCard(props) {
       } catch (error) {
         console.error('Error updating event:', error);
       }
+    }
     };
 
     const handleDelete = async () => {
@@ -73,7 +76,7 @@ function MyCard(props) {
           const { error } = await supabase
             .from('events')
             .delete()
-            .eq('user_id', props.id);
+            .eq('id', props.id);
     
           if (error) {
             console.error('Error deleting event:', error);
