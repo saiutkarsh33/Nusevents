@@ -1,11 +1,4 @@
 import { Tabs } from "expo-router";
-import { PaperProvider } from "react-native-paper";
-
-const customTheme = {
-  colors: {
-    background: "white",
-  },
-};
 
 export default function HomeScreen() {
   return (

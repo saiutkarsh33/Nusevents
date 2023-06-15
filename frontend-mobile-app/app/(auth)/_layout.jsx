@@ -1,5 +1,4 @@
 import { Stack } from "expo-router";
-import { PaperProvider } from "react-native-paper";
 export const unstable_settings = {
   initialRouteName: "login",
 };

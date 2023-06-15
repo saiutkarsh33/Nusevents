@@ -1,15 +1,9 @@
 import { Image, StyleSheet } from "react-native";
 import { useState } from "react";
-import {
-  Text,
-  TextInput,
-  Button,
-  ActivityIndicator,
-  Provider,
-} from "react-native-paper";
+import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

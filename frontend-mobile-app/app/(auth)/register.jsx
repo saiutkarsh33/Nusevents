@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { StyleSheet } from "react-native";
-import {
-  Text,
-  TextInput,
-  ActivityIndicator,
-  Button,
-  Provider,
-} from "react-native-paper";
+import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DropDownPicker from "react-native-dropdown-picker";
 
