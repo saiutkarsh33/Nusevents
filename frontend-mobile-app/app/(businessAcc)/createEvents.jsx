@@ -13,7 +13,6 @@ export default function CreateEvents() {
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [description, setDescription] = useState("");
-  const [important, setImportant] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
@@ -67,7 +66,6 @@ export default function CreateEvents() {
         time: eventTime,
         venue: eventVenue,
         desc: description,
-        important: important,
       })
       .select()
       .single();
@@ -82,9 +80,6 @@ export default function CreateEvents() {
     router.push("/"); // go back to homepage
   };
 
-  const handleImportant = () => {
-    setImportant(!important);
-  };
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
@@ -126,13 +121,6 @@ export default function CreateEvents() {
       )}
       <Button onPress={handleCreate}>Create</Button>
       {loading && <ActivityIndicator />}
-      <Button
-        onPress={handleImportant}
-        mode={important ? "contained" : "outlined"}
-        style={{ backgroundColor: important ? "yellow" : "white" }}
-      >
-        Important
-      </Button>
     </SafeAreaView>
   );
 }

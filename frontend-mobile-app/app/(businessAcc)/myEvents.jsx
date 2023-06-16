@@ -157,7 +157,7 @@ function MyCard(props) {
 
     useEffect(() => {
 
-
+      if (user) { 
         
         const fetchData = async () => {
             try {
@@ -179,6 +179,7 @@ function MyCard(props) {
           };
 
           fetchData(); 
+        }
       }, [user]);
   
   
