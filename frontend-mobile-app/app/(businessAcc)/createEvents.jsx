@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Image } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,8 +16,30 @@ export default function CreateEvents() {
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
+  const [name, setName] = useState(null);
   const { user } = useAuth();
   const router = useRouter();
+
+
+  useEffect(() => {
+  
+    async function fetchUserData() {
+
+    if (user) {  
+      const { data, error } = await supabase
+        .from('users')
+        .select('name')
+        .eq('id', user.id)
+        .single();
+      if (error) {
+        console.error('Error fetching user data:', error);
+      } else {
+        setName(data.name);
+      }
+    }
+  }
+    fetchUserData();
+  }, [user]);
 
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,6 +51,7 @@ export default function CreateEvents() {
   };
 
   const handleCreate = async () => {
+
     setErrMsg("");
     if (eventName === "") {
       setErrMsg("Event name cannot be empty");
@@ -66,6 +89,7 @@ export default function CreateEvents() {
         time: eventTime,
         venue: eventVenue,
         desc: description,
+        creator: name
       })
       .select()
       .single();

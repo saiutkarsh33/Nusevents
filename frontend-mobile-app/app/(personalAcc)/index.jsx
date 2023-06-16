@@ -24,7 +24,7 @@ function TheirCard(props) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedButton, setSelectedButton] = useState(() => props.selected)
-  console.log("this is original selected", selectedButton);
+  
   const { user } = useAuth();
 
   const handleViewMorePress = () => {

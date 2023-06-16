@@ -86,7 +86,7 @@ export default function EventsCalendar() {
       try {
         const { data: events, error } = await supabase
           .from('events')
-          .select('name')
+          .select('*')
           .eq('date', selectedDate);
 
         if (error) {
@@ -137,7 +137,7 @@ export default function EventsCalendar() {
             <SafeAreaView style={{ flex: 1 }}>
               {/* Render the events data in the popup */}
               {eventsForSelectedDate.map((event, index) => (
-                <Text key={index}> {event.name} </Text>
+                <Text key={index}> {event.name} at {event.time} by {event.creator}</Text>
               ))}
               <Button title="Close" onPress={() => setIsPopupVisible(false)} />
             </SafeAreaView>
