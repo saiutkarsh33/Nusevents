@@ -14,6 +14,12 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       padding: 16,
     },
+
+
+    cardContainer: {
+      backgroundColor: "white", // Add this line to set the background color
+    },
+
   });
 
   // Settle the view Signups after u settle the stuff from the eventsPage's i'm in end.
@@ -91,7 +97,7 @@ function MyCard(props) {
   
     return (
       <>
-        <Card>
+        <Card style={styles.cardContainer} >
           <Card.Content>
             <Text variant="titleLarge">
               {props.name} • {props.date}
@@ -107,9 +113,9 @@ function MyCard(props) {
   
           <TouchableOpacity>
             <Card.Actions>
-              <Button onPress={handleEditPress}>Edit</Button>
-              <Button onPress={handleDelete}>Delete</Button>
-              <Button onPress={handleViewSignups}>View Signups</Button>
+              <Button onPress={handleEditPress} mode = { "outlined"} >Edit</Button>
+              <Button onPress={handleDelete} mode = { "outlined"} >Delete</Button>
+              <Button onPress={handleViewSignups} mode = { "outlined"} >View Signups</Button>
             </Card.Actions>
           </TouchableOpacity>
         </Card>

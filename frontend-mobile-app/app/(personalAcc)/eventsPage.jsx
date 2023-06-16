@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, RefreshControl } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { Button, Card, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,12 +13,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 16,
   },
+  cardContainer: {
+    backgroundColor: "white", // Add this line to set the background color
+  },
+
 });
 
 function TheirCard(props) {
 
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedButton, setSelectedButton] = useState(() => props.selected)
+  console.log("this is original selected", selectedButton);
   const { user } = useAuth();
 
   const handleViewMorePress = () => {
@@ -144,7 +150,12 @@ function TheirCard(props) {
 
       if (updateUserError) {
         console.error('Error updating users:', updateUserError);
-      } 
+      } else {
+        setSelectedButton(!selectedButton)
+        props.selected = selectedButton
+      }
+
+      console.log("this is final selected", selectedButton);
 
     } catch (error) {
       console.error('Error updating event:', error);
@@ -154,7 +165,7 @@ function TheirCard(props) {
 
   return (
     <>
-      <Card>
+      <Card style={styles.cardContainer} >
         <Card.Content>
           <Text variant="titleLarge">
             {props.name} • {props.date}
@@ -172,12 +183,12 @@ function TheirCard(props) {
           <Card.Actions>
             <Button
               onPress={handleImInPress}
-              mode={props.selected ? "contained" : "outlined"}
-              style={{ backgroundColor: props.selected ? "yellow" : "white" }}
+              mode={"outlined"}
+              style={{ backgroundColor: selectedButton ? "yellow" : "white" }}
             >
               I&apos;m in
             </Button>
-            <Button onPress={handleViewMorePress}>View More</Button>
+            <Button onPress={handleViewMorePress} mode = { "outlined"}>View More</Button>
           </Card.Actions>
         </TouchableOpacity>
       </Card>
@@ -196,8 +207,6 @@ function TheirCard(props) {
 
 export default function EventsPage() {
   const [eventsData, setEventsData] = useState([]);
-
-  const [refreshing, setRefreshing] = useState(false);
 
   const { user } = useAuth();
 
