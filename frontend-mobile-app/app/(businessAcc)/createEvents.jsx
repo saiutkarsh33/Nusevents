@@ -37,7 +37,7 @@ export default function CreateEvents() {
     }
     setLoading(true);
     let uploadedImage = null;
-    if (image != null) {
+    if (image) {
       const { data, error } = await supabase.storage
         .from("images")
         .upload(`${new Date().getTime()}`, {
@@ -46,7 +46,7 @@ export default function CreateEvents() {
           name: "name.jpg",
         });
 
-      if (error != null) {
+      if (error) {
         console.log(error);
         setErrMsg(error.message);
         setLoading(false);
@@ -72,7 +72,7 @@ export default function CreateEvents() {
       .select()
       .single();
 
-    if (error != null) {
+    if (error) {
       setLoading(false);
       console.log(error);
       setErrMsg(error.message);
