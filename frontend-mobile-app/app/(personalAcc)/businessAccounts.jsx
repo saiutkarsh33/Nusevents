@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
 
     const [modalVisible, setModalVisible] = useState(false);
     const { user } = useAuth();
+    const [followedButton, setFollowedButton] = useState(() => props.followed)
   
     const handleViewDescPress = () => {
       setModalVisible(true);
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
         const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
-        .eq('user_id', props.user_id)
+        .eq('id', user.id)
         .single()
     
           
@@ -98,6 +99,8 @@ const styles = StyleSheet.create({
         if (updateAccountError) {
           console.error('Error updating event:', updateAccountError);
         } else {
+          setFollowedButton(!followedButton)  
+          props.followed = followedButton
           console.log("this is followed after change" , user.email , updatedAccountData[0].followed_accounts)
         }
 
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
                 <Button
                   onPress={handleFollowPress}
                   mode={ "outlined"}
-                  style={{ backgroundColor: props.followed ? "yellow" : "white" }}
+                  style={{ backgroundColor: followedButton ? "yellow" : "white" }}
                 >
                   Follow
                 </Button>
@@ -154,9 +157,29 @@ const styles = StyleSheet.create({
     
       const { user } = useAuth();
 
-      
+
       useEffect(() => {
-        console.log("USER" ,user) 
+  
+        async function fetchUserData() {
+    
+        if (user) {  
+          const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          if (error) {
+            console.error('Error fetching user data:', error);
+          } else {
+            setMyData(data);
+          }
+        }
+      }
+        fetchUserData();
+      }, [user]);
+
+      
+      useEffect(() => { 
         async function fetchUsersData() {
           const { data, error } = await supabase.from('users').select('*').eq("account_type", "Business"
           )
@@ -165,34 +188,12 @@ const styles = StyleSheet.create({
           } else {
             setUsersData(data);
           }
-        }
-        
-        async function fetchMyData() {
-            
-            if (user) {
-               
-              try {
-                const { data2, error } = await supabase
-                  .from('users')
-                  .select('*')
-                  .eq('id', user.id)
-          
-                if (error) {
-                  console.error('Error fetching user data:', error);
-                } else {
-                  console.log('Fetched user data:', data2);
-                  setMyData(data2);
-                }
-              } catch (error) {
-                console.error('Error fetching user data:', error);
-              }
-          }
-        }
-            
+        }   
             fetchUsersData();
-            fetchMyData();
+            
       }, [user]);
-    
+
+        console.log(usersData)
         console.log("middle")
     
       const sortedUsersData = usersData.sort((a, b) => {
@@ -216,11 +217,10 @@ const styles = StyleSheet.create({
               <EventCard
                 key={card.id}
                 id={card.id}
-                user_id = {card.user_id}
                 name={card.name}
                 profile_pic_url={card.profile_pic_url}
                 desc={card.desc}
-                //followed={myData.followed_accounts?.includes(card.name) ?? false}
+                followed={myData.followed_accounts?.includes(card.name) ?? false}
                 // so issue is that userData is null rn. userData should be my data, auth id.
               />
             ))}
