@@ -23,20 +23,48 @@ const styles = StyleSheet.create({
   function EventCard(props) {
 
 
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalDescVisible, setModalDescVisible] = useState(false);
+    const [modalEventsVisible, setModalEventsVisible] = useState(false);
     const { user } = useAuth();
     const [followedButton, setFollowedButton] = useState(() => props.followed)
+    const [eventsData, setEventsData] = useState([]);
   
     const handleViewDescPress = () => {
-      setModalVisible(true);
+      setModalDescVisible(true);
     };
+
   
-    const handleCloseModal = () => {
-      setModalVisible(false);
+    const handleCloseDescModal = () => {
+      setModalDescVisible(false);
     };
 
 
-    const handleViewEventsPress = () =>{}
+    const handleViewEventsPress = async () => {
+        try {
+          const { data: eventData, error: eventError } = await supabase
+            .from('events')
+            .select('*')
+            .eq('user_id' , props.id);
+          
+          if (eventError) {
+            console.error('Error fetching events:', eventError);
+            return;
+          }
+          
+          // Store the fetched events data in the component's state or pass it as props to the modal component
+          
+          // Open the modal
+          setEventsData(eventData);
+          setModalEventsVisible(true);
+        } catch (error) {
+          console.error('Error fetching events:', error);
+        }
+      };
+
+    const handleCloseEventsModal = () => {
+        setModalEventsVisible(false);
+      };
+
   
     const handleFollowPress = async () => {
   
@@ -138,14 +166,26 @@ const styles = StyleSheet.create({
             </TouchableOpacity>
           </Card>
     
-          <Modal visible={modalVisible} animationType="slide" onRequestClose={handleCloseModal}>
+          <Modal visible={modalDescVisible} animationType="slide" onRequestClose={handleCloseDescModal}>
             <SafeAreaView style={styles.modalContainer}>
               <View>
                 <Text>{props.desc}</Text>
-                <Button onPress={handleCloseModal}>Close</Button>
+                <Button onPress={handleCloseDescModal}>Close</Button>
               </View>
             </SafeAreaView>
           </Modal>
+
+
+          <Modal visible={modalEventsVisible} animationType="slide" onRequestClose={handleCloseEventsModal}>
+            <SafeAreaView style={styles.modalContainer}>
+            {eventsData.map((event) => (
+        <Text key={event.id}> {event.name} :  {event.desc}</Text>
+      ))}
+
+                <Button onPress={handleCloseEventsModal}>Back</Button>
+            </SafeAreaView>
+          </Modal>
+
         </>
       );
     }

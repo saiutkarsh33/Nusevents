@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 
 });
 
-function TheirCard(props) {
+export function TheirCard(props) {
 
 
   const [modalVisible, setModalVisible] = useState(false);
