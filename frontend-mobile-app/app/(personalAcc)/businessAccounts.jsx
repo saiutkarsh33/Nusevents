@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
 
 
+
 const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,
@@ -192,12 +193,8 @@ const styles = StyleSheet.create({
     
     export default function BusinessAccounts() {
       const [usersData, setUsersData] = useState([]);
-
       const [myData, setMyData] = useState(null);
-    
       const { user } = useAuth();
-
-
       useEffect(() => {
   
         async function fetchUserData() {
@@ -253,6 +250,7 @@ const styles = StyleSheet.create({
       return (
         <SafeAreaView>
           <ScrollView>
+          
             {sortedUsersData.map((card) => (
               <EventCard
                 key={card.id}

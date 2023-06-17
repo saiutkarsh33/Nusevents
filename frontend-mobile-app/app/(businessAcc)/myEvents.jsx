@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
   // Settle the view Signups after u settle the stuff from the eventsPage's i'm in end.
 
-function MyCard(props) {
+  function MyCard(props) {
     const [signupVisible, setSignupVisible] = useState(false);
     const [editVisible, setEditVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
