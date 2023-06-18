@@ -1,11 +1,26 @@
 import { useState, useEffect } from "react";
-import { Image } from "react-native";
+import { Image , StyleSheet} from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+
+
+const styles = StyleSheet.create({
+  Button: {
+    marginTop: 16,
+    backgroundColor: 'cyan',
+    alignSelf: 'center',
+  },
+
+  Text: {
+    fontWeight: 'bold'
+  },
+})
+
+
 
 export default function CreateEvents() {
   const [eventName, setEventName] = useState("");
@@ -110,43 +125,43 @@ export default function CreateEvents() {
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-      <Text>Name of Event</Text>
+      <Text style={styles.Text} >Name of Event</Text>
       <TextInput
         value={eventName}
         onChangeText={setEventName}
         mode="outlined"
       />
-      <Text>Venue</Text>
+      <Text style={styles.Text} >Venue</Text>
       <TextInput
         value={eventVenue}
         onChangeText={setEventVenue}
         mode="outlined"
       />
-      <Text>Date (in YYYY-MM-DD) </Text>
+      <Text style={styles.Text} >Date (in YYYY-MM-DD) </Text>
       <TextInput
         value={eventDate}
         onChangeText={setEventDate}
         mode="outlined"
         placeholder="YYYY-DD-MM"
       />
-      <Text>Time</Text>
+      <Text style={styles.Text}>Time</Text>
       <TextInput
         value={eventTime}
         onChangeText={setEventTime}
         mode="outlined"
       />
-      <Text>Description</Text>
+      <Text style={styles.Text}>Description</Text>
       <TextInput
         value={description}
         onChangeText={setDescription}
         mode="outlined"
       />
       {errMsg !== "" && <Text>{errMsg}</Text>}
-      <Button onPress={handleAddImage}>Add Image</Button>
+      <Button onPress={handleAddImage} style={styles.Button} >Add Image</Button>
       {image && (
         <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
       )}
-      <Button onPress={handleCreate}>Create</Button>
+      <Button onPress={handleCreate} style={styles.Button} >Create</Button>
       {loading && <ActivityIndicator />}
     </SafeAreaView>
   );

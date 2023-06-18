@@ -7,18 +7,55 @@ import { useAuth } from "../../contexts/auth";
 
 
 const styles = StyleSheet.create({
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'white',
-      padding: 16,
-    },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 16,
+  },
+  totalSignupsText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  totalSignupsCount: {
+    fontWeight: 'bold',
+    fontSize: 24,
+  },
+  signupsText: {
+    marginBottom: 16,
+  },
+  closeButton: {
+    width: 150,
+    marginTop: 16,
+    backgroundColor: 'cyan',
+  },
 
 
     cardContainer: {
       backgroundColor: "white", // Add this line to set the background color
     },
+
+    editValuesText: {
+      fontWeight: 'bold',
+      fontSize: 18,
+      textAlign: 'center',
+      marginVertical: 10,
+    },
+    
+    doneButton: {
+      marginTop: 16,
+      backgroundColor: 'cyan',
+      alignSelf: 'center',
+    },
+     
+    Text: {
+      fontWeight: 'bold'
+    },
+
+    
+
 
   });
 
@@ -122,15 +159,21 @@ const styles = StyleSheet.create({
   
         <Modal visible={editVisible} animationType="slide" onRequestClose={handleDonePress}>
           <SafeAreaView style={styles.modalContainer} >
-            <View>
+            <View >
+              <Text style={styles.editValuesText} > Edit the values accordingly </Text>
+              <Text style={styles.Text} >Venue: </Text>
               <TextInput value={venue} onChangeText={setVenue} editable={editMode} />
+              <Text style={styles.Text} >Date: </Text>
               <TextInput value={date} onChangeText={setDate} editable={editMode} />
+              <Text style={styles.Text} >Time: </Text>
               <TextInput value={time} onChangeText={setTime} editable={editMode} />
-              <TextInput value={desc} onChangeText={setDesc} editable={editMode} />
-              <TextInput value={image_url} onChangeText={setImage_url} editable={editMode} />
+              <Text style={styles.Text} >Description: </Text>
+              <TextInput value={desc} onChangeText={setDesc} editable={editMode} multiline/>
+              <Text style={styles.Text} >Image URL, to be changed : </Text>
+              <TextInput value={image_url} onChangeText={setImage_url} editable={editMode} multiline/>
   
               {editMode && (
-                <Button onPress={handleDonePress}>Done</Button>
+                <Button onPress={handleDonePress} style={styles.doneButton} >Done</Button>
               )}
             </View>
           </SafeAreaView>
@@ -139,13 +182,13 @@ const styles = StyleSheet.create({
 
         <Modal visible={signupVisible} animationType="slide" onRequestClose={handleCloseSignups}>
   <SafeAreaView style={styles.modalContainer}>
-    <Text>
+    <Text style={styles.totalSignupsText} >
       Total Signups: {props.signups.length}
     </Text>
-    <Text>
+    <Text style={styles.signupsText} >
       Names : {props.signups}
     </Text>
-    <Button onPress={handleCloseSignups}>Close</Button>
+    <Button onPress={handleCloseSignups} mode="contained" style={styles.closeButton} >Close</Button>
   </SafeAreaView>
 </Modal>
 
