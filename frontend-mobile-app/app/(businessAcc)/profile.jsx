@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 function ProfileCard(props) {
   const [editVisible, setEditVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [name, setName] = useState(props.time);
+  const [name, setName] = useState(props.name);
   const [desc, setDesc] = useState(props.desc);
   const { user } = useAuth();
 

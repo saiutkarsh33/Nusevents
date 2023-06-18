@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
       const [usersData, setUsersData] = useState([]);
       const [myData, setMyData] = useState(null);
       const { user } = useAuth();
+      const[residence, setResidence] = useState(null);
       useEffect(() => {
   
         async function fetchUserData() {
@@ -208,6 +209,7 @@ const styles = StyleSheet.create({
           if (error) {
             console.error('Error fetching user data:', error);
           } else {
+            setResidence(data.residence)
             setMyData(data);
           }
         }
@@ -215,11 +217,11 @@ const styles = StyleSheet.create({
         fetchUserData();
       }, [user]);
 
-      
+      console.log("this is myyydata" , myData)
       useEffect(() => { 
         async function fetchUsersData() {
-          const { data, error } = await supabase.from('users').select('*').eq("account_type", "Business"
-          )
+          const { data, error } = await supabase.from('users').select('*').eq("account_type", "Business")
+          .eq("residence", residence)
           if (error) {
             console.error('Error fetching Business Accounts :', error);
           } else {
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
         }   
             fetchUsersData();
             
-      }, [user]);
+      }, [user, residence]);
 
         console.log(usersData)
         console.log("middle")

@@ -138,13 +138,16 @@ const styles = StyleSheet.create({
 
 
         <Modal visible={signupVisible} animationType="slide" onRequestClose={handleCloseSignups}>
-          <SafeAreaView style={styles.modalContainer}>
-              <Text>
-                {props.signups}
-              </Text>
-              <Button onPress={handleCloseSignups}> Close </Button>
-          </SafeAreaView>
-        </Modal>
+  <SafeAreaView style={styles.modalContainer}>
+    <Text>
+      Total Signups: {props.signups.length}
+    </Text>
+    <Text>
+      Names : {props.signups}
+    </Text>
+    <Button onPress={handleCloseSignups}>Close</Button>
+  </SafeAreaView>
+</Modal>
 
       </>
     );

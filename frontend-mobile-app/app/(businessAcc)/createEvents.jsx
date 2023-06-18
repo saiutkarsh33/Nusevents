@@ -17,6 +17,7 @@ export default function CreateEvents() {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [name, setName] = useState(null);
+  const [residence, setResidence] = useState(null);
   const { user } = useAuth();
   const router = useRouter();
 
@@ -28,13 +29,14 @@ export default function CreateEvents() {
     if (user) {  
       const { data, error } = await supabase
         .from('users')
-        .select('name')
+        .select('*')
         .eq('id', user.id)
         .single();
       if (error) {
         console.error('Error fetching user data:', error);
       } else {
         setName(data.name);
+        setResidence(data.residence)
       }
     }
   }
@@ -89,7 +91,8 @@ export default function CreateEvents() {
         time: eventTime,
         venue: eventVenue,
         desc: description,
-        creator: name
+        creator: name,
+        residence: residence,
       })
       .select()
       .single();

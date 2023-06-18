@@ -161,7 +161,7 @@ export function TheirCard(props) {
       console.error('Error updating event:', error);
     }
   };
-  1
+
 
   return (
     <>
@@ -207,14 +207,19 @@ export function TheirCard(props) {
 
 export default function EventsPage() {
   const [eventsData, setEventsData] = useState([]);
+  const [residence, setResidence] = useState(null);
 
   const { user } = useAuth();
 
   const [userData, setUserData] = useState(null);
 
+  const [followed, setFollowed] = useState([]);
+
   useEffect(() => {
     async function fetchData() {
-      const { data, error } = await supabase.from('events').select('*');
+      const { data, error } = await supabase.from('events').select('*').eq('residence', residence)
+      .in('creator', followed)
+      
       if (error) {
         console.error('Error fetching events:', error);
       } else {
@@ -227,20 +232,21 @@ export default function EventsPage() {
     if (user) {  
       const { data, error } = await supabase
         .from('users')
-        .select('selected_events')
+        .select('*')
         .eq('id', user.id)
         .single();
       if (error) {
         console.error('Error fetching user data:', error);
       } else {
+        setResidence(data.residence)
+        setFollowed(data.followed_accounts)
         setUserData(data);
       }
     }
   }
-
+  fetchUserData();
     fetchData();
-    fetchUserData();
-  }, [user]);
+  }, [user, residence, followed]);
 
   if (!userData) {
     return <Text>Loading account data...</Text>;
