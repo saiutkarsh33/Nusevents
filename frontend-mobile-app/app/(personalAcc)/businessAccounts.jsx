@@ -18,6 +18,19 @@ const styles = StyleSheet.create({
     cardContainer: {
         backgroundColor: "white", // Add this line to set the background color
       },
+
+      Text: {
+        fontWeight: 'bold',
+      fontSize: 18,
+      textAlign: 'center',
+      marginVertical: 10,
+      },
+
+      Button: {
+        marginTop: 16,
+        backgroundColor: 'cyan',
+        alignSelf: 'center',
+      },
   });
 
 
@@ -178,12 +191,12 @@ const styles = StyleSheet.create({
 
 
           <Modal visible={modalEventsVisible} animationType="slide" onRequestClose={handleCloseEventsModal}>
-            <SafeAreaView style={styles.modalContainer}>
+            <SafeAreaView style={styles.modalContainer}> 
             {eventsData.map((event) => (
-        <Text key={event.id}> {event.name} :  {event.desc}</Text>
+        <Text key={event.id} style={styles.Text} > {event.name} :  {event.desc} </Text>
       ))}
 
-                <Button onPress={handleCloseEventsModal}>Back</Button>
+                <Button onPress={handleCloseEventsModal} style={styles.Button} >Back</Button>
             </SafeAreaView>
           </Modal>
 
