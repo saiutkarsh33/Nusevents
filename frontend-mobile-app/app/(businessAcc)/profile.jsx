@@ -21,6 +21,23 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 
+  Button: {
+    marginTop: 16,
+    backgroundColor: 'cyan',
+    alignSelf: 'center',
+  },
+
+  editValuesText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+   
+  Text: {
+    fontWeight: 'bold'
+  },
+
 });
 
 function ProfileCard(props) {
@@ -86,10 +103,13 @@ function ProfileCard(props) {
       <Modal visible={editVisible} animationType="slide" onRequestClose={handleDonePress}>
         <SafeAreaView style={styles.modalContainer} >
           <View>
+          <Text style={styles.editValuesText} > Edit the values accordingly </Text>
+            <Text style={styles.Text} > Name: </Text>
             <TextInput value={name} onChangeText={setName} editable={editMode} />
+            <Text style={styles.Text} > Description: </Text>
             <TextInput value={desc} onChangeText={setDesc} editable={editMode} />
             {editMode && (
-              <Button onPress={handleDonePress}>Done</Button>
+              <Button onPress={handleDonePress} style={styles.Button}  >Done</Button>
             )}
           </View>
         </SafeAreaView>
@@ -208,13 +228,13 @@ export default function ProfileScreen() {
     <SafeAreaView>
       {errMsg !== "" && <Text>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
-      <Button onPress={handleAddProfilePic}> Change Profile Picture </Button>
+      <Button onPress={handleAddProfilePic} style={styles.Button} > Change Profile Picture </Button>
       <Button
-        onPress={() => handleChangePassword(user.email)}
+        onPress={() => handleChangePassword(user.email)} style={styles.Button}
       >
         Change Password
       </Button>
-      <Button onPress={() => supabase.auth.signOut()}> Logout</Button>
+      <Button onPress={() => supabase.auth.signOut()} style={styles.Button} > Logout</Button>
  
       <Button title = "Delete Account" />
 
