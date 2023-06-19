@@ -1,8 +1,29 @@
-import { Calendar } from 'react-native-calendars';
-import { Modal, Button, Text, SafeAreaView } from "react-native";
+import { Calendar } from "react-native-calendars";
+import { Modal, SafeAreaView, StyleSheet } from "react-native";
+import { Button, Text } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/auth";
+
+const styles = StyleSheet.create({
+  Text: {
+    fontWeight: "bold",
+    fontSize: 18,
+    textAlign: "center",
+    marginVertical: 10,
+  },
+
+  Button: {
+    marginTop: 16,
+    backgroundColor: "cyan",
+    alignSelf: "center",
+  },
+  popUpContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+});
 
 export default function EventsCalendar() {
   const [eventsData, setEventsData] = useState([]);
@@ -16,36 +37,34 @@ export default function EventsCalendar() {
   useEffect(() => {
     // Fetch data from Supabase
     async function fetchData() {
+      if (user) {
+        try {
+          const { data, error } = await supabase.from("events").select("*");
+          if (error) {
+            console.error("Error fetching events:", error);
+          } else {
+            setEventsData(data);
+          }
 
-    if (user) {  
-      try {
-        const { data, error } = await supabase.from('events').select('*');
-        if (error) {
-          console.error('Error fetching events:', error);
-        } else {
-          setEventsData(data);
+          const { data: userData, error: userError } = await supabase
+            .from("users")
+            .select("selected_events")
+            .eq("id", user.id)
+            .single();
+
+          if (userError) {
+            console.error("Error fetching account data:", userError);
+          } else {
+            setUserData(userData);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
         }
-
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('selected_events')
-          .eq('id', user.id)
-          .single();
-
-        if (userError) {
-          console.error('Error fetching account data:', userError);
-        } else {
-          setUserData(userData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
       }
     }
-  } 
     fetchData();
-
   }, [user]);
-  
+
   const markedDates = {};
 
   eventsData.forEach((event) => {
@@ -55,11 +74,11 @@ export default function EventsCalendar() {
       if (!markedDates[eventDate]) {
         markedDates[eventDate] = {
           marked: true,
-          dotColor: 'green'
+          dotColor: "green",
         };
       } else {
         // If the date is already marked, update the dotColor to 'green'
-        markedDates[eventDate].dotColor = 'green';
+        markedDates[eventDate].dotColor = "green";
       }
     }
   });
@@ -85,22 +104,22 @@ export default function EventsCalendar() {
 
       try {
         const { data: events, error } = await supabase
-          .from('events')
-          .select('*')
-          .eq('date', selectedDate);
+          .from("events")
+          .select("*")
+          .eq("date", selectedDate);
 
         if (error) {
-          console.error('Error fetching events:', error);
+          console.error("Error fetching events:", error);
           return [];
         }
 
-        const filteredEvents = events.filter((event) =>
-          userData && userData.selected_events.includes(event.name)
+        const filteredEvents = events.filter(
+          (event) => userData && userData.selected_events.includes(event.name)
         );
 
         return filteredEvents;
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
         return [];
       }
     };
@@ -108,10 +127,10 @@ export default function EventsCalendar() {
     async function fetchEventsForSelectedDate() {
       try {
         const events = await getEventsForDate(selectedDate);
-        console.log('Events for selected date:', events);
+        console.log("Events for selected date:", events);
         setEventsForSelectedDate(events);
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
         // Handle the error if needed
       }
     }
@@ -134,12 +153,20 @@ export default function EventsCalendar() {
       <SafeAreaView style={{ flex: 1 }}>
         {eventsForSelectedDate.length > 0 && (
           <Modal visible={isPopupVisible} animationType="slide">
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={styles.popUpContainer}>
               {/* Render the events data in the popup */}
               {eventsForSelectedDate.map((event, index) => (
-                <Text key={index}> {event.name} at {event.time} by {event.creator}</Text>
+                <Text key={index}>
+                  {" "}
+                  {event.name} at {event.time} by {event.creator}
+                </Text>
               ))}
-              <Button title="Close" onPress={() => setIsPopupVisible(false)} />
+              <Button
+                onPress={() => setIsPopupVisible(false)}
+                style={styles.Button}
+              >
+                Close
+              </Button>
             </SafeAreaView>
           </Modal>
         )}
@@ -155,10 +182,9 @@ export default function EventsCalendar() {
   );
 }
 
-
-  //const handleDayPress = (day) => {
-  //  const selectedDate = day.dateString;
-  //  const selectedEvents = events.filter((event) => event.date === selectedDate);
-  //  console.log('Selected events:', selectedEvents);
-    // For now I'm just console.logging the dates
- // };
+//const handleDayPress = (day) => {
+//  const selectedDate = day.dateString;
+//  const selectedEvents = events.filter((event) => event.date === selectedDate);
+//  console.log('Selected events:', selectedEvents);
+// For now I'm just console.logging the dates
+// };

@@ -4,7 +4,6 @@ import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
-import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
 const styles = StyleSheet.create({
@@ -19,15 +18,21 @@ const styles = StyleSheet.create({
 
   button: {
     marginTop: 16,
-    backgroundColor: 'cyan',
-    alignSelf: 'center',
+    backgroundColor: "cyan",
+    alignSelf: "center",
   },
 
   successText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: "center",
     marginVertical: 10,
+  },
+  Image: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    margin: 5,
   },
 });
 
@@ -43,7 +48,6 @@ function EventForm({ onEventCreate, onResetForm }) {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const { user } = useAuth();
-  const router = useRouter();
 
   const resetForm = () => {
     setEventName("");
@@ -54,8 +58,8 @@ function EventForm({ onEventCreate, onResetForm }) {
     setImage(null);
     setErrMsg("");
     setLoading(false);
-    console.log("resetForm is reached")
-    console.log("this is the event DAT")
+    console.log("resetForm is reached");
+    console.log("this is the event DAT");
   };
 
   const handleAddImage = async () => {
@@ -66,7 +70,6 @@ function EventForm({ onEventCreate, onResetForm }) {
       setImage(result.assets[0].uri);
     }
   };
-
 
   const handleCreate = async () => {
     setErrMsg("");
@@ -103,17 +106,17 @@ function EventForm({ onEventCreate, onResetForm }) {
         .select("*")
         .eq("id", user.id)
         .single();
-  
+
       if (error) {
         setLoading(false);
         console.log(error);
         setErrMsg(error.message);
         return;
       }
-  
+
       setCreator(data.name);
       setResidence(data.residence);
-  
+
       const { error: insertError } = await supabase
         .from("events")
         .insert({
@@ -124,23 +127,23 @@ function EventForm({ onEventCreate, onResetForm }) {
           time: eventTime,
           venue: eventVenue,
           description: description,
-          creator: data.name,
-          residence: data.residence,
+          creator: creator,
+          residence: residence,
         })
         .single();
-  
+
       if (insertError) {
         setLoading(false);
         console.log(insertError);
         setErrMsg(insertError.message);
         return;
       }
-  
+
       setLoading(false);
       onEventCreate();
-      console.log(eventVenue)
+      console.log(eventVenue);
       resetForm();
-      console.log(eventVenue)
+      console.log(eventVenue);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -151,9 +154,17 @@ function EventForm({ onEventCreate, onResetForm }) {
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
       <Text style={styles.Text}>Name of Event</Text>
-      <TextInput value={eventName} onChangeText={setEventName} mode="outlined" />
+      <TextInput
+        value={eventName}
+        onChangeText={setEventName}
+        mode="outlined"
+      />
       <Text style={styles.Text}>Venue</Text>
-      <TextInput value={eventVenue} onChangeText={setEventVenue} mode="outlined" />
+      <TextInput
+        value={eventVenue}
+        onChangeText={setEventVenue}
+        mode="outlined"
+      />
       <Text style={styles.Text}>Date (in YYYY-MM-DD) </Text>
       <TextInput
         value={eventDate}
@@ -162,7 +173,11 @@ function EventForm({ onEventCreate, onResetForm }) {
         placeholder="YYYY-DD-MM"
       />
       <Text style={styles.Text}>Time</Text>
-      <TextInput value={eventTime} onChangeText={setEventTime} mode="outlined" />
+      <TextInput
+        value={eventTime}
+        onChangeText={setEventTime}
+        mode="outlined"
+      />
       <Text style={styles.Text}>Description</Text>
       <TextInput
         value={description}
@@ -173,7 +188,7 @@ function EventForm({ onEventCreate, onResetForm }) {
       <Button onPress={handleAddImage} style={styles.button}>
         Add Image
       </Button>
-      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      {image && <Image source={{ uri: image }} style={styles.Image} />}
       <Button onPress={handleCreate} style={styles.button}>
         Create
       </Button>
@@ -183,7 +198,7 @@ function EventForm({ onEventCreate, onResetForm }) {
 }
 
 export default function CreateEvents() {
-  const [eventCreated, setEventCreated] = useState(false)
+  const [eventCreated, setEventCreated] = useState(false);
 
   const handleEventCreate = () => {
     setEventCreated(true);
@@ -192,21 +207,23 @@ export default function CreateEvents() {
   const handleCreateAnotherEvent = () => {
     setEventCreated(false);
   };
-  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {!eventCreated && <EventForm onEventCreate={handleEventCreate} 
-     // onResetForm={handleCreateAnotherEvent}
-      />}
-      {eventCreated && 
-      <SafeAreaView>
-      <Text style={styles.successText}>Event created successfully!</Text>
-      <Button onPress={handleCreateAnotherEvent} style={styles.button} >Create Another Event</Button>
-      </SafeAreaView>
-      }
+      {!eventCreated && (
+        <EventForm
+          onEventCreate={handleEventCreate}
+          // onResetForm={handleCreateAnotherEvent}
+        />
+      )}
+      {eventCreated && (
+        <SafeAreaView>
+          <Text style={styles.successText}>Event created successfully!</Text>
+          <Button onPress={handleCreateAnotherEvent} style={styles.button}>
+            Create Another Event
+          </Button>
+        </SafeAreaView>
+      )}
     </SafeAreaView>
-
   );
 }
-

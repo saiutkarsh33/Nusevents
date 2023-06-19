@@ -1,8 +1,15 @@
-import { View, Alert, TouchableOpacity, Modal, StyleSheet, TextInput, } from "react-native";
+import {
+  View,
+  Alert,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  Image,
+} from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
-import {  Button, Card, Text } from "react-native-paper";
+import { Button, Card, Text, TextInput } from "react-native-paper";
 
 import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
@@ -15,29 +22,42 @@ const styles = StyleSheet.create({
 
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 16,
   },
 
   Button: {
     marginTop: 16,
-    backgroundColor: 'cyan',
-    alignSelf: 'center',
+    backgroundColor: "cyan",
+    alignSelf: "center",
+  },
+
+  changePfpButton: {
+    margin: 16,
+    backgroundColor: "white",
+    alignSelf: "center",
   },
 
   editValuesText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: "center",
     marginVertical: 10,
   },
-   
+
   Text: {
-    fontWeight: 'bold'
+    fontWeight: "bold",
+    marginVertical: 10,
   },
 
+  Image: {
+    alignSelf: "center",
+    width: 200,
+    height: 200,
+    margin: 10,
+  },
 });
 
 function ProfileCard(props) {
@@ -45,8 +65,10 @@ function ProfileCard(props) {
   const [editMode, setEditMode] = useState(false);
   const [name, setName] = useState(props.name);
   const [description, setDescription] = useState(props.description);
+  const [image, setImage] = useState(null);
+  const [errMsg, setErrMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-
 
   const handleEditPress = () => {
     setEditMode(true);
@@ -54,48 +76,71 @@ function ProfileCard(props) {
   };
 
   const handleDonePress = async () => {
+    if (user) {
+      setLoading(true);
+      let uploadedImage = null;
+      if (image) {
+        const { data, error } = await supabase.storage
+          .from("profile_pic")
+          .upload(`${new Date().getTime()}`, {
+            uri: image,
+            type: "jpg",
+            name: "name.jpg",
+          });
 
-   if (user) { 
-    try {
+        if (error) {
+          console.log(error);
+          setErrMsg(error.message);
+          setLoading(false);
+          return;
+        }
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("profile_pic").getPublicUrl(data.path);
+        uploadedImage = publicUrl;
+      }
       // Perform the update in the Supabase table
       const { error } = await supabase
-        .from('users')
+        .from("users")
         .update({
           name: name,
           description: description,
+          profile_pic_url: uploadedImage,
         })
-        .eq('id', user.id);
+        .eq("id", user.id);
 
       if (error) {
-        console.error('Error updating account:', error);
+        console.error("Error updating account:", error);
       } else {
-        console.log('Account updated successfully');
+        console.log("Account updated successfully");
         setEditMode(false);
         setEditVisible(false);
         const { error2 } = await supabase
-         .from('events')
-         .update({
-          creator: name
-         })
-         .eq("user_id", user.id)
-      } 
+          .from("events")
+          .update({
+            creator: name,
+          })
+          .eq("user_id", user.id);
+      }
 
-    } catch (error) {
-      console.error('Error updating event:', error);
+      setLoading(false);
     }
-  }
-
-    
   };
-
+  const handleAddProfilePic = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      console.log("result successful");
+    }
+  };
 
   return (
     <>
-      <Card style={styles.cardContainer} >
+      <Card style={styles.cardContainer}>
         <Card.Content>
-          <Text variant="titleLarge">
-            {props.name} 
-          </Text>
+          <Text variant="titleLarge">{props.name}</Text>
         </Card.Content>
         <TouchableOpacity>
           <Card.Cover source={{ uri: props.profile_pic_url }} />
@@ -103,114 +148,89 @@ function ProfileCard(props) {
 
         <TouchableOpacity>
           <Card.Actions>
-            <Button onPress={handleEditPress} mode = { "outlined"} >Edit</Button>
-        
+            <Button onPress={handleEditPress} mode={"outlined"}>
+              Edit
+            </Button>
           </Card.Actions>
         </TouchableOpacity>
       </Card>
 
-      <Modal visible={editVisible} animationType="slide" onRequestClose={handleDonePress}>
-        <SafeAreaView style={styles.modalContainer} >
+      <Modal
+        visible={editVisible}
+        animationType="slide"
+        onRequestClose={handleDonePress}
+      >
+        <SafeAreaView style={styles.modalContainer}>
           <View>
-          <Text style={styles.editValuesText} > Edit the values accordingly </Text>
-            <Text style={styles.Text} >Name: </Text>
-            <TextInput value={name} onChangeText={setName} editable={editMode} />
-            <Text style={styles.Text} >Description: </Text>
-            <TextInput value={description} onChangeText={setDescription} editable={editMode} />
+            {loading && <ActivityIndicator />}
+            <Text style={styles.editValuesText}>
+              {" "}
+              Edit the values accordingly{" "}
+            </Text>
+            {errMsg !== "" && <Text>{errMsg}</Text>}
+            <Button
+              onPress={handleAddProfilePic}
+              style={styles.changePfpButton}
+              mode="outlined"
+            >
+              {" "}
+              Change Profile Picture{" "}
+            </Button>
+            {image && <Image source={{ uri: image }} style={styles.Image} />}
+            <Text style={styles.Text}>Name: </Text>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              editable={editMode}
+              mode="outlined"
+            />
+            <Text style={styles.Text}>Description: </Text>
+            <TextInput
+              value={description}
+              onChangeText={setDescription}
+              editable={editMode}
+              mode="outlined"
+            />
             {editMode && (
-              <Button onPress={handleDonePress} style={styles.Button}  >Done</Button>
+              <Button onPress={handleDonePress} style={styles.Button}>
+                Done
+              </Button>
             )}
           </View>
         </SafeAreaView>
       </Modal>
-
     </>
   );
 }
 
-
-
-
-
-
 export default function ProfileScreen() {
   const { user } = useAuth();
-  const [image, setImage] = useState(null);
-  const [errMsg, setErrMsg] = useState("");
-  const [loading, setLoading] = useState(false);
+
   const [myData, setMyData] = useState([]);
 
   useEffect(() => {
-
-    if (user) { 
-      
+    if (user) {
       const fetchData = async () => {
-          try {
-               const { data, error } = await supabase
-               .from('users')
-               .select("*")
-               .eq('id', user.id)
-              
-  
-            if (error) {
-              console.error('Error fetching account:', error);
-            } else {
-              console.log(data)
-              setMyData(data);
-            }
-          } catch (error) {
-            console.error('Error fetching account:', error);
+        try {
+          const { data, error } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", user.id);
+
+          if (error) {
+            console.error("Error fetching account:", error);
+          } else {
+            console.log(data);
+            setMyData(data);
           }
-        };
+        } catch (error) {
+          console.error("Error fetching account:", error);
+        }
+      };
 
-        fetchData(); 
-      }
-    }, [user]);
-
-  const handleAddProfilePic = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      fetchData();
     }
-    setLoading(true);
-    let uploadedImage = null;
-    if (image) {
-      const { data, error } = await supabase.storage
-        .from("profile_pic")
-        .upload(`${new Date().getTime()}`, {
-          uri: image,
-          type: "jpg",
-          name: "name.jpg",
-        });
-
-      if (error) {
-        console.log(error);
-        setErrMsg(error.message);
-        setLoading(false);
-        return;
-      }
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("profile_pic").getPublicUrl(data.path);
-      uploadedImage = publicUrl;
-    }
-    const { error } = await supabase
-      .from("users")
-      .update({ profile_pic_url: uploadedImage })
-      .eq("id", user.id)
-      .select()
-      .single();
-
-    if (error) {
-      setLoading(false);
-      console.log(error);
-      setErrMsg(error.message);
-      return;
-    }
-    setLoading(false);
-  };
+  }, [user]);
 
   const handleChangePassword = async (email) => {
     try {
@@ -235,28 +255,28 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView>
-      {errMsg !== "" && <Text>{errMsg}</Text>}
-      {loading && <ActivityIndicator />}
-      <Button onPress={handleAddProfilePic} style={styles.Button} > Change Profile Picture </Button>
       <Button
-        onPress={() => handleChangePassword(user.email)} style={styles.Button}
+        onPress={() => handleChangePassword(user.email)}
+        style={styles.Button}
       >
         Change Password
       </Button>
-      <Button onPress={() => supabase.auth.signOut()} style={styles.Button} > Logout</Button>
- 
-      <Button title = "Delete Account" />
+      <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
+        {" "}
+        Logout
+      </Button>
+
+      <Button title="Delete Account" />
 
       {myData.map((card) => (
-            <ProfileCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              profile_pic_url={card.profile_pic_url}
-              description={card.description}
-            />
-          ))}
-
+        <ProfileCard
+          key={card.id}
+          id={card.id}
+          name={card.name}
+          profile_pic_url={card.profile_pic_url}
+          description={card.description}
+        />
+      ))}
     </SafeAreaView>
   );
 }
