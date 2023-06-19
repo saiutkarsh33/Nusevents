@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
             description: desc,
             image_url: image_url,
           })
-          .eq('user_id', user.id);
+          .eq('id', props.id);
   
         if (error) {
           console.error('Error updating event:', error);
