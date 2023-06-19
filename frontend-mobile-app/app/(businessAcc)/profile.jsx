@@ -72,11 +72,20 @@ function ProfileCard(props) {
         console.log('Account updated successfully');
         setEditMode(false);
         setEditVisible(false);
-      }
+        const { error2 } = await supabase
+         .from('events')
+         .update({
+          creator: name
+         })
+         .eq("user_id", user.id)
+      } 
+
     } catch (error) {
       console.error('Error updating event:', error);
     }
   }
+
+    
   };
 
 

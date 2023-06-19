@@ -17,6 +17,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white", // Add this line to set the background color
   },
 
+  noEventsText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+
 });
 
 export function TheirCard(props) {
@@ -273,7 +280,7 @@ export default function EventsPage() {
             />
           ))
         ) : (
-          <Text>No events found.</Text>
+          <Text style={styles.noEventsText}>No events found.</Text>
         )}
       </ScrollView>
     </SafeAreaView>
