@@ -239,7 +239,7 @@ export default function EventsPage() {
         console.error('Error fetching user data:', error);
       } else {
         setResidence(data.residence)
-        setFollowed(data.followed_accounts)
+        setFollowed(data.following)
         setUserData(data);
       }
     }
@@ -258,19 +258,23 @@ export default function EventsPage() {
   return (
     <SafeAreaView>
       <ScrollView>
-        {sortedEventsData.map((card) => (
-          <TheirCard
-            key={card.id}
-            id={card.id}
-            name={card.name}
-            date={card.date}
-            time={card.time}
-            venue={card.venue}
-            image_url={card.image_url}
-            desc={card.desc}
-            selected={userData.selected_events?.includes(card.name) ?? false}
-          />
-        ))}
+        {sortedEventsData.length > 0 ? (
+          sortedEventsData.map((card) => (
+            <TheirCard
+              key={card.id}
+              id={card.id}
+              name={card.name}
+              date={card.date}
+              time={card.time}
+              venue={card.venue}
+              image_url={card.image_url}
+              desc={card.description}
+              selected={userData.selected_events?.includes(card.name) ?? false}
+            />
+          ))
+        ) : (
+          <Text>No events found.</Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

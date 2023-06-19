@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
             venue: venue,
             date: date,
             time: time,
-            desc: desc,
+            description: desc,
             image_url: image_url,
           })
           .eq('user_id', user.id);
@@ -241,9 +241,8 @@ const styles = StyleSheet.create({
               time={card.time}
               venue={card.venue}
               selected={card.selected}
-              important={card.important}
               image_url={card.image_url}
-              desc={card.desc}
+              desc={card.description}
               signups={card.signups}
             />
           ))}

@@ -44,7 +44,7 @@ function ProfileCard(props) {
   const [editVisible, setEditVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [name, setName] = useState(props.name);
-  const [desc, setDesc] = useState(props.desc);
+  const [description, setDescription] = useState(props.description);
   const { user } = useAuth();
 
 
@@ -62,7 +62,7 @@ function ProfileCard(props) {
         .from('users')
         .update({
           name: name,
-          desc: desc,
+          description: description,
         })
         .eq('id', user.id);
 
@@ -104,10 +104,10 @@ function ProfileCard(props) {
         <SafeAreaView style={styles.modalContainer} >
           <View>
           <Text style={styles.editValuesText} > Edit the values accordingly </Text>
-            <Text style={styles.Text} > Name: </Text>
+            <Text style={styles.Text} >Name: </Text>
             <TextInput value={name} onChangeText={setName} editable={editMode} />
-            <Text style={styles.Text} > Description: </Text>
-            <TextInput value={desc} onChangeText={setDesc} editable={editMode} />
+            <Text style={styles.Text} >Description: </Text>
+            <TextInput value={description} onChangeText={setDescription} editable={editMode} />
             {editMode && (
               <Button onPress={handleDonePress} style={styles.Button}  >Done</Button>
             )}
@@ -244,7 +244,7 @@ export default function ProfileScreen() {
               id={card.id}
               name={card.name}
               profile_pic_url={card.profile_pic_url}
-              desc={card.desc}
+              description={card.description}
             />
           ))}
 

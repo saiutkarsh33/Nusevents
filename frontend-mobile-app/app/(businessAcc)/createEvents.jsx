@@ -105,7 +105,7 @@ export default function CreateEvents() {
         date: eventDate,
         time: eventTime,
         venue: eventVenue,
-        desc: description,
+        description: description,
         creator: name,
         residence: residence,
       })

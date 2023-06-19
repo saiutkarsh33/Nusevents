@@ -11,7 +11,7 @@ export default function Register() {
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-
+  const [description, setDescription] = useState("");
   const [accountTypeOpen, setAccountTypeOpen] = useState(false);
   const [accountTypeValue, setAccountTypeValue] = useState(null);
   const [accountType, setAccountType] = useState([
@@ -68,6 +68,7 @@ export default function Register() {
           name: userName,
           account_type: accountTypeValue,
           residence: residenceValue,
+          description: description,
         },
       },
     });
@@ -131,6 +132,15 @@ export default function Register() {
         onChangeText={setPassword}
         mode="outlined"
         placeholder="Password"
+        style={styles.details}
+      />
+
+      <TextInput
+        autoCapitalize="none"
+        value={description}
+        onChangeText={setDescription}
+        mode="outlined"
+        placeholder="Description"
         style={styles.details}
       />
       <Button onPress={handleSubmit}>Submit</Button>

@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         }
   
   
-        const followed = userData.followed_accounts 
+        const followed = userData.following
   
         let updatedFollowed;
   
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
         const { data: updatedAccountData, error: updateAccountError } = await supabase
         .from('users')
         .update({
-          followed_accounts: updatedFollowed,
+          following: updatedFollowed,
         })
         .eq('id', user.id)
         .select();
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
           <Modal visible={modalEventsVisible} animationType="slide" onRequestClose={handleCloseEventsModal}>
             <SafeAreaView style={styles.modalContainer}> 
             {eventsData.map((event) => (
-        <Text key={event.id} style={styles.Text} > {event.name} :  {event.desc} </Text>
+        <Text key={event.id} style={styles.Text} > {event.name} :  {event.description} </Text>
       ))}
 
                 <Button onPress={handleCloseEventsModal} style={styles.Button} >Back</Button>
@@ -208,44 +208,42 @@ const styles = StyleSheet.create({
       const [usersData, setUsersData] = useState([]);
       const [myData, setMyData] = useState(null);
       const { user } = useAuth();
-      const[residence, setResidence] = useState(null);
       useEffect(() => {
-  
-        async function fetchUserData() {
-    
-        if (user) {  
-          const { data, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', user.id)
-            .single();
-          if (error) {
-            console.error('Error fetching user data:', error);
-          } else {
-            setResidence(data.residence)
-            setMyData(data);
+        async function fetchData() {
+          if (user) {
+            const { data: myData, error: userDataError } = await supabase
+              .from('users')
+              .select('*')
+              .eq('id', user.id)
+              .single();
+      
+            if (userDataError) {
+              console.error('Error fetching user data:', userDataError);
+            } else {
+              console.log('Fetched my accs:', myData);
+              setMyData(myData);
+      
+              const { data: businessAccountsData, error: businessAccountsError } = await supabase
+                .from('users')
+                .select('*')
+                .eq("account_type", "Business")
+                .eq("residence", myData.residence)
+                
+      
+              if (businessAccountsError) {
+                console.error('Error fetching Business Accounts:', businessAccountsError);
+              } else {
+                console.log('Fetched Biz accs:', businessAccountsData);
+                setUsersData(businessAccountsData);
+              }
+            }
           }
         }
-      }
-        fetchUserData();
+      
+        fetchData();
       }, [user]);
 
-      console.log("this is myyydata" , myData)
-      useEffect(() => { 
-        async function fetchUsersData() {
-          const { data, error } = await supabase.from('users').select('*').eq("account_type", "Business")
-          .eq("residence", residence)
-          if (error) {
-            console.error('Error fetching Business Accounts :', error);
-          } else {
-            setUsersData(data);
-          }
-        }   
-            fetchUsersData();
-            
-      }, [user, residence]);
-
-        console.log(usersData)
+        console.log("this is biz acc" , usersData)
         console.log("middle")
     
       const sortedUsersData = usersData.sort((a, b) => {
@@ -262,6 +260,7 @@ const styles = StyleSheet.create({
       });
     
       console.log("this is myData" , myData)
+
       return (
         <SafeAreaView>
           <ScrollView>
@@ -272,8 +271,8 @@ const styles = StyleSheet.create({
                 id={card.id}
                 name={card.name}
                 profile_pic_url={card.profile_pic_url}
-                desc={card.desc}
-                followed={myData.followed_accounts?.includes(card.name) ?? false}
+                description ={card.description}
+                followed={myData.following?.includes(card.name) ?? false}
                 // so issue is that userData is null rn. userData should be my data, auth id.
               />
             ))}
