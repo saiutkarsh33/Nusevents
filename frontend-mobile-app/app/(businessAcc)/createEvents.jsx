@@ -16,9 +16,22 @@ const styles = StyleSheet.create({
   Text: {
     fontWeight: "bold",
   },
+
+  button: {
+    marginTop: 16,
+    backgroundColor: 'cyan',
+    alignSelf: 'center',
+  },
+
+  successText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
 });
 
-function EventForm({ onEventCreate }) {
+function EventForm({ onEventCreate, onResetForm }) {
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -32,6 +45,19 @@ function EventForm({ onEventCreate }) {
   const { user } = useAuth();
   const router = useRouter();
 
+  const resetForm = () => {
+    setEventName("");
+    setEventVenue("");
+    setEventDate("");
+    setEventTime("");
+    setDescription("");
+    setImage(null);
+    setErrMsg("");
+    setLoading(false);
+    console.log("resetForm is reached")
+    console.log("this is the event DAT")
+  };
+
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -40,6 +66,7 @@ function EventForm({ onEventCreate }) {
       setImage(result.assets[0].uri);
     }
   };
+
 
   const handleCreate = async () => {
     setErrMsg("");
@@ -111,7 +138,9 @@ function EventForm({ onEventCreate }) {
   
       setLoading(false);
       onEventCreate();
-      router.push("/");
+      console.log(eventVenue)
+      resetForm();
+      console.log(eventVenue)
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -141,11 +170,11 @@ function EventForm({ onEventCreate }) {
         mode="outlined"
       />
       {errMsg !== "" && <Text>{errMsg}</Text>}
-      <Button onPress={handleAddImage} style={styles.Button}>
+      <Button onPress={handleAddImage} style={styles.button}>
         Add Image
       </Button>
       {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-      <Button onPress={handleCreate} style={styles.Button}>
+      <Button onPress={handleCreate} style={styles.button}>
         Create
       </Button>
       {loading && <ActivityIndicator />}
@@ -154,7 +183,7 @@ function EventForm({ onEventCreate }) {
 }
 
 export default function CreateEvents() {
-  const [eventCreated, setEventCreated] = useState(false);
+  const [eventCreated, setEventCreated] = useState(false)
 
   const handleEventCreate = () => {
     setEventCreated(true);
@@ -163,14 +192,17 @@ export default function CreateEvents() {
   const handleCreateAnotherEvent = () => {
     setEventCreated(false);
   };
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {!eventCreated && <EventForm onEventCreate={handleEventCreate} />}
+      {!eventCreated && <EventForm onEventCreate={handleEventCreate} 
+     // onResetForm={handleCreateAnotherEvent}
+      />}
       {eventCreated && 
       <SafeAreaView>
-      <Text>Event created successfully!</Text>
-      <Button onPress={handleCreateAnotherEvent}>Create Another Event</Button>
+      <Text style={styles.successText}>Event created successfully!</Text>
+      <Button onPress={handleCreateAnotherEvent} style={styles.button} >Create Another Event</Button>
       </SafeAreaView>
       }
     </SafeAreaView>

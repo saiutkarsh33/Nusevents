@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, TextInput } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, TextInput, Alert  } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {  Button, Card, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
             console.error('Error deleting event:', error);
           } else {
             console.log('Event deleted successfully');
+            Alert.alert("Success", "Event deleted successfully");
             // You can update the local state or perform any other necessary actions after deletion
           }
         } catch (error) {
@@ -197,6 +198,7 @@ const styles = StyleSheet.create({
   }
 
   export default function MyEvents() {
+    const [refreshing, setRefreshing] = useState(false);
     const [eventsData, setEventsData] = useState([]);
     
     const { user } = useAuth();

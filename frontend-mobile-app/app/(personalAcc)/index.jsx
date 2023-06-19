@@ -24,6 +24,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 
+  middleText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  
+  closeButton: {
+    marginTop: 16,
+    backgroundColor: 'cyan',
+    alignSelf: 'center',
+  }, 
 });
 
 export function TheirCard(props) {
@@ -203,8 +215,8 @@ export function TheirCard(props) {
       <Modal visible={modalVisible} animationType="slide" onRequestClose={handleCloseModal}>
         <SafeAreaView style={styles.modalContainer}>
           <View>
-            <Text>{props.desc}</Text>
-            <Button onPress={handleCloseModal}>Close</Button>
+            <Text style = {styles.middleText}>{props.desc}</Text>
+            <Button onPress={handleCloseModal} style = {styles.closeButton}>Close</Button>
           </View>
         </SafeAreaView>
       </Modal>
