@@ -39,36 +39,36 @@ export default function Register() {
   ]);
 
   const handleSubmit = async () => {
-    if (email == "") {
-      setErrMsg("email cannot be empty");
+    if (email === "") {
+      setErrMsg("Email cannot be empty");
       return;
     }
-    if (password == "") {
-      setErrMsg("password cannot be empty");
+    if (password === "") {
+      setErrMsg("Password cannot be empty");
       return;
     }
-    if (userName == "") {
-      setErrMsg("name cannot be empty");
+    if (userName === "") {
+      setErrMsg("Name cannot be empty");
       return;
     }
     if (!accountTypeValue) {
-      setErrMsg("account type cannot be empty");
+      setErrMsg("Account type cannot be empty");
       return;
     }
     if (!residenceValue) {
-      setErrMsg("name of residence cannot be empty");
+      setErrMsg("Name of residence cannot be empty");
       return;
     }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
+      email,
+      password,
       options: {
         data: {
           name: userName,
           account_type: accountTypeValue,
           residence: residenceValue,
-          description: description,
+          description,
         },
       },
     });
@@ -80,16 +80,16 @@ export default function Register() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.welcome}>Welcome!</Text>
-      <Text>Please fill in your details to create your account</Text>
+      <Text style={styles.details}>Please fill in your details to create your account</Text>
       <TextInput
         autoCapitalize="none"
         value={userName}
         onChangeText={setUserName}
         mode="outlined"
         placeholder="Name"
-        style={styles.details}
+        style={styles.input}
       />
       <DropDownPicker
         open={accountTypeOpen}
@@ -101,7 +101,8 @@ export default function Register() {
         placeholder="Select Account Type"
         zIndex={3000}
         zIndexInverse={1000}
-        style={styles.details}
+        style={styles.input}
+        textStyle={styles.dropDownText}
       />
       <DropDownPicker
         open={residenceOpen}
@@ -113,7 +114,8 @@ export default function Register() {
         placeholder="Select Name of Residence"
         zIndex={1000}
         zIndexInverse={3000}
-        style={styles.details}
+        style={styles.input}
+        textStyle={styles.dropDownText}
       />
       <TextInput
         autoCapitalize="none"
@@ -122,7 +124,7 @@ export default function Register() {
         onChangeText={setEmail}
         mode="outlined"
         placeholder="Email"
-        style={styles.details}
+        style={styles.input}
       />
       <TextInput
         secureTextEntry
@@ -132,7 +134,7 @@ export default function Register() {
         onChangeText={setPassword}
         mode="outlined"
         placeholder="Password"
-        style={styles.details}
+        style={styles.input}
       />
 
       <TextInput
@@ -141,22 +143,63 @@ export default function Register() {
         onChangeText={setDescription}
         mode="outlined"
         placeholder="Description"
-        style={styles.details}
+        style={styles.input}
       />
-      <Button onPress={handleSubmit}>Submit</Button>
-      {errMsg !== "" && <Text>{errMsg}</Text>}
+      <Button
+        onPress={handleSubmit}
+        mode="contained"
+        color="cyan"
+        style={styles.button}
+        labelStyle={styles.buttonLabel}
+      >
+        Submit
+      </Button>
+      {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
   welcome: {
     fontSize: 40,
     fontWeight: "bold",
+    textAlign: "center",
     paddingBottom: 20,
   },
   details: {
-    marginVertical: 10,
+    fontSize: 16,
+    textAlign: "center",
+    paddingBottom: 20,
+  },
+  input: {
+    marginBottom: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  dropDownText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  button: {
+    marginTop: 16,
+    backgroundColor: "cyan",
+    alignSelf: "center",
+  },
+  buttonLabel: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  error: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
   },
 });
+

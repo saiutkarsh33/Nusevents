@@ -13,12 +13,12 @@ export default function LoginPage() {
 
   const handleSubmit = async () => {
     setErrMsg("");
-    if (email == "") {
-      setErrMsg("email cannot be empty");
+    if (email === "") {
+      setErrMsg("Email cannot be empty");
       return;
     }
-    if (password == "") {
-      setErrMsg("password cannot be empty");
+    if (password === "") {
+      setErrMsg("Password cannot be empty");
       return;
     }
     setLoading(true);
@@ -32,26 +32,26 @@ export default function LoginPage() {
       return;
     }
   };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <Image
           source={require("frontend-mobile-app/assets/NUSevents-icon.jpg")}
           style={styles.image}
         />
         <Text style={styles.welcome}>Welcome Back!</Text>
-        <Text style={styles.details}>
-          Please fill your details to access your account
-        </Text>
-        <Text>Email</Text>
+        <Text style={[styles.details, styles.text]}>Please fill in your details to access your account</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           autoCapitalize="none"
           textContentType="emailAddress"
           value={email}
           onChangeText={setEmail}
           mode="outlined"
+          style={styles.input}
         />
-        <Text>Password</Text>
+        <Text style={styles.label}>Password</Text>
         <TextInput
           secureTextEntry
           autoCapitalize="none"
@@ -59,12 +59,17 @@ export default function LoginPage() {
           value={password}
           onChangeText={setPassword}
           mode="outlined"
+          style={styles.input}
         />
-        <Button onPress={handleSubmit}>Submit</Button>
-        {errMsg !== "" && <Text>{errMsg}</Text>}
+        <Button onPress={handleSubmit} mode="contained" style={styles.button}>
+          Submit
+        </Button>
+        {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
         {loading && <ActivityIndicator />}
         <Link href="/register">
-          <Button>Go to register</Button>
+          <Button mode="contained" style={styles.registerButton} >
+            Go to Register
+          </Button>
         </Link>
       </ScrollView>
     </SafeAreaView>
@@ -72,6 +77,15 @@ export default function LoginPage() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
   image: {
     marginTop: 50,
     marginBottom: 50,
@@ -79,11 +93,38 @@ const styles = StyleSheet.create({
     height: 100,
   },
   welcome: {
-    paddingBottom: 10,
     fontSize: 40,
     fontWeight: "bold",
+    textAlign: "center",
+    paddingBottom: 10,
   },
   details: {
+    textAlign: "center",
     paddingBottom: 60,
+    fontSize: 18,
   },
+  text: {
+    fontSize: 18,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingTop: 10,
+  },
+  input: {
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingVertical: 8,
+  },
+  button: {
+    marginTop: 16,
+    backgroundColor: "cyan",
+    alignSelf: "center",
+  },
+  error: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
+  },
+  
 });

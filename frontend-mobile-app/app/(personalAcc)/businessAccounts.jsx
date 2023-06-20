@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     export default function BusinessAccounts() {
       const [usersData, setUsersData] = useState([]);
       const [myData, setMyData] = useState(null);
+      const [refresh, setRefresh] = useState(false)
       const { user } = useAuth();
       useEffect(() => {
         async function fetchData() {
