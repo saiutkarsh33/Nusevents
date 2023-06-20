@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, FlatList } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { Button, Card, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -183,11 +183,11 @@ const styles = StyleSheet.create({
           <Modal visible={modalDescVisible} animationType="slide" onRequestClose={handleCloseDescModal}>
             <SafeAreaView style={styles.modalContainer}>
               <View>
-                <Text>{props.desc}</Text>
-                <Button onPress={handleCloseDescModal}>Close</Button>
+                <Text style={styles.Text} >{props.description}</Text>
+                <Button onPress={handleCloseDescModal} style={styles.Button}>Close</Button>
               </View>
             </SafeAreaView>
-          </Modal>
+          </Modal> 
 
 
           <Modal visible={modalEventsVisible} animationType="slide" onRequestClose={handleCloseEventsModal}>

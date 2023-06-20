@@ -184,7 +184,7 @@ function ProfileCard(props) {
               editable={editMode}
               mode="outlined"
             />
-            <Text style={styles.Text}>Description: </Text>
+            <Text style={styles.Text}> Bio: </Text>
             <TextInput
               value={description}
               onChangeText={setDescription}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Image, StyleSheet } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,18 +36,18 @@ const styles = StyleSheet.create({
   },
 });
 
-function EventForm({ onEventCreate, onResetForm }) {
+
+function EventForm({ onEventCreate }) {
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
-  const [description, setDescription] = useState("");
-  const [creator, setCreator] = useState("");
-  const [residence, setResidence] = useState("");
+  const [description, setDescription] = useState("")
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const { user } = useAuth();
+
 
   const resetForm = () => {
     setEventName("");
@@ -114,8 +114,12 @@ function EventForm({ onEventCreate, onResetForm }) {
         return;
       }
 
-      setCreator(data.name);
-      setResidence(data.residence);
+      console.log("THIS MY residence" , data.residence, "this is my creator", data.name)
+
+      const creatorName = data.name;
+      const residenceName = data.residence;
+
+      
 
       const { error: insertError } = await supabase
         .from("events")
@@ -127,8 +131,9 @@ function EventForm({ onEventCreate, onResetForm }) {
           time: eventTime,
           venue: eventVenue,
           description: description,
-          creator: creator,
-          residence: residence,
+          creator: creatorName,
+        residence: residenceName,
+
         })
         .single();
 

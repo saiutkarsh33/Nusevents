@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
     textAlign: "center",
+    textAlignVertical: "center",
     marginVertical: 10,
   },
 
@@ -126,6 +127,7 @@ export default function EventsCalendar() {
 
     async function fetchEventsForSelectedDate() {
       try {
+        setEventsForSelectedDate([]); // Set events to an empty array first
         const events = await getEventsForDate(selectedDate);
         console.log("Events for selected date:", events);
         setEventsForSelectedDate(events);
@@ -156,8 +158,8 @@ export default function EventsCalendar() {
             <SafeAreaView style={styles.popUpContainer}>
               {/* Render the events data in the popup */}
               {eventsForSelectedDate.map((event, index) => (
-                <Text key={index}>
-                  {" "}
+                <Text key={index} style={styles.Text} >
+                  {`${index + 1}. `}
                   {event.name} at {event.time} by {event.creator}
                 </Text>
               ))}
@@ -182,9 +184,4 @@ export default function EventsCalendar() {
   );
 }
 
-//const handleDayPress = (day) => {
-//  const selectedDate = day.dateString;
-//  const selectedEvents = events.filter((event) => event.date === selectedDate);
-//  console.log('Selected events:', selectedEvents);
-// For now I'm just console.logging the dates
-// };
+

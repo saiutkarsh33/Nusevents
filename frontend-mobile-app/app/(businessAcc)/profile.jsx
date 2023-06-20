@@ -127,12 +127,18 @@ function ProfileCard(props) {
     }
   };
   const handleAddProfilePic = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      console.log("result successful");
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      });
+  
+      if (!result.cancelled) {
+        setImage(result.uri);
+        console.log("Image URI:", result.uri);
+      }
+    } catch (error) {
+      console.error("Error selecting image:", error);
+      // Handle the error
     }
   };
 
@@ -189,6 +195,7 @@ function ProfileCard(props) {
               value={description}
               onChangeText={setDescription}
               editable={editMode}
+              multiline
               mode="outlined"
             />
             {editMode && (

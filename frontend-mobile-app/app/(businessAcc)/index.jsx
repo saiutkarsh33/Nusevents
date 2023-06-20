@@ -5,13 +5,14 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
-  TextInput,
   Alert,
+  Image,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
-import { Button, Card, Text } from "react-native-paper";
+import { Button, Card, Text, ActivityIndicator, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
+import * as ImagePicker from "expo-image-picker";
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -58,6 +59,20 @@ const styles = StyleSheet.create({
 
   Text: {
     fontWeight: "bold",
+    marginVertical: 10,
+  },
+
+  changePfpButton: {
+    margin: 16,
+    backgroundColor: "white",
+    alignSelf: "center",
+  },
+
+  Image: {
+    alignSelf: "center",
+    width: 200,
+    height: 200,
+    margin: 10,
   },
 });
 
@@ -71,7 +86,9 @@ function MyCard(props) {
   const [date, setDate] = useState(props.date);
   const [time, setTime] = useState(props.time);
   const [desc, setDesc] = useState(props.desc);
-  const [image_url, setImage_url] = useState(props.image_url);
+  const  [image, setImage] = useState(null);
+  const [errMsg, setErrMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
   const handleViewSignups = () => {
@@ -89,6 +106,29 @@ function MyCard(props) {
 
   const handleDonePress = async () => {
     if (user) {
+
+       setLoading(true);
+      let uploadedImage = null;
+      if (image) {
+        const { data, error } = await supabase.storage
+          .from("images")
+          .upload(`${new Date().getTime()}`, {
+            uri: image,
+            type: "jpg",
+            name: "name.jpg",
+          });
+
+        if (error) {
+          console.log(error);
+          setErrMsg(error.message);
+          setLoading(false);
+          return;
+        }
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("images").getPublicUrl(data.path);
+        uploadedImage = publicUrl;
+      }
       try {
         // Perform the update in the Supabase table
         const { error } = await supabase
@@ -98,7 +138,7 @@ function MyCard(props) {
             date: date,
             time: time,
             description: desc,
-            image_url: image_url,
+            image_url: uploadedImage,
           })
           .eq("id", props.id);
 
@@ -131,6 +171,16 @@ function MyCard(props) {
       }
     } catch (error) {
       console.error("Error deleting event:", error);
+    }
+  };
+
+  const handleAddProfilePic = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      console.log("result successful");
     }
   };
 
@@ -172,27 +222,32 @@ function MyCard(props) {
       >
         <SafeAreaView style={styles.modalContainer}>
           <View>
+            
             <Text style={styles.editValuesText}>
               {" "}
               Edit the values accordingly{" "}
             </Text>
+            {errMsg !== "" && <Text>{errMsg}</Text>}
             <Text style={styles.Text}>Venue: </Text>
             <TextInput
               value={venue}
               onChangeText={setVenue}
               editable={editMode}
+              mode="outlined"
             />
             <Text style={styles.Text}>Date: </Text>
             <TextInput
               value={date}
               onChangeText={setDate}
               editable={editMode}
+              mode="outlined"
             />
             <Text style={styles.Text}>Time: </Text>
             <TextInput
               value={time}
               onChangeText={setTime}
               editable={editMode}
+              mode="outlined"
             />
             <Text style={styles.Text}>Description: </Text>
             <TextInput
@@ -200,14 +255,18 @@ function MyCard(props) {
               onChangeText={setDesc}
               editable={editMode}
               multiline
+              mode="outlined"
             />
-            <Text style={styles.Text}>Image URL, to be changed : </Text>
-            <TextInput
-              value={image_url}
-              onChangeText={setImage_url}
-              editable={editMode}
-              multiline
-            />
+            <Button
+              onPress={handleAddProfilePic}
+              style={styles.changePfpButton}
+              mode="outlined"
+            >
+              {" "}
+              Change Profile Picture{" "}
+              </Button>
+              {image && <Image source={{ uri: image }} style={styles.Image} />}
+            
 
             {editMode && (
               <Button onPress={handleDonePress} style={styles.doneButton}>
@@ -251,6 +310,8 @@ export default function MyEvents() {
 
   async function fetchData() {
     setRefreshing(true);
+
+  if (user)  {
     try {
       const { data, error } = await supabase
         .from("events")
@@ -268,6 +329,7 @@ export default function MyEvents() {
       console.error("Error fetching events:", error);
     }
   }
+}
 
   useEffect(() => {
     fetchData();
