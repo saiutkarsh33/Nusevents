@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, FlatList } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, RefreshControl } from "react-native";
 import { supabase } from "../../lib/supabase";
-import { Button, Card, Text } from "react-native-paper";
+import { Button, Card, Text, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
 
@@ -207,10 +207,14 @@ const styles = StyleSheet.create({
     export default function BusinessAccounts() {
       const [usersData, setUsersData] = useState([]);
       const [myData, setMyData] = useState(null);
-      const [refresh, setRefresh] = useState(false)
+      const [refreshing, setRefreshing] = useState(false);
+      const [loading, setLoading] = useState(false);
+
       const { user } = useAuth();
-      useEffect(() => {
+  
         async function fetchData() {
+          setRefreshing(true);
+          setLoading(true);
           if (user) {
             const { data: myData, error: userDataError } = await supabase
               .from('users')
@@ -239,10 +243,26 @@ const styles = StyleSheet.create({
               }
             }
           }
+
+          setLoading(false);
         }
+        useEffect(() => {
+          fetchData();
+        }, [user]);
       
-        fetchData();
-      }, [user]);
+        useEffect(() => {
+          if (refreshing) {
+            fetchData();
+            setRefreshing(false);
+          }
+        }, [refreshing]);
+         
+        const handleRefresh = () => {
+          setRefreshing(true);
+          fetchData(); // Call your fetchData function to fetch the latest data
+          setRefreshing(false);
+        };
+      
 
         console.log("this is biz acc" , usersData)
         console.log("middle")
@@ -263,20 +283,27 @@ const styles = StyleSheet.create({
       console.log("this is myData" , myData)
 
       return (
-        <SafeAreaView>
-          <ScrollView>
-          
-            {sortedUsersData.map((card) => (
-              <EventCard
-                key={card.id}
-                id={card.id}
-                name={card.name}
-                profile_pic_url={card.profile_pic_url}
-                description ={card.description}
-                followed={myData.following?.includes(card.name) ?? false}
-                // so issue is that userData is null rn. userData should be my data, auth id.
-              />
-            ))}
+        <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            }
+          >
+            {loading ? (
+              <ActivityIndicator size="large" color="blue" />
+            ) : (
+              sortedUsersData.map((card) => (
+                <EventCard
+                  key={card.id}
+                  id={card.id}
+                  name={card.name}
+                  profile_pic_url={card.profile_pic_url}
+                  description={card.description}
+                  followed={myData.following?.includes(card.name) ?? false}
+                />
+              ))
+            )}
           </ScrollView>
         </SafeAreaView>
       );

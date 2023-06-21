@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, RefreshControl } from "react-native";
 import { supabase } from "../../lib/supabase";
-import { Button, Card, Text } from "react-native-paper";
+import { Button, Card, Text, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
 
@@ -227,6 +227,8 @@ export function TheirCard(props) {
 export default function EventsPage() {
   const [eventsData, setEventsData] = useState([]);
   const [residence, setResidence] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { user } = useAuth();
 
@@ -234,17 +236,30 @@ export default function EventsPage() {
 
   const [followed, setFollowed] = useState([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const { data, error } = await supabase.from('events').select('*').eq('residence', residence)
-      .in('creator', followed)
-      
+  async function fetchData() {
+    setRefreshing(true);
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('residence', residence)
+        .in('creator', followed);
+  
       if (error) {
         console.error('Error fetching events:', error);
       } else {
         setEventsData(data);
       }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
     }
+  }
+
+  
 
     async function fetchUserData() {
 
@@ -263,9 +278,26 @@ export default function EventsPage() {
       }
     }
   }
-  fetchUserData();
+
+  useEffect(() => {
+    if (user && userData === null) {
+      fetchUserData();
+    }
     fetchData();
   }, [user, residence, followed]);
+
+  useEffect(() => {
+    if (refreshing) {
+      fetchData();
+      setRefreshing(false);
+    }  
+  }, [refreshing]);
+  
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchData(); // Wait for fetchData to complete
+    setRefreshing(false);
+  };
 
   if (!userData) {
     return <Text>Loading account data...</Text>;
@@ -276,23 +308,32 @@ export default function EventsPage() {
 
   return (
     <SafeAreaView>
-      <ScrollView>
-        {sortedEventsData.length > 0 ? (
-          sortedEventsData.map((card) => (
-            <TheirCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              date={card.date}
-              time={card.time}
-              venue={card.venue}
-              image_url={card.image_url}
-              desc={card.description}
-              selected={userData.selected_events?.includes(card.name) ?? false}
-            />
-          ))
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {loading ? (
+          <ActivityIndicator size="large" color="blue" />
         ) : (
-          <Text style={styles.noEventsText}>No events found.</Text>
+          sortedEventsData.length > 0 ? (
+            sortedEventsData.map((card) => (
+              <TheirCard
+                key={card.id}
+                id={card.id}
+                name={card.name}
+                date={card.date}
+                time={card.time}
+                venue={card.venue}
+                image_url={card.image_url}
+                desc={card.description}
+                selected={userData.selected_events?.includes(card.name) ?? false}
+              />
+            ))
+          ) : (
+            <Text style={styles.noEventsText}>No events found.</Text>
+          )
         )}
       </ScrollView>
     </SafeAreaView>

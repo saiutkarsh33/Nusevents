@@ -1,6 +1,6 @@
 import { Calendar } from "react-native-calendars";
-import { Modal, SafeAreaView, StyleSheet } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Modal, SafeAreaView, StyleSheet, RefreshControl, ScrollView } from "react-native";
+import { Button, Text, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/auth";
@@ -32,13 +32,15 @@ export default function EventsCalendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [eventsForSelectedDate, setEventsForSelectedDate] = useState([]);
-
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false); 
   const { user } = useAuth();
 
-  useEffect(() => {
+  
     // Fetch data from Supabase
     async function fetchData() {
       if (user) {
+        setLoading(true); 
         try {
           const { data, error } = await supabase.from("events").select("*");
           if (error) {
@@ -60,11 +62,17 @@ export default function EventsCalendar() {
           }
         } catch (error) {
           console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false); 
+          setRefreshing(false); // Set refreshing state to false after data fetch
         }
       }
     }
+   useEffect(() => {
     fetchData();
-  }, [user]);
+   }, [user])
+    
+  
 
   const markedDates = {};
 
@@ -176,10 +184,29 @@ export default function EventsCalendar() {
     );
   };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setSelectedDate(null);
+    await fetchData();
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Calendar markedDates={markedDates} onDayPress={handleDayPress} />
-      <EventPopup />
+      <ScrollView
+        contentContainerStyle={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {loading ? ( // Render the loading indicator when loading is true
+          <ActivityIndicator size="large" color="blue" />
+        ) : (
+          <>
+            <Calendar markedDates={markedDates} onDayPress={handleDayPress} />
+            <EventPopup />
+          </>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

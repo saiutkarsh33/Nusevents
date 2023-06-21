@@ -7,6 +7,10 @@ import {
   StyleSheet,
   Alert,
   Image,
+  KeyboardAvoidingView, 
+  Platform,
+  RefreshControl,
+
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { Button, Card, Text, ActivityIndicator, TextInput } from "react-native-paper";
@@ -220,6 +224,13 @@ function MyCard(props) {
         animationType="slide"
         onRequestClose={handleDonePress}
       >
+
+<KeyboardAvoidingView
+       style={{ flex: 1 }}
+  behavior={Platform.OS === "ios" ? "padding" : null}
+  keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
+    >
+      <ScrollView contentContainerStyle={styles.modalContainer}>
         <SafeAreaView style={styles.modalContainer}>
           <View>
             
@@ -275,6 +286,8 @@ function MyCard(props) {
             )}
           </View>
         </SafeAreaView>
+        </ScrollView>
+    </KeyboardAvoidingView>
       </Modal>
 
       <Modal
@@ -305,11 +318,13 @@ function MyCard(props) {
 export default function MyEvents() {
   const [refreshing, setRefreshing] = useState(false);
   const [eventsData, setEventsData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const { user } = useAuth();
 
   async function fetchData() {
     setRefreshing(true);
+    setLoading(true);
 
   if (user)  {
     try {
@@ -329,6 +344,9 @@ export default function MyEvents() {
       console.error("Error fetching events:", error);
     }
   }
+
+  setLoading(false);
+
 }
 
   useEffect(() => {
@@ -341,24 +359,39 @@ export default function MyEvents() {
       setRefreshing(false);
     }
   }, [refreshing]);
+   
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchData(); // Call your fetchData function to fetch the latest data
+    setRefreshing(false);
+  };
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        {eventsData.map((card) => (
-          <MyCard
-            key={card.id}
-            id={card.id}
-            name={card.name}
-            date={card.date}
-            time={card.time}
-            venue={card.venue}
-            selected={card.selected}
-            image_url={card.image_url}
-            desc={card.description}
-            signups={card.signups}
-          />
-        ))}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {loading ? (
+          <ActivityIndicator size="large" color="blue" />
+        ) : (
+          eventsData.map((card) => (
+            <MyCard
+              key={card.id}
+              id={card.id}
+              name={card.name}
+              date={card.date}
+              time={card.time}
+              venue={card.venue}
+              selected={card.selected}
+              image_url={card.image_url}
+              desc={card.description}
+              signups={card.signups}
+            />
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );

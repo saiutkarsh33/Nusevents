@@ -5,6 +5,11 @@ import {
   Modal,
   StyleSheet,
   Image,
+  KeyboardAvoidingView,
+  ScrollView, 
+  Platform,
+  RefreshControl,
+
 } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -130,9 +135,10 @@ function ProfileCard(props) {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      console.log("result successful");
+    if (!result.canceled && result.assets.length > 0) {
+      const selectedAsset = result.assets[0];
+      setImage(selectedAsset.uri);
+      console.log("result successful", selectedAsset.uri);
     }
   };
 
@@ -160,6 +166,12 @@ function ProfileCard(props) {
         animationType="slide"
         onRequestClose={handleDonePress}
       >
+      <KeyboardAvoidingView
+       style={{ flex: 1 }}
+  behavior={Platform.OS === "ios" ? "padding" : null}
+  keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
+    >
+      <ScrollView contentContainerStyle={styles.modalContainer}> 
         <SafeAreaView style={styles.modalContainer}>
           <View>
             {loading && <ActivityIndicator />}
@@ -198,6 +210,8 @@ function ProfileCard(props) {
             )}
           </View>
         </SafeAreaView>
+        </ScrollView>
+    </KeyboardAvoidingView>
       </Modal>
     </>
   );
@@ -207,30 +221,48 @@ export default function ProfileScreen() {
   const { user } = useAuth();
 
   const [myData, setMyData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchData = async () => {
+    setRefreshing(true);
+    setLoading(true);
     if (user) {
-      const fetchData = async () => {
-        try {
-          const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", user.id);
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id);
 
-          if (error) {
-            console.error("Error fetching account:", error);
-          } else {
-            console.log(data);
-            setMyData(data);
-          }
-        } catch (error) {
-          console.error("Error fetching account:", error);
-        }
-      };
-
-      fetchData();
+      if (error) {
+        console.error("Error fetching account:", error);
+      } else {
+        console.log(data);
+        setMyData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching account:", error);
     }
-  }, [user]);
+  }
+  setLoading(false);
+}
+
+useEffect(() => {
+  fetchData();
+}, [user]);
+
+useEffect(() => {
+  if (refreshing) {
+    fetchData();
+    setRefreshing(false);
+  }
+}, [refreshing]);
+ 
+const handleRefresh = () => {
+  setRefreshing(true);
+  fetchData(); // Call your fetchData function to fetch the latest data
+  setRefreshing(false);
+};
 
   const handleChangePassword = async (email) => {
     try {
@@ -255,28 +287,36 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView>
-      <Button
-        onPress={() => handleChangePassword(user.email)}
-        style={styles.Button}
-      >
-        Change Password
-      </Button>
-      <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
-        {" "}
-        Logout
-      </Button>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        <>
+          <Button onPress={() => handleChangePassword(user.email)} style={styles.Button}>
+            Change Password
+          </Button>
+          <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
+            Logout
+          </Button>
+          <Button title="Delete Account" />
 
-      <Button title="Delete Account" />
-
-      {myData.map((card) => (
-        <ProfileCard
-          key={card.id}
-          id={card.id}
-          name={card.name}
-          profile_pic_url={card.profile_pic_url}
-          description={card.description}
-        />
-      ))}
-    </SafeAreaView>
+          {myData.map((card) => (
+            <ProfileCard
+              key={card.id}
+              id={card.id}
+              name={card.name}
+              profile_pic_url={card.profile_pic_url}
+              description={card.description}
+            />
+          ))}
+        </>
+      )}
+    </ScrollView>
+  </SafeAreaView>
   );
 }

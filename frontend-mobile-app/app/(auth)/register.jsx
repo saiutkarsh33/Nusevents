@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet } from "react-native";
-import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
+import { StyleSheet, KeyboardAvoidingView,
+  ScrollView, 
+  Platform, } from "react-native";
+import { Text, TextInput, ActivityIndicator, Button,  } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -80,6 +82,12 @@ export default function Register() {
   };
 
   return (
+
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+behavior={Platform.OS === "ios" ? "padding" : null}
+keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
+ >
     <SafeAreaView style={styles.container}>
       <Text style={styles.welcome}>Welcome!</Text>
       <Text style={styles.details}>Please fill in your details to create your account</Text>
@@ -157,6 +165,7 @@ export default function Register() {
       {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
     </SafeAreaView>
+  </KeyboardAvoidingView>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../lib/supabase";
@@ -33,6 +33,19 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: "center",
     margin: 5,
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  labelText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  inputBox: {
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingVertical: 8,
   },
 });
 
@@ -157,37 +170,50 @@ function EventForm({ onEventCreate }) {
   };
 
   return (
+
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+behavior={Platform.OS === "ios" ? "padding" : null}
+keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
+ >
+   <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-      <Text style={styles.Text}>Name of Event</Text>
+      <Text  style={styles.labelText}>Name of Event</Text>
       <TextInput
         value={eventName}
         onChangeText={setEventName}
         mode="outlined"
+        style={styles.inputBox}
       />
-      <Text style={styles.Text}>Venue</Text>
+      <Text  style={styles.labelText}>Venue</Text>
       <TextInput
         value={eventVenue}
         onChangeText={setEventVenue}
         mode="outlined"
+        style={styles.inputBox}
       />
-      <Text style={styles.Text}>Date (in YYYY-MM-DD) </Text>
+      <Text  style={styles.labelText}>Date (in YYYY-MM-DD) </Text>
       <TextInput
         value={eventDate}
         onChangeText={setEventDate}
         mode="outlined"
         placeholder="YYYY-DD-MM"
+        style={styles.inputBox}
       />
-      <Text style={styles.Text}>Time</Text>
+      <Text style={styles.labelText}>Time</Text>
       <TextInput
         value={eventTime}
         onChangeText={setEventTime}
         mode="outlined"
+        style={styles.inputBox}
       />
-      <Text style={styles.Text}>Description</Text>
+      <Text  style={styles.labelText}>Description</Text>
       <TextInput
         value={description}
         onChangeText={setDescription}
         mode="outlined"
+        style={styles.inputBox}
+        multiline
       />
       {errMsg !== "" && <Text>{errMsg}</Text>}
       <Button onPress={handleAddImage} style={styles.button}>
@@ -199,6 +225,8 @@ function EventForm({ onEventCreate }) {
       </Button>
       {loading && <ActivityIndicator />}
     </SafeAreaView>
+    </ScrollView>
+  </KeyboardAvoidingView>
   );
 }
 
