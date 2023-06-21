@@ -351,7 +351,7 @@ export default function MyEvents() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (refreshing) {

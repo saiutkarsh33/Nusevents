@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-} from "react-native";
-import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
+import { StyleSheet, KeyboardAvoidingView,
+  ScrollView, 
+  Platform, } from "react-native";
+import { Text, TextInput, ActivityIndicator, Button,  } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -85,91 +82,92 @@ export default function Register() {
   };
 
   return (
+<SafeAreaView style={styles.container}>
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
-    >
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.welcome}>Welcome!</Text>
-        <Text style={styles.details}>
-          Please fill in your details to create your account
-        </Text>
-        <TextInput
-          autoCapitalize="none"
-          value={userName}
-          onChangeText={setUserName}
-          mode="outlined"
-          placeholder="Name"
-          style={styles.input}
-        />
-        <DropDownPicker
-          open={accountTypeOpen}
-          value={accountTypeValue}
-          items={accountType}
-          setOpen={setAccountTypeOpen}
-          setValue={setAccountTypeValue}
-          setItems={setAccountType}
-          placeholder="Select Account Type"
-          zIndex={3000}
-          zIndexInverse={1000}
-          style={styles.input}
-          textStyle={styles.dropDownText}
-        />
-        <DropDownPicker
-          open={residenceOpen}
-          value={residenceValue}
-          items={residence}
-          setOpen={setResidenceTypeOpen}
-          setValue={setResidenceValue}
-          setItems={setResidence}
-          placeholder="Select Name of Residence"
-          zIndex={1000}
-          zIndexInverse={3000}
-          style={styles.input}
-          textStyle={styles.dropDownText}
-        />
-        <TextInput
-          autoCapitalize="none"
-          textContentType="emailAddress"
-          value={email}
-          onChangeText={setEmail}
-          mode="outlined"
-          placeholder="Email"
-          style={styles.input}
-        />
-        <TextInput
-          secureTextEntry
-          autoCapitalize="none"
-          textContentType="password"
-          value={password}
-          onChangeText={setPassword}
-          mode="outlined"
-          placeholder="Password"
-          style={styles.input}
-        />
+    style={{ flex: 1 }}
+behavior={Platform.OS === "ios" ? "padding" : null}
+keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
+ >
+    
+      <Text style={styles.welcome}>Welcome!</Text>
+      <Text style={styles.details}>Please fill in your details to create your account</Text>
+      <TextInput
+        autoCapitalize="none"
+        value={userName}
+        onChangeText={setUserName}
+        mode="outlined"
+        placeholder="Name"
+        style={styles.input}
+      />
+      <DropDownPicker
+        open={accountTypeOpen}
+        value={accountTypeValue}
+        items={accountType}
+        setOpen={setAccountTypeOpen}
+        setValue={setAccountTypeValue}
+        setItems={setAccountType}
+        placeholder="Select Account Type"
+        zIndex={3000}
+        zIndexInverse={1000}
+        style={styles.input}
+        textStyle={styles.dropDownText}
+      />
+      <DropDownPicker
+        open={residenceOpen}
+        value={residenceValue}
+        items={residence}
+        setOpen={setResidenceTypeOpen}
+        setValue={setResidenceValue}
+        setItems={setResidence}
+        placeholder="Select Name of Residence"
+        zIndex={1000}
+        zIndexInverse={3000}
+        style={styles.input}
+        textStyle={styles.dropDownText}
+      />
+      <TextInput
+        autoCapitalize="none"
+        textContentType="emailAddress"
+        value={email}
+        onChangeText={setEmail}
+        mode="outlined"
+        placeholder="Email"
+        style={styles.input}
+      />
+      <TextInput
+        secureTextEntry
+        autoCapitalize="none"
+        textContentType="password"
+        value={password}
+        onChangeText={setPassword}
+        mode="outlined"
+        placeholder="Password"
+        style={styles.input}
+      />
 
-        <TextInput
-          autoCapitalize="none"
-          value={description}
-          onChangeText={setDescription}
-          mode="outlined"
-          placeholder="Description"
-          style={styles.input}
-        />
-        <Button
-          onPress={handleSubmit}
-          mode="contained"
-          color="cyan"
-          style={styles.button}
-          labelStyle={styles.buttonLabel}
-        >
-          Submit
-        </Button>
-        {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
-        {loading && <ActivityIndicator />}
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+      <TextInput
+        autoCapitalize="none"
+        value={description}
+        onChangeText={setDescription}
+        mode="outlined"
+        placeholder="Description"
+        style={styles.input}
+      />
+      <Button
+        onPress={handleSubmit}
+        mode="contained"
+        color="cyan"
+        style={styles.button}
+        labelStyle={styles.buttonLabel}
+      >
+        Submit
+      </Button>
+      {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+      {loading && <ActivityIndicator />}
+    
+
+  </KeyboardAvoidingView>
+  </SafeAreaView>
   );
 }
 
@@ -215,3 +213,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+

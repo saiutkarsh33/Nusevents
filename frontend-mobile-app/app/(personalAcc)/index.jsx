@@ -17,12 +17,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white", // Add this line to set the background color
   },
 
-  noEventsText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    textAlign: 'center',
-    marginVertical: 10,
-  },
 
   middleText: {
     fontWeight: 'bold',
@@ -36,6 +30,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'cyan',
     alignSelf: 'center',
   }, 
+  noEventsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  noEventsText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+
 });
 
 export function TheirCard(props) {
@@ -224,6 +231,10 @@ export function TheirCard(props) {
   );
 }
 
+// ...import statements and styles
+
+// ...import statements and styles
+
 export default function EventsPage() {
   const [eventsData, setEventsData] = useState([]);
   const [residence, setResidence] = useState(null);
@@ -233,11 +244,9 @@ export default function EventsPage() {
   const { user } = useAuth();
 
   const [userData, setUserData] = useState(null);
-
   const [followed, setFollowed] = useState([]);
 
   async function fetchData() {
-    setRefreshing(true);
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -245,7 +254,7 @@ export default function EventsPage() {
         .select('*')
         .eq('residence', residence)
         .in('creator', followed);
-  
+
       if (error) {
         console.error('Error fetching events:', error);
       } else {
@@ -259,11 +268,8 @@ export default function EventsPage() {
     }
   }
 
-  
-
-    async function fetchUserData() {
-
-    if (user) {  
+  async function fetchUserData() {
+    if (user) {
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -272,8 +278,8 @@ export default function EventsPage() {
       if (error) {
         console.error('Error fetching user data:', error);
       } else {
-        setResidence(data.residence)
-        setFollowed(data.following)
+        setResidence(data.residence);
+        setFollowed(data.following);
         setUserData(data);
       }
     }
@@ -286,15 +292,9 @@ export default function EventsPage() {
     fetchData();
   }, [user, residence, followed]);
 
-  useEffect(() => {
-    if (refreshing) {
-      fetchData();
-      setRefreshing(false);
-    }  
-  }, [refreshing]);
-  
   const handleRefresh = async () => {
     setRefreshing(true);
+    await fetchUserData()
     await fetchData(); // Wait for fetchData to complete
     setRefreshing(false);
   };
@@ -305,9 +305,8 @@ export default function EventsPage() {
 
   const sortedEventsData = eventsData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={
@@ -316,26 +315,27 @@ export default function EventsPage() {
       >
         {loading ? (
           <ActivityIndicator size="large" color="blue" />
+        ) : sortedEventsData.length > 0 ? (
+          sortedEventsData.map((card) => (
+            <TheirCard
+              key={card.id}
+              id={card.id}
+              name={card.name}
+              date={card.date}
+              time={card.time}
+              venue={card.venue}
+              image_url={card.image_url}
+              desc={card.description}
+              selected={userData.selected_events?.includes(card.name) ?? false}
+            />
+          ))
         ) : (
-          sortedEventsData.length > 0 ? (
-            sortedEventsData.map((card) => (
-              <TheirCard
-                key={card.id}
-                id={card.id}
-                name={card.name}
-                date={card.date}
-                time={card.time}
-                venue={card.venue}
-                image_url={card.image_url}
-                desc={card.description}
-                selected={userData.selected_events?.includes(card.name) ?? false}
-              />
-            ))
-          ) : (
+          <View style={styles.noEventsContainer}>
             <Text style={styles.noEventsText}>No events found.</Text>
-          )
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
   );
 }
+
