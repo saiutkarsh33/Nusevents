@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet, KeyboardAvoidingView,
-  ScrollView, 
-  Platform, } from "react-native";
-import { Text, TextInput, ActivityIndicator, Button,  } from "react-native-paper";
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  View,
+} from "react-native";
+import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DropDownPicker from "react-native-dropdown-picker";
+import RNPickerSelect from "react-native-picker-select";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -14,53 +18,21 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [description, setDescription] = useState("");
-  const [accountTypeOpen, setAccountTypeOpen] = useState(false);
   const [accountTypeValue, setAccountTypeValue] = useState(null);
-  const [accountType, setAccountType] = useState([
-    {
-      label: "Personal",
-      value: "Personal",
-    },
-    {
-      label: "Business",
-      value: "Business",
-    },
-  ]);
-
-  const [residenceOpen, setResidenceTypeOpen] = useState(false);
   const [residenceValue, setResidenceValue] = useState(null);
-  const [residence, setResidence] = useState([
-    {
-      label: "Tembusu",
-      value: "Tembusu",
-    },
-    {
-      label: "Sheares",
-      value: "Sheares",
-    },
-  ]);
+
+  const accountTypeOptions = [
+    { label: "Personal", value: "Personal" },
+    { label: "Business", value: "Business" },
+  ];
+  const residenceOptions = [
+    { label: "Tembusu", value: "Tembusu" },
+    { label: "Sheares", value: "Sheares" },
+  ];
 
   const handleSubmit = async () => {
-    if (email === "") {
-      setErrMsg("Email cannot be empty");
-      return;
-    }
-    if (password === "") {
-      setErrMsg("Password cannot be empty");
-      return;
-    }
-    if (userName === "") {
-      setErrMsg("Name cannot be empty");
-      return;
-    }
-    if (!accountTypeValue) {
-      setErrMsg("Account type cannot be empty");
-      return;
-    }
-    if (!residenceValue) {
-      setErrMsg("Name of residence cannot be empty");
-      return;
-    }
+    // Validation code
+
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email,
@@ -82,92 +54,99 @@ export default function Register() {
   };
 
   return (
-<SafeAreaView style={styles.container}>
-    <KeyboardAvoidingView
-    style={{ flex: 1 }}
-behavior={Platform.OS === "ios" ? "padding" : null}
-keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
- >
-    
-      <Text style={styles.welcome}>Welcome!</Text>
-      <Text style={styles.details}>Please fill in your details to create your account</Text>
-      <TextInput
-        autoCapitalize="none"
-        value={userName}
-        onChangeText={setUserName}
-        mode="outlined"
-        placeholder="Name"
-        style={styles.input}
-      />
-      <DropDownPicker
-        open={accountTypeOpen}
-        value={accountTypeValue}
-        items={accountType}
-        setOpen={setAccountTypeOpen}
-        setValue={setAccountTypeValue}
-        setItems={setAccountType}
-        placeholder="Select Account Type"
-        zIndex={3000}
-        zIndexInverse={1000}
-        style={styles.input}
-        textStyle={styles.dropDownText}
-      />
-      <DropDownPicker
-        open={residenceOpen}
-        value={residenceValue}
-        items={residence}
-        setOpen={setResidenceTypeOpen}
-        setValue={setResidenceValue}
-        setItems={setResidence}
-        placeholder="Select Name of Residence"
-        zIndex={1000}
-        zIndexInverse={3000}
-        style={styles.input}
-        textStyle={styles.dropDownText}
-      />
-      <TextInput
-        autoCapitalize="none"
-        textContentType="emailAddress"
-        value={email}
-        onChangeText={setEmail}
-        mode="outlined"
-        placeholder="Email"
-        style={styles.input}
-      />
-      <TextInput
-        secureTextEntry
-        autoCapitalize="none"
-        textContentType="password"
-        value={password}
-        onChangeText={setPassword}
-        mode="outlined"
-        placeholder="Password"
-        style={styles.input}
-      />
-
-      <TextInput
-        autoCapitalize="none"
-        value={description}
-        onChangeText={setDescription}
-        mode="outlined"
-        placeholder="Description"
-        style={styles.input}
-      />
-      <Button
-        onPress={handleSubmit}
-        mode="contained"
-        color="cyan"
-        style={styles.button}
-        labelStyle={styles.buttonLabel}
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
       >
-        Submit
-      </Button>
-      {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
-      {loading && <ActivityIndicator />}
-    
-
-  </KeyboardAvoidingView>
-  </SafeAreaView>
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+        >
+          <Text style={styles.welcome}>Welcome!</Text>
+          <Text style={styles.details}>
+            Please fill in your details to create your account
+          </Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              autoCapitalize="none"
+              value={userName}
+              onChangeText={setUserName}
+              mode="outlined"
+              placeholder="Name"
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.dropdownLabel}>Account Type</Text>
+            <RNPickerSelect
+              value={accountTypeValue}
+              onValueChange={(value) => setAccountTypeValue(value)}
+              items={accountTypeOptions}
+              placeholder={{ label: "Select Account Type", value: null }}
+              style={pickerSelectStyles}
+              useNativeAndroidPickerStyle={false}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.dropdownLabel}>Residence</Text>
+            <RNPickerSelect
+              value={residenceValue}
+              onValueChange={(value) => setResidenceValue(value)}
+              items={residenceOptions}
+              placeholder={{ label: "Select Name of Residence", value: null }}
+              style={pickerSelectStyles}
+              useNativeAndroidPickerStyle={false}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              autoCapitalize="none"
+              textContentType="emailAddress"
+              value={email}
+              onChangeText={setEmail}
+              mode="outlined"
+              placeholder="Email"
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              secureTextEntry
+              autoCapitalize="none"
+              textContentType="password"
+              value={password}
+              onChangeText={setPassword}
+              mode="outlined"
+              placeholder="Password"
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              autoCapitalize="none"
+              value={description}
+              onChangeText={setDescription}
+              mode="outlined"
+              placeholder="Description"
+              style={styles.input}
+            />
+          </View>
+          <Button
+            onPress={handleSubmit}
+            mode="contained"
+            color="cyan"
+            style={styles.button}
+            labelStyle={styles.buttonLabel}
+          >
+            Submit
+          </Button>
+          {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+          {loading && <ActivityIndicator />}
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -177,6 +156,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 20,
     paddingTop: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   welcome: {
     fontSize: 40,
@@ -189,14 +174,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingBottom: 20,
   },
-  input: {
+  inputContainer: {
     marginBottom: 10,
+  },
+  input: {
     fontSize: 16,
     fontWeight: "bold",
   },
-  dropDownText: {
-    fontSize: 18,
+  dropdownLabel: {
+    fontSize: 16,
     fontWeight: "bold",
+    marginBottom: 5,
   },
   button: {
     marginTop: 16,
@@ -214,3 +202,23 @@ const styles = StyleSheet.create({
   },
 });
 
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  inputAndroid: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
