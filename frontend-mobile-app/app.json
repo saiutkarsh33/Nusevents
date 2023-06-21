@@ -10,7 +10,9 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "owner": "saiutkarsh33"
+
     },
     "assetBundlePatterns": [
       "**/*"
