@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
                 >
                   Follow
                 </Button>
-                <Button onPress={handleViewDescPress} mode={ "outlined"} >View Description</Button>
+                <Button onPress={handleViewDescPress} mode={ "outlined"} >View Bio</Button>
                 <Button onPress={handleViewEventsPress} mode={ "outlined"} >View Events</Button>
               </Card.Actions>
             </TouchableOpacity>

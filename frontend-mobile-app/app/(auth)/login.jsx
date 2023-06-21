@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet } from "react-native";
+import { Image, ScrollView, StyleSheet, KeyboardAvoidingView, Platform  } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
@@ -35,6 +35,11 @@ export default function LoginPage() {
 
   return (
     <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+behavior={Platform.OS === "ios" ? "padding" : null}
+keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
+ >
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Image
           source={require("frontend-mobile-app/assets/NUSevents-icon.jpg")}
@@ -72,6 +77,7 @@ export default function LoginPage() {
           </Button>
         </Link>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
