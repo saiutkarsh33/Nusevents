@@ -90,9 +90,10 @@ function MyCard(props) {
   const [date, setDate] = useState(props.date);
   const [time, setTime] = useState(props.time);
   const [desc, setDesc] = useState(props.desc);
-  const  [image, setImage] = useState(null);
+  const [image, setImage] = useState(null);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [changedPicture, setChangedPicture] = useState(false);
   const { user } = useAuth();
 
   const handleViewSignups = () => {
@@ -112,6 +113,7 @@ function MyCard(props) {
     if (user) {
 
        setLoading(true);
+    if (changedPicture)   { 
       let uploadedImage = null;
       if (image) {
         const { data, error } = await supabase.storage
@@ -152,12 +154,41 @@ function MyCard(props) {
           console.log("Event updated successfully");
           setEditMode(false);
           setEditVisible(false);
+          setChangedPicture(false);
         }
       } catch (error) {
         console.error("Error updating event:", error);
       }
     }
-  };
+    else {
+
+    try {
+      // Perform the update in the Supabase table
+      const { error } = await supabase
+        .from("events")
+        .update({
+          venue: venue,
+          date: date,
+          time: time,
+          description: desc,
+        })
+        .eq("id", props.id);
+
+      if (error) {
+        console.error("Error updating event:", error);
+      } else {
+        console.log("Event updated successfully");
+        setEditMode(false);
+        setEditVisible(false);
+        setChangedPicture(false);
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
+
+   }
+  }
+};
 
   const handleDelete = async () => {
     try {
@@ -183,8 +214,10 @@ function MyCard(props) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
     if (!result.canceled) {
+      console.log(result.assets[0].uri)
       setImage(result.assets[0].uri);
-      console.log("result successful");
+      console.log("result successful", image);
+      setChangedPicture(true)
     }
   };
 

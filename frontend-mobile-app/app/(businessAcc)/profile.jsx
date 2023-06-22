@@ -73,6 +73,7 @@ function ProfileCard(props) {
   const [image, setImage] = useState(null);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [changedImage, setChangedImage] = useState(false)
   const { user } = useAuth();
 
   const handleEditPress = () => {
@@ -82,6 +83,8 @@ function ProfileCard(props) {
 
   const handleDonePress = async () => {
     if (user) {
+
+      if (changedImage) {
       setLoading(true);
       let uploadedImage = null;
       if (image) {
@@ -129,7 +132,30 @@ function ProfileCard(props) {
       }
 
       setLoading(false);
+    } else {
+      const { error } = await supabase
+        .from("users")
+        .update({
+          name: name,
+          description: description,
+        })
+        .eq("id", user.id);
+
+      if (error) {
+        console.error("Error updating account:", error);
+      } else {
+        console.log("Account updated successfully");
+        setEditMode(false);
+        setEditVisible(false);
+        const { error2 } = await supabase
+          .from("events")
+          .update({
+            creator: name,
+          })
+          .eq("user_id", user.id);
+      }
     }
+  } 
   };
   const handleAddProfilePic = async () => {
     try {
@@ -141,6 +167,7 @@ function ProfileCard(props) {
         const selectedAsset = result.assets[0];
         setImage(selectedAsset.uri);
         console.log("Image URI:", selectedAsset.uri);
+        setChangedImage(true)
       }
     } catch (error) {
       console.error("Error selecting image:", error);

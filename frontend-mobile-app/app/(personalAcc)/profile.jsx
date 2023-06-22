@@ -6,10 +6,9 @@ import {
   StyleSheet,
   Image,
   KeyboardAvoidingView,
-  ScrollView, 
+  ScrollView,
   Platform,
   RefreshControl,
-
 } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -73,6 +72,7 @@ function ProfileCard(props) {
   const [image, setImage] = useState(null);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [changedImage, setChangedImage] = useState(false);
   const { user } = useAuth();
 
   const handleEditPress = () => {
@@ -82,55 +82,80 @@ function ProfileCard(props) {
 
   const handleDonePress = async () => {
     if (user) {
-      setLoading(true);
-      let uploadedImage = null;
-      if (image) {
-        const { data, error } = await supabase.storage
-          .from("profile_pic")
-          .upload(`${new Date().getTime()}`, {
-            uri: image,
-            type: "jpg",
-            name: "name.jpg",
-          });
+      if (changedImage) {
+        setLoading(true);
+        let uploadedImage = null;
+        if (image) {
+          const { data, error } = await supabase.storage
+            .from("profile_pic")
+            .upload(`${new Date().getTime()}`, {
+              uri: image,
+              type: "jpg",
+              name: "name.jpg",
+            });
+
+          if (error) {
+            console.log(error);
+            setErrMsg(error.message);
+            setLoading(false);
+            return;
+          }
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("profile_pic").getPublicUrl(data.path);
+          uploadedImage = publicUrl;
+        }
+        // Perform the update in the Supabase table
+        const { error } = await supabase
+          .from("users")
+          .update({
+            name: name,
+            description: description,
+            profile_pic_url: uploadedImage,
+          })
+          .eq("id", user.id);
 
         if (error) {
-          console.log(error);
-          setErrMsg(error.message);
-          setLoading(false);
-          return;
+          console.error("Error updating account:", error);
+        } else {
+          console.log("Account updated successfully");
+          setEditMode(false);
+          setEditVisible(false);
+          const { error2 } = await supabase
+            .from("events")
+            .update({
+              creator: name,
+            })
+            .eq("user_id", user.id);
         }
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("profile_pic").getPublicUrl(data.path);
-        uploadedImage = publicUrl;
-      }
-      // Perform the update in the Supabase table
-      const { error } = await supabase
-        .from("users")
-        .update({
-          name: name,
-          description: description,
-          profile_pic_url: uploadedImage,
-        })
-        .eq("id", user.id);
 
-      if (error) {
-        console.error("Error updating account:", error);
+        setLoading(false);
       } else {
-        console.log("Account updated successfully");
-        setEditMode(false);
-        setEditVisible(false);
-        const { error2 } = await supabase
-          .from("events")
+        const { error } = await supabase
+          .from("users")
           .update({
-            creator: name,
+            name: name,
+            description: description,
           })
-          .eq("user_id", user.id);
-      }
+          .eq("id", user.id);
 
-      setLoading(false);
+        if (error) {
+          console.error("Error updating account:", error);
+        } else {
+          console.log("Account updated successfully");
+          setEditMode(false);
+          setEditVisible(false);
+          const { error2 } = await supabase
+            .from("events")
+            .update({
+              creator: name,
+            })
+            .eq("user_id", user.id);
+        }
+      }
     }
   };
+
   const handleAddProfilePic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -139,6 +164,7 @@ function ProfileCard(props) {
       const selectedAsset = result.assets[0];
       setImage(selectedAsset.uri);
       console.log("result successful", selectedAsset.uri);
+      setChangedImage(true)
     }
   };
 
@@ -166,52 +192,52 @@ function ProfileCard(props) {
         animationType="slide"
         onRequestClose={handleDonePress}
       >
-      <KeyboardAvoidingView
-       style={{ flex: 1 }}
-  behavior={Platform.OS === "ios" ? "padding" : null}
-  keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
-    >
-      <ScrollView contentContainerStyle={styles.modalContainer}> 
-        <SafeAreaView style={styles.modalContainer}>
-          <View>
-            {loading && <ActivityIndicator />}
-            <Text style={styles.editValuesText}>
-              {" "}
-              Edit the values accordingly{" "}
-            </Text>
-            {errMsg !== "" && <Text>{errMsg}</Text>}
-            <Button
-              onPress={handleAddProfilePic}
-              style={styles.changePfpButton}
-              mode="outlined"
-            >
-              {" "}
-              Change Profile Picture{" "}
-            </Button>
-            {image && <Image source={{ uri: image }} style={styles.Image} />}
-            <Text style={styles.Text}>Name: </Text>
-            <TextInput
-              value={name}
-              onChangeText={setName}
-              editable={editMode}
-              mode="outlined"
-            />
-            <Text style={styles.Text}> Bio: </Text>
-            <TextInput
-              value={description}
-              onChangeText={setDescription}
-              editable={editMode}
-              mode="outlined"
-            />
-            {editMode && (
-              <Button onPress={handleDonePress} style={styles.Button}>
-                Done
-              </Button>
-            )}
-          </View>
-        </SafeAreaView>
-        </ScrollView>
-    </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
+        >
+          <ScrollView contentContainerStyle={styles.modalContainer}>
+            <SafeAreaView style={styles.modalContainer}>
+              <View>
+                {loading && <ActivityIndicator />}
+                <Text style={styles.editValuesText}>
+                  {" "}
+                  Edit the values accordingly{" "}
+                </Text>
+                {errMsg !== "" && <Text>{errMsg}</Text>}
+                <Button
+                  onPress={handleAddProfilePic}
+                  style={styles.changePfpButton}
+                  mode="outlined"
+                >
+                  {" "}
+                  Change Profile Picture{" "}
+                </Button>
+                {image && <Image source={{ uri: image }} style={styles.Image} />}
+                <Text style={styles.Text}>Name: </Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  editable={editMode}
+                  mode="outlined"
+                />
+                <Text style={styles.Text}> Bio: </Text>
+                <TextInput
+                  value={description}
+                  onChangeText={setDescription}
+                  editable={editMode}
+                  mode="outlined"
+                />
+                {editMode && (
+                  <Button onPress={handleDonePress} style={styles.Button}>
+                    Done
+                  </Button>
+                )}
+              </View>
+            </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     </>
   );
@@ -228,41 +254,41 @@ export default function ProfileScreen() {
     setRefreshing(true);
     setLoading(true);
     if (user) {
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id);
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id);
 
-      if (error) {
+        if (error) {
+          console.error("Error fetching account:", error);
+        } else {
+          console.log(data);
+          setMyData(data);
+        }
+      } catch (error) {
         console.error("Error fetching account:", error);
-      } else {
-        console.log(data);
-        setMyData(data);
       }
-    } catch (error) {
-      console.error("Error fetching account:", error);
     }
-  }
-  setLoading(false);
-}
+    setLoading(false);
+  };
 
-useEffect(() => {
-  fetchData();
-}, [user]);
+  useEffect(() => {
+    fetchData();
+  }, [user]);
 
-useEffect(() => {
-  if (refreshing) {
+  useEffect(() => {
+    if (refreshing) {
+      fetchData();
+      setRefreshing(false);
+    }
+  }, [refreshing]);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
     fetchData();
     setRefreshing(false);
-  }
-}, [refreshing]);
- 
-const handleRefresh = () => {
-  setRefreshing(true);
-  fetchData(); // Call your fetchData function to fetch the latest data
-  setRefreshing(false);
-};
+  };
 
   const handleChangePassword = async (email) => {
     try {
@@ -283,40 +309,44 @@ const handleRefresh = () => {
     }
   };
 
-  // <Button onPress={handleDonePress}>Done</Button>
-
   return (
     <SafeAreaView>
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-      }
-    >
-      {loading ? (
-        <ActivityIndicator size="large" color="blue" />
-      ) : (
-        <>
-          <Button onPress={() => handleChangePassword(user.email)} style={styles.Button}>
-            Change Password
-          </Button>
-          <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
-            Logout
-          </Button>
-          <Button title="Delete Account" />
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {loading ? (
+          <ActivityIndicator size="large" color="blue" />
+        ) : (
+          <>
+            <Button
+              onPress={() => handleChangePassword(user.email)}
+              style={styles.Button}
+            >
+              Change Password
+            </Button>
+            <Button
+              onPress={() => supabase.auth.signOut()}
+              style={styles.Button}
+            >
+              Logout
+            </Button>
+            <Button title="Delete Account" />
 
-          {myData.map((card) => (
-            <ProfileCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              profile_pic_url={card.profile_pic_url}
-              description={card.description}
-            />
-          ))}
-        </>
-      )}
-    </ScrollView>
-  </SafeAreaView>
+            {myData.map((card) => (
+              <ProfileCard
+                key={card.id}
+                id={card.id}
+                name={card.name}
+                profile_pic_url={card.profile_pic_url}
+                description={card.description}
+              />
+            ))}
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
