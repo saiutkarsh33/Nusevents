@@ -136,7 +136,7 @@ export default function Register() {
           <Button
             onPress={handleSubmit}
             mode="contained"
-            color="cyan"
+            buttonColor="cyan"
             style={styles.button}
             labelStyle={styles.buttonLabel}
           >
