@@ -330,41 +330,13 @@ export default function ProfileScreen() {
       {
         text: "Ok",
         onPress: async () => {
-          //  try {
-
-          // Delete the user from the "users" table
-          //        const { error: deleteError } = await supabase
-          //          .from('auth.users')
-          //          .delete()
-          //          .eq('id', user.id);
-
-          //        if (deleteError) {
-          //          console.error("Error deleting account:", deleteError);
-          // Handle delete error
-          //          return;
-          //        } else {
-          //          console.log("Account deleted successfully");
-          //        }
-
-          //     const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id)
-
-          //     if (authDeleteError) {
-          //       console.error("Error deleting user from authentication:", authDeleteError);
-          //       // Handle authentication delete error
-          //       return;
-          //     } else {
-          //       console.log("User deleted from authentication");
-          //     }
+          // Delete the user
           await supabase.rpc("delete_user");
+          console.log("User deleted");
 
           // Sign out the user
           await supabase.auth.signOut();
           console.log("User signed out");
-          //  } catch (error) {
-          //    console.error("Error deleting account:", error);
-          // Handle error
-          //  }
-          // have to remove from auth
         },
       },
     ]);

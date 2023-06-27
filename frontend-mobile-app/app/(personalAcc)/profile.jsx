@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 
   Button: {
-    marginTop: 16,
+    margin: 8,
     backgroundColor: "cyan",
     alignSelf: "center",
   },
@@ -164,7 +164,7 @@ function ProfileCard(props) {
       const selectedAsset = result.assets[0];
       setImage(selectedAsset.uri);
       console.log("result successful", selectedAsset.uri);
-      setChangedImage(true)
+      setChangedImage(true);
     }
   };
 
@@ -214,7 +214,9 @@ function ProfileCard(props) {
                   {" "}
                   Change Profile Picture{" "}
                 </Button>
-                {image && <Image source={{ uri: image }} style={styles.Image} />}
+                {image && (
+                  <Image source={{ uri: image }} style={styles.Image} />
+                )}
                 <Text style={styles.Text}>Name: </Text>
                 <TextInput
                   value={name}
@@ -309,6 +311,27 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    Alert.alert("Are you sure?", "This action cannot be undone.", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Ok",
+        onPress: async () => {
+          // Delete the user
+          await supabase.rpc("delete_user");
+          console.log("User deleted");
+
+          // Sign out the user
+          await supabase.auth.signOut();
+          console.log("User signed out");
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView>
       <ScrollView
@@ -333,7 +356,14 @@ export default function ProfileScreen() {
             >
               Logout
             </Button>
-            <Button title="Delete Account" />
+            <Button
+              onPress={() => {
+                handleDeleteAccount();
+              }}
+              style={styles.Button}
+            >
+              Delete Account
+            </Button>
 
             {myData.map((card) => (
               <ProfileCard
