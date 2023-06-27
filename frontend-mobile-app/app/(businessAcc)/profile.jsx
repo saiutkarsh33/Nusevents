@@ -4,12 +4,11 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
-  Image, 
+  Image,
   KeyboardAvoidingView,
-  ScrollView, 
+  ScrollView,
   Platform,
   RefreshControl,
-
 } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -73,7 +72,7 @@ function ProfileCard(props) {
   const [image, setImage] = useState(null);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
-  const [changedImage, setChangedImage] = useState(false)
+  const [changedImage, setChangedImage] = useState(false);
   const { user } = useAuth();
 
   const handleEditPress = () => {
@@ -83,91 +82,90 @@ function ProfileCard(props) {
 
   const handleDonePress = async () => {
     if (user) {
-
       if (changedImage) {
-      setLoading(true);
-      let uploadedImage = null;
-      if (image) {
-        const { data, error } = await supabase.storage
-          .from("profile_pic")
-          .upload(`${new Date().getTime()}`, {
-            uri: image,
-            type: "jpg",
-            name: "name.jpg",
-          });
+        setLoading(true);
+        let uploadedImage = null;
+        if (image) {
+          const { data, error } = await supabase.storage
+            .from("profile_pic")
+            .upload(`${new Date().getTime()}`, {
+              uri: image,
+              type: "jpg",
+              name: "name.jpg",
+            });
+
+          if (error) {
+            console.log(error);
+            setErrMsg(error.message);
+            setLoading(false);
+            return;
+          }
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("profile_pic").getPublicUrl(data.path);
+          uploadedImage = publicUrl;
+        }
+        // Perform the update in the Supabase table
+        const { error } = await supabase
+          .from("users")
+          .update({
+            name: name,
+            description: description,
+            profile_pic_url: uploadedImage,
+          })
+          .eq("id", user.id);
 
         if (error) {
-          console.log(error);
-          setErrMsg(error.message);
-          setLoading(false);
-          return;
+          console.error("Error updating account:", error);
+        } else {
+          console.log("Account updated successfully");
+          setEditMode(false);
+          setEditVisible(false);
+          const { error2 } = await supabase
+            .from("events")
+            .update({
+              creator: name,
+            })
+            .eq("user_id", user.id);
         }
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("profile_pic").getPublicUrl(data.path);
-        uploadedImage = publicUrl;
-      }
-      // Perform the update in the Supabase table
-      const { error } = await supabase
-        .from("users")
-        .update({
-          name: name,
-          description: description,
-          profile_pic_url: uploadedImage,
-        })
-        .eq("id", user.id);
 
-      if (error) {
-        console.error("Error updating account:", error);
+        setLoading(false);
       } else {
-        console.log("Account updated successfully");
-        setEditMode(false);
-        setEditVisible(false);
-        const { error2 } = await supabase
-          .from("events")
+        const { error } = await supabase
+          .from("users")
           .update({
-            creator: name,
+            name: name,
+            description: description,
           })
-          .eq("user_id", user.id);
-      }
+          .eq("id", user.id);
 
-      setLoading(false);
-    } else {
-      const { error } = await supabase
-        .from("users")
-        .update({
-          name: name,
-          description: description,
-        })
-        .eq("id", user.id);
-
-      if (error) {
-        console.error("Error updating account:", error);
-      } else {
-        console.log("Account updated successfully");
-        setEditMode(false);
-        setEditVisible(false);
-        const { error2 } = await supabase
-          .from("events")
-          .update({
-            creator: name,
-          })
-          .eq("user_id", user.id);
+        if (error) {
+          console.error("Error updating account:", error);
+        } else {
+          console.log("Account updated successfully");
+          setEditMode(false);
+          setEditVisible(false);
+          const { error2 } = await supabase
+            .from("events")
+            .update({
+              creator: name,
+            })
+            .eq("user_id", user.id);
+        }
       }
     }
-  } 
   };
   const handleAddProfilePic = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
       });
-  
-      if (!result.canceled && result.assets.length > 0 ) {
+
+      if (!result.canceled && result.assets.length > 0) {
         const selectedAsset = result.assets[0];
         setImage(selectedAsset.uri);
         console.log("Image URI:", selectedAsset.uri);
-        setChangedImage(true)
+        setChangedImage(true);
       }
     } catch (error) {
       console.error("Error selecting image:", error);
@@ -199,53 +197,55 @@ function ProfileCard(props) {
         animationType="slide"
         onRequestClose={handleDonePress}
       >
-      <KeyboardAvoidingView
-       style={{ flex: 1 }}
-  behavior={Platform.OS === "ios" ? "padding" : null}
-  keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
-    >
-      <ScrollView contentContainerStyle={styles.modalContainer}>
-        <SafeAreaView style={styles.modalContainer}>
-          <View>
-            {loading && <ActivityIndicator />}
-            <Text style={styles.editValuesText}>
-              {" "}
-              Edit the values accordingly{" "}
-            </Text>
-            {errMsg !== "" && <Text>{errMsg}</Text>}
-            <Button
-              onPress={handleAddProfilePic}
-              style={styles.changePfpButton}
-              mode="outlined"
-            >
-              {" "}
-              Change Profile Picture{" "}
-            </Button>
-            {image && <Image source={{ uri: image }} style={styles.Image} />}
-            <Text style={styles.Text}>Name: </Text>
-            <TextInput
-              value={name}
-              onChangeText={setName}
-              editable={editMode}
-              mode="outlined"
-            />
-            <Text style={styles.Text}>Description: </Text>
-            <TextInput
-              value={description}
-              onChangeText={setDescription}
-              editable={editMode}
-              multiline
-              mode="outlined"
-            />
-            {editMode && (
-              <Button onPress={handleDonePress} style={styles.Button}>
-                Done
-              </Button>
-            )}
-          </View>
-          </SafeAreaView>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
+        >
+          <ScrollView contentContainerStyle={styles.modalContainer}>
+            <SafeAreaView style={styles.modalContainer}>
+              <View>
+                {loading && <ActivityIndicator />}
+                <Text style={styles.editValuesText}>
+                  {" "}
+                  Edit the values accordingly{" "}
+                </Text>
+                {errMsg !== "" && <Text>{errMsg}</Text>}
+                <Button
+                  onPress={handleAddProfilePic}
+                  style={styles.changePfpButton}
+                  mode="outlined"
+                >
+                  {" "}
+                  Change Profile Picture{" "}
+                </Button>
+                {image && (
+                  <Image source={{ uri: image }} style={styles.Image} />
+                )}
+                <Text style={styles.Text}>Name: </Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  editable={editMode}
+                  mode="outlined"
+                />
+                <Text style={styles.Text}>Description: </Text>
+                <TextInput
+                  value={description}
+                  onChangeText={setDescription}
+                  editable={editMode}
+                  multiline
+                  mode="outlined"
+                />
+                {editMode && (
+                  <Button onPress={handleDonePress} style={styles.Button}>
+                    Done
+                  </Button>
+                )}
+              </View>
+            </SafeAreaView>
           </ScrollView>
-    </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
       </Modal>
     </>
   );
@@ -254,54 +254,53 @@ function ProfileCard(props) {
 export default function ProfileScreen() {
   const { user } = useAuth();
 
-  const [name, setName] = useState(null)
+  const [name, setName] = useState(null);
   const [myData, setMyData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-      const fetchData = async () => {
-        setRefreshing(true);
-        setLoading(true);
-        if (user) {
-        try {
-          const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", user.id);
+  const fetchData = async () => {
+    setRefreshing(true);
+    setLoading(true);
+    if (user) {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id);
 
-          if (error) {
-            console.error("Error fetching account:", error);
-          } else {
-            console.log(data);
-            setMyData(data);
-            console.log(data[0].name)
-            setName(data[0].name);
-            console.log("MY NAME IS ", name)
-          }
-        } catch (error) {
+        if (error) {
           console.error("Error fetching account:", error);
+        } else {
+          console.log(data);
+          setMyData(data);
+          console.log(data[0].name);
+          setName(data[0].name);
+          console.log("MY NAME IS ", name);
         }
+      } catch (error) {
+        console.error("Error fetching account:", error);
       }
-      setLoading(false);
     }
+    setLoading(false);
+  };
 
-    useEffect(() => {
+  useEffect(() => {
+    fetchData();
+  }, [user]);
+
+  useEffect(() => {
+    if (refreshing) {
       fetchData();
-    }, [user]);
-  
-
-    useEffect(() => {
-      if (refreshing) {
-        fetchData();
-        setRefreshing(false);
-      }
-    }, [refreshing]);
-     
-    const handleRefresh = () => {
-      setRefreshing(true);
-      fetchData(); // Call your fetchData function to fetch the latest data
       setRefreshing(false);
-    };
+    }
+  }, [refreshing]);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchData(); // Call your fetchData function to fetch the latest data
+    setRefreshing(false);
+  };
 
   const handleChangePassword = async (email) => {
     try {
@@ -322,59 +321,54 @@ export default function ProfileScreen() {
     }
   };
 
-
   const handleDeleteAccount = async () => {
-    Alert.alert(
-      "Are you sure?",
-      "This action cannot be undone.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Ok",
-          onPress: async () => {
+    Alert.alert("Are you sure?", "This action cannot be undone.", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Ok",
+        onPress: async () => {
           //  try {
 
-              // Delete the user from the "users" table
-      //        const { error: deleteError } = await supabase
-      //          .from('auth.users')
-      //          .delete()
-      //          .eq('id', user.id);
-  
-      //        if (deleteError) {
-      //          console.error("Error deleting account:", deleteError);
-                // Handle delete error
-      //          return;
-      //        } else {
-      //          console.log("Account deleted successfully");
-      //        }
+          // Delete the user from the "users" table
+          //        const { error: deleteError } = await supabase
+          //          .from('auth.users')
+          //          .delete()
+          //          .eq('id', user.id);
 
-         //     const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id)
+          //        if (deleteError) {
+          //          console.error("Error deleting account:", deleteError);
+          // Handle delete error
+          //          return;
+          //        } else {
+          //          console.log("Account deleted successfully");
+          //        }
 
-         //     if (authDeleteError) {
-         //       console.error("Error deleting user from authentication:", authDeleteError);
-         //       // Handle authentication delete error
-         //       return;
-         //     } else {
-         //       console.log("User deleted from authentication");
-         //     }
-  
-              // Sign out the user
-              await supabase.auth.signOut();
-              console.log("User signed out");
+          //     const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id)
+
+          //     if (authDeleteError) {
+          //       console.error("Error deleting user from authentication:", authDeleteError);
+          //       // Handle authentication delete error
+          //       return;
+          //     } else {
+          //       console.log("User deleted from authentication");
+          //     }
+          await supabase.rpc("delete_user");
+
+          // Sign out the user
+          await supabase.auth.signOut();
+          console.log("User signed out");
           //  } catch (error) {
           //    console.error("Error deleting account:", error);
-              // Handle error
+          // Handle error
           //  }
-            // have to remove from auth 
-          },
+          // have to remove from auth
         },
-      ]
-    );
+      },
+    ]);
   };
-  
 
   // <Button onPress={handleDonePress}>Done</Button>
 
@@ -390,17 +384,27 @@ export default function ProfileScreen() {
           <ActivityIndicator size="large" color="blue" />
         ) : (
           <>
-            <Button onPress={() => handleChangePassword(user.email)} style={styles.Button}>
+            <Button
+              onPress={() => handleChangePassword(user.email)}
+              style={styles.Button}
+            >
               Change Password
             </Button>
-            <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
+            <Button
+              onPress={() => supabase.auth.signOut()}
+              style={styles.Button}
+            >
               Logout
             </Button>
-            <Button onPress = {() => {handleDeleteAccount()}}style={styles.Button}>
+            <Button
+              onPress={() => {
+                handleDeleteAccount();
+              }}
+              style={styles.Button}
+            >
               Delete Account
             </Button>
 
-  
             {myData.map((card) => (
               <ProfileCard
                 key={card.id}
@@ -415,5 +419,4 @@ export default function ProfileScreen() {
       </ScrollView>
     </SafeAreaView>
   );
-  
 }
