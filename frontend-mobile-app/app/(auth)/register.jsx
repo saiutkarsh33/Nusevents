@@ -61,7 +61,7 @@ export default function Register() {
       >
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
-          behavior={Platform.OS === "ios" ? "padding" : null}
+          behavior={Platform.OS === "ios" ? "padding" : "padding"}
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
         >
           <Text style={styles.welcome}>Welcome!</Text>
@@ -86,7 +86,7 @@ export default function Register() {
               items={accountTypeOptions}
               placeholder={{ label: "Select Account Type", value: null }}
               style={pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
+              
             />
           </View>
           <View style={styles.inputContainer}>
@@ -97,7 +97,7 @@ export default function Register() {
               items={residenceOptions}
               placeholder={{ label: "Select Name of Residence", value: null }}
               style={pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
+             
             />
           </View>
           <View style={styles.inputContainer}>

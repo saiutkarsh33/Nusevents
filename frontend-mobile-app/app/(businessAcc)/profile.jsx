@@ -254,6 +254,7 @@ function ProfileCard(props) {
 export default function ProfileScreen() {
   const { user } = useAuth();
 
+  const [name, setName] = useState(null)
   const [myData, setMyData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -273,6 +274,9 @@ export default function ProfileScreen() {
           } else {
             console.log(data);
             setMyData(data);
+            console.log(data[0].name)
+            setName(data[0].name);
+            console.log("MY NAME IS ", name)
           }
         } catch (error) {
           console.error("Error fetching account:", error);
@@ -318,6 +322,60 @@ export default function ProfileScreen() {
     }
   };
 
+
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      "Are you sure?",
+      "This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Ok",
+          onPress: async () => {
+          //  try {
+
+              // Delete the user from the "users" table
+      //        const { error: deleteError } = await supabase
+      //          .from('auth.users')
+      //          .delete()
+      //          .eq('id', user.id);
+  
+      //        if (deleteError) {
+      //          console.error("Error deleting account:", deleteError);
+                // Handle delete error
+      //          return;
+      //        } else {
+      //          console.log("Account deleted successfully");
+      //        }
+
+         //     const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id)
+
+         //     if (authDeleteError) {
+         //       console.error("Error deleting user from authentication:", authDeleteError);
+         //       // Handle authentication delete error
+         //       return;
+         //     } else {
+         //       console.log("User deleted from authentication");
+         //     }
+  
+              // Sign out the user
+              await supabase.auth.signOut();
+              console.log("User signed out");
+          //  } catch (error) {
+          //    console.error("Error deleting account:", error);
+              // Handle error
+          //  }
+            // have to remove from auth 
+          },
+        },
+      ]
+    );
+  };
+  
+
   // <Button onPress={handleDonePress}>Done</Button>
 
   return (
@@ -338,7 +396,10 @@ export default function ProfileScreen() {
             <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
               Logout
             </Button>
-            <Button title="Delete Account" />
+            <Button onPress = {() => {handleDeleteAccount()}}style={styles.Button}>
+              Delete Account
+            </Button>
+
   
             {myData.map((card) => (
               <ProfileCard
