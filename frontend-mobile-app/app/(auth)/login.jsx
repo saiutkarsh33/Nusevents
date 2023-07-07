@@ -40,8 +40,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {};
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -91,13 +89,6 @@ export default function LoginPage() {
             Sign Up Via Email
           </Button>
           {/* </Link> */}
-          <Button
-            mode="outlined"
-            onPress={handleGoogleSignIn}
-            style={styles.signup}
-          >
-            Sign Up Via Google
-          </Button>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
