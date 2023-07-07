@@ -80,14 +80,15 @@ export default function LoginPage() {
           </Button>
           {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
           {loading && <ActivityIndicator />}
-          <Link href="/register" style={styles.signup}>
-            <Button
-              mode="contained"
-              onPress={() => router.replace("/register")}
-            >
-              Sign Up Via Email
-            </Button>
-          </Link>
+          {/* <Link href="/register" style={styles.signup}> */}
+          <Button
+            mode="outlined"
+            onPress={() => router.replace("/register")}
+            style={styles.signup}
+          >
+            Sign Up Via Email
+          </Button>
+          {/* </Link> */}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

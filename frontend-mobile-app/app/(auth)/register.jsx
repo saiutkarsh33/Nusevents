@@ -50,11 +50,11 @@ export default function Register() {
       setErrMsg("Name cannot be empty");
       return;
     }
-    if (accountTypeValue === "") {
+    if (!accountTypeValue) {
       setErrMsg("Account Type cannot be empty");
       return;
     }
-    if (residenceValue === "") {
+    if (!residenceValue) {
       setErrMsg("Residence cannot be empty");
       return;
     }
@@ -234,6 +234,10 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginTop: 10,
+  },
+  back: {
+    margin: 10,
+    alignSelf: "left",
   },
 });
 
