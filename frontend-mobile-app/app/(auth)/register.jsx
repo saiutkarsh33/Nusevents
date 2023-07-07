@@ -32,8 +32,28 @@ export default function Register() {
   ];
 
   const handleSubmit = async () => {
+    if (email === "") {
+      setErrMsg("Email cannot be empty");
+      return;
+    }
+    if (password === "") {
+      setErrMsg("Password cannot be empty");
+      return;
+    }
     if (confirmPassword != password) {
       setErrMsg("Password does not match");
+      return;
+    }
+    if (userName === "") {
+      setErrMsg("Name cannot be empty");
+      return;
+    }
+    if (accountTypeValue === "") {
+      setErrMsg("Account Type cannot be empty");
+      return;
+    }
+    if (residenceValue === "") {
+      setErrMsg("Residence cannot be empty");
       return;
     }
     setLoading(true);
