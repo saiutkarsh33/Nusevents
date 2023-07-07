@@ -83,7 +83,7 @@ export default function LoginPage() {
           <Link href="/register" style={styles.signup}>
             <Button
               mode="contained"
-              // onPress={() => router.replace("/register")}
+              onPress={() => router.replace("/register")}
             >
               Sign Up Via Email
             </Button>

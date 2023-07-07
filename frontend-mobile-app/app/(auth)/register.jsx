@@ -10,6 +10,7 @@ import {
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RNPickerSelect from "react-native-picker-select";
+import { useRouter } from "expo-router";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ export default function Register() {
   const [description, setDescription] = useState("");
   const [accountTypeValue, setAccountTypeValue] = useState(null);
   const [residenceValue, setResidenceValue] = useState(null);
+  const router = useRouter();
 
   const accountTypeOptions = [
     { label: "Personal", value: "Personal" },
@@ -74,6 +76,7 @@ export default function Register() {
       setErrMsg(error.message);
       return;
     }
+    router.replace("/login");
   };
 
   return (
