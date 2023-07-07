@@ -14,6 +14,7 @@ import RNPickerSelect from "react-native-picker-select";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
@@ -31,8 +32,10 @@ export default function Register() {
   ];
 
   const handleSubmit = async () => {
-    // Validation code
-
+    if (confirmPassword != password) {
+      setErrMsg("Password does not match");
+      return;
+    }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email,
@@ -86,7 +89,6 @@ export default function Register() {
               items={accountTypeOptions}
               placeholder={{ label: "Select Account Type", value: null }}
               style={pickerSelectStyles}
-              
             />
           </View>
           <View style={styles.inputContainer}>
@@ -97,7 +99,6 @@ export default function Register() {
               items={residenceOptions}
               placeholder={{ label: "Select Name of Residence", value: null }}
               style={pickerSelectStyles}
-             
             />
           </View>
           <View style={styles.inputContainer}>
@@ -120,6 +121,17 @@ export default function Register() {
               onChangeText={setPassword}
               mode="outlined"
               placeholder="Password"
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              secureTextEntry
+              autoCapitalize="none"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              mode="outlined"
+              placeholder="Confirm Password"
               style={styles.input}
             />
           </View>
