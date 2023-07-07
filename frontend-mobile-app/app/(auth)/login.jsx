@@ -40,6 +40,8 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleSignIn = async () => {};
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -54,7 +56,7 @@ export default function LoginPage() {
           />
           <Text style={styles.welcome}>Welcome Back!</Text>
           <Text style={[styles.details, styles.text]}>
-            Please fill in your details to access your account
+            Please fill in your details to login
           </Text>
           <Text style={styles.label}>Email</Text>
           <TextInput
@@ -89,6 +91,13 @@ export default function LoginPage() {
             Sign Up Via Email
           </Button>
           {/* </Link> */}
+          <Button
+            mode="outlined"
+            onPress={handleGoogleSignIn}
+            style={styles.signup}
+          >
+            Sign Up Via Google
+          </Button>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -139,6 +148,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: "cyan",
     alignSelf: "center",
+    width: "60%",
   },
   error: {
     color: "red",
@@ -146,7 +156,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   signup: {
-    margin: 10,
+    marginTop: 15,
     alignSelf: "center",
+    width: "60%",
   },
 });

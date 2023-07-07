@@ -47,7 +47,9 @@
     "tailwindcss": "^3.3.2",
     "expo-crypto": "~12.2.1",
     "expo-web-browser": "~12.1.1",
-    "expo-secure-store": "~12.1.1"
+    "expo-secure-store": "~12.1.1",
+    "react-native-web": "~0.18.10",
+    "@expo/webpack-config": "^18.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -66,8 +68,10 @@
     ],
     "transform": {
       "^.+\\.[jt]sx?$": "babel-jest"
-  },
-  "setupFiles": ["./path/to/jestSetupFile.js"]
+    },
+    "setupFiles": [
+      "./path/to/jestSetupFile.js"
+    ]
   },
   "private": true
 }
