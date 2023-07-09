@@ -20,7 +20,6 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleSubmit = async () => {
-    setErrMsg("");
     if (email === "") {
       setErrMsg("Email cannot be empty");
       return;
@@ -81,13 +80,12 @@ export default function LoginPage() {
           </Button>
           {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
           {loading && <ActivityIndicator />}
-          <Link href="/register">
+          <Link href="/register" style={styles.signup}>
             <Button
               mode="contained"
-              style={styles.registerButton}
               // onPress={() => router.replace("/register")}
             >
-              Go to Register
+              Sign Up Via Email
             </Button>
           </Link>
         </ScrollView>
@@ -145,5 +143,9 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginTop: 10,
+  },
+  signup: {
+    margin: 10,
+    alignSelf: "center",
   },
 });
