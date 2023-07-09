@@ -5,3 +5,5 @@ module.exports = function(api) {
     plugins: [require.resolve("expo-router/babel"), "module:react-native-dotenv", "nativewind/babel"],
   };
 };
+
+
