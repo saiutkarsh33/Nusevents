@@ -10,14 +10,14 @@ import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { useRouter } from "expo-router";
+ import { useRouter } from "expo-router";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  // const router = useRouter();
+   const router = useRouter();
 
   const handleSubmit = async () => {
     if (email === "") {
@@ -54,7 +54,7 @@ export default function LoginPage() {
           />
           <Text style={styles.welcome}>Welcome Back!</Text>
           <Text style={[styles.details, styles.text]}>
-            Please fill in your details to access your account
+            Please fill in your details to login
           </Text>
           <Text style={styles.label}>Email</Text>
           <TextInput
@@ -80,14 +80,15 @@ export default function LoginPage() {
           </Button>
           {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
           {loading && <ActivityIndicator />}
-          <Link href="/register" style={styles.signup}>
-            <Button
-              mode="contained"
-               // onPress={() => router.replace("/register")}
-            >
-              Sign Up Via Email
-            </Button>
-          </Link>
+          {/* <Link href="/register" style={styles.signup}> */}
+          <Button
+            mode="outlined"
+            onPress={() => router.replace("/register")}
+            style={styles.signup}
+          >
+            Sign Up
+          </Button>
+          {/* </Link> */}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: "cyan",
     alignSelf: "center",
+    width: "60%",
   },
   error: {
     color: "red",
@@ -145,7 +147,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   signup: {
-    margin: 10,
+    marginTop: 15,
     alignSelf: "center",
+    width: "60%",
   },
 });

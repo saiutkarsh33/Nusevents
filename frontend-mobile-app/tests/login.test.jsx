@@ -1,15 +1,14 @@
-import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { NavigationContainer } from '@react-navigation/native';
+
 import LoginPage from "../app/(auth)/login";
+//import AuthRoot from "../app/(auth)/__layout";
 
-describe("Login", () => {
-  it("displays an error message when submitting with empty email field", () => {
-    const { getByLabelText, getByText } = render(<LoginPage />);
-    const submitButton = getByText("Submit");
-
-    fireEvent.press(submitButton);
-
-    // Check if the error message is displayed
-    expect(getByText("Email cannot be empty")).toBeTruthy();
+describe('Login ', () => {
+    it('navigates on sign up button press', () => {
+      const push = jest.fn();
+      const { getByText } = render(<LoginPage navigation={{ push }} />);
+      fireEvent.press(getByText('Sign Up'));
+      expect(push).toHaveBeenCalledWith('Register');
+    });
   });
-});
