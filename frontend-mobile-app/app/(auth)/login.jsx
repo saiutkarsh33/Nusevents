@@ -10,14 +10,14 @@ import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+// import { useRouter } from "expo-router";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleSubmit = async () => {
     if (email === "") {
@@ -83,7 +83,7 @@ export default function LoginPage() {
           <Link href="/register" style={styles.signup}>
             <Button
               mode="contained"
-              // onPress={() => router.replace("/register")}
+               // onPress={() => router.replace("/register")}
             >
               Sign Up Via Email
             </Button>

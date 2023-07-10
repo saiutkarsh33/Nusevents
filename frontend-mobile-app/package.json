@@ -63,7 +63,7 @@
     "transform": {
       "^.+\\.[jt]sx?$": "babel-jest"
   },
-  "setupFiles": ["./path/to/jestSetupFile.js"]
+  "setupFiles": ["./setupTests.js"]
   },
   "private": true
 }
