@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, RefreshControl } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal, StyleSheet, RefreshControl, Image } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { Button, Card, Text, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,9 +13,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 16,
   },
-  cardContainer: {
-    backgroundColor: "white", // Add this line to set the background color
-  },
+    cardContainer: {
+      backgroundColor: "#F5F3FF", // Set the background color to a very light lilac
+      borderRadius: 0,
+      marginVertical: 10,  // Set the border radius of the card to 0
+    },
+   
+    fullImage: {
+      width: "100%",
+      height: "100%",
+    },
+
+    closeButtonImage: {
+      marginTop: -25,
+      backgroundColor: 'cyan',
+    },
 
 
   middleText: {
@@ -47,11 +59,23 @@ const styles = StyleSheet.create({
 
 export function TheirCard(props) {
 
+  const [picVisible, setPicVisible] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedButton, setSelectedButton] = useState(() => props.selected)
   
   const { user } = useAuth();
+
+  const handleOpenPic = () => {
+    setPicVisible(true);
+  };
+  
+  const handleClosePic = () => {
+    setPicVisible(false);
+  };
+  
+
+
 
   const handleViewMorePress = () => {
     setModalVisible(true);
@@ -191,7 +215,7 @@ export function TheirCard(props) {
 
   return (
     <>
-      <Card style={styles.cardContainer} >
+      <Card style={styles.cardContainer} mode = 'outlined'>
         <Card.Content>
           <Text variant="titleLarge">
             {props.name} • {props.date}
@@ -201,7 +225,7 @@ export function TheirCard(props) {
           </Text>
         </Card.Content>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenPic}>
           <Card.Cover source={{ uri: props.image_url }} />
         </TouchableOpacity>
 
@@ -214,7 +238,10 @@ export function TheirCard(props) {
             >
               I&apos;m in
             </Button>
-            <Button onPress={handleViewMorePress} mode = { "outlined"}>View More</Button>
+            <Button onPress={handleViewMorePress} mode="outlined" style={{ backgroundColor: "cyan" }}>
+  View Moree
+</Button>
+
           </Card.Actions>
         </TouchableOpacity>
       </Card>
@@ -227,6 +254,15 @@ export function TheirCard(props) {
           </View>
         </SafeAreaView>
       </Modal>
+
+      <Modal visible={picVisible} animationType="slide" onRequestClose={handleClosePic}>
+  <View style={styles.modalContainer}>
+    <Image source={{ uri: props.image_url }}  style={styles.fullImage} resizeMode="contain" />
+    <Button onPress={handleClosePic} style = {styles.closeButtonImage}>Close</Button>
+  </View>
+ </Modal>
+
+
     </>
   );
 }
@@ -306,7 +342,7 @@ export default function EventsPage() {
   const sortedEventsData = eventsData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1,backgroundColor: "white" }}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={
