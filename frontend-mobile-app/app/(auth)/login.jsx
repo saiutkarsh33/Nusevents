@@ -56,16 +56,15 @@ export default function LoginPage() {
           <Text style={[styles.details, styles.text]}>
             Please fill in your details to login
           </Text>
-          <Text style={styles.label}>Email</Text>
           <TextInput
             autoCapitalize="none"
             textContentType="emailAddress"
             value={email}
             onChangeText={setEmail}
             mode="outlined"
+            placeholder="Email"
             style={styles.input}
           />
-          <Text style={styles.label}>Password</Text>
           <TextInput
             secureTextEntry
             autoCapitalize="none"
@@ -73,6 +72,7 @@ export default function LoginPage() {
             value={password}
             onChangeText={setPassword}
             mode="outlined"
+            placeholder="Password"
             style={styles.input}
           />
           <Button onPress={handleSubmit} mode="contained" style={styles.button}>
@@ -81,12 +81,13 @@ export default function LoginPage() {
           {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
           {loading && <ActivityIndicator />}
           {/* <Link href="/register" style={styles.signup}> */}
+          <Text style={styles.signupText}>Not a Member?</Text>
           <Button
             mode="outlined"
             onPress={() => router.replace("/register")}
             style={styles.signup}
           >
-            Sign Up Via Email
+            Sign Up
           </Button>
           {/* </Link> */}
         </ScrollView>
@@ -103,13 +104,11 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    justifyContent: "center",
   },
   image: {
-    marginTop: 50,
     marginBottom: 50,
     width: "100%",
-    height: 100,
+    height: "15%",
   },
   welcome: {
     fontSize: 40,
@@ -119,24 +118,20 @@ const styles = StyleSheet.create({
   },
   details: {
     textAlign: "center",
-    paddingBottom: 60,
+    paddingBottom: 30,
     fontSize: 18,
   },
   text: {
     fontSize: 18,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    paddingTop: 10,
-  },
   input: {
     fontSize: 16,
     fontWeight: "bold",
     paddingVertical: 8,
+    marginTop: 10,
   },
   button: {
-    marginTop: 16,
+    marginTop: 15,
     backgroundColor: "cyan",
     alignSelf: "center",
     width: "60%",
@@ -147,8 +142,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   signup: {
-    marginTop: 15,
+    marginTop: 5,
     alignSelf: "center",
     width: "60%",
+  },
+  signupText: {
+    marginTop: 20,
+    alignSelf: "center",
   },
 });

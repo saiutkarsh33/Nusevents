@@ -222,12 +222,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   button: {
-    marginTop: 16,
+    marginTop: 15,
     backgroundColor: "cyan",
     alignSelf: "center",
+    width: "60%",
   },
   buttonLabel: {
-    fontWeight: "bold",
     fontSize: 15,
   },
   error: {

@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { Image, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  View,
+} from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../lib/supabase";
@@ -17,9 +24,10 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    marginTop: 16,
+    marginBottom: 16,
     backgroundColor: "cyan",
     alignSelf: "center",
+    width: "60%",
   },
 
   successText: {
@@ -29,10 +37,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   Image: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
     alignSelf: "center",
-    margin: 5,
+    margin: 20,
   },
   inputContainer: {
     marginBottom: 16,
@@ -40,27 +48,30 @@ const styles = StyleSheet.create({
   labelText: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 4,
+    marginTop: 10,
   },
   inputBox: {
     fontSize: 16,
     fontWeight: "bold",
     paddingVertical: 8,
   },
+  error: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 20,
+  },
 });
-
 
 function EventForm({ onEventCreate }) {
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
-  const [description, setDescription] = useState("")
+  const [description, setDescription] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const { user } = useAuth();
-
 
   const resetForm = () => {
     setEventName("");
@@ -87,7 +98,19 @@ function EventForm({ onEventCreate }) {
   const handleCreate = async () => {
     setErrMsg("");
     if (eventName === "") {
-      setErrMsg("Event name cannot be empty");
+      setErrMsg("Name of event cannot be empty");
+      return;
+    }
+    if (eventVenue === "") {
+      setErrMsg("Venue of event cannot be empty");
+      return;
+    }
+    if (eventDate === "") {
+      setErrMsg("Date of event cannot be empty");
+      return;
+    }
+    if (eventTime === "") {
+      setErrMsg("Time of event cannot be empty");
       return;
     }
     setLoading(true);
@@ -127,12 +150,15 @@ function EventForm({ onEventCreate }) {
         return;
       }
 
-      console.log("THIS MY residence" , data.residence, "this is my creator", data.name)
+      console.log(
+        "THIS MY residence",
+        data.residence,
+        "this is my creator",
+        data.name
+      );
 
       const creatorName = data.name;
       const residenceName = data.residence;
-
-      
 
       const { error: insertError } = await supabase
         .from("events")
@@ -145,8 +171,7 @@ function EventForm({ onEventCreate }) {
           venue: eventVenue,
           description: description,
           creator: creatorName,
-        residence: residenceName,
-
+          residence: residenceName,
         })
         .single();
 
@@ -170,63 +195,64 @@ function EventForm({ onEventCreate }) {
   };
 
   return (
-
     <KeyboardAvoidingView
-    style={{ flex: 1 }}
-behavior={Platform.OS === "ios" ? "padding" : null}
-keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
- >
-   <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-    <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-      <Text  style={styles.labelText}>Name of Event</Text>
-      <TextInput
-        value={eventName}
-        onChangeText={setEventName}
-        mode="outlined"
-        style={styles.inputBox}
-      />
-      <Text  style={styles.labelText}>Venue</Text>
-      <TextInput
-        value={eventVenue}
-        onChangeText={setEventVenue}
-        mode="outlined"
-        style={styles.inputBox}
-      />
-      <Text  style={styles.labelText}>Date (in YYYY-MM-DD) </Text>
-      <TextInput
-        value={eventDate}
-        onChangeText={setEventDate}
-        mode="outlined"
-        placeholder="YYYY-DD-MM"
-        style={styles.inputBox}
-      />
-      <Text style={styles.labelText}>Time</Text>
-      <TextInput
-        value={eventTime}
-        onChangeText={setEventTime}
-        mode="outlined"
-        style={styles.inputBox}
-      />
-      <Text  style={styles.labelText}>Description</Text>
-      <TextInput
-        value={description}
-        onChangeText={setDescription}
-        mode="outlined"
-        style={styles.inputBox}
-        multiline
-      />
-      {errMsg !== "" && <Text>{errMsg}</Text>}
-      <Button onPress={handleAddImage} style={styles.button}>
-        Add Image
-      </Button>
-      {image && <Image source={{ uri: image }} style={styles.Image} />}
-      <Button onPress={handleCreate} style={styles.button}>
-        Create
-      </Button>
-      {loading && <ActivityIndicator />}
-    </SafeAreaView>
-    </ScrollView>
-  </KeyboardAvoidingView>
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <SafeAreaView style={{ flex: 1, paddingHorizontal: 10 }}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Name of Event</Text>
+            <TextInput
+              value={eventName}
+              onChangeText={setEventName}
+              mode="outlined"
+              style={styles.inputBox}
+            />
+            <Text style={styles.labelText}>Venue</Text>
+            <TextInput
+              value={eventVenue}
+              onChangeText={setEventVenue}
+              mode="outlined"
+              style={styles.inputBox}
+            />
+            <Text style={styles.labelText}>Date (in YYYY-MM-DD) </Text>
+            <TextInput
+              value={eventDate}
+              onChangeText={setEventDate}
+              mode="outlined"
+              placeholder="YYYY-DD-MM"
+              style={styles.inputBox}
+            />
+            <Text style={styles.labelText}>Time</Text>
+            <TextInput
+              value={eventTime}
+              onChangeText={setEventTime}
+              mode="outlined"
+              style={styles.inputBox}
+            />
+            <Text style={styles.labelText}>Description</Text>
+            <TextInput
+              value={description}
+              onChangeText={setDescription}
+              mode="outlined"
+              style={styles.inputBox}
+              multiline
+            />
+          </View>
+          {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+          {image && <Image source={{ uri: image }} style={styles.Image} />}
+          <Button onPress={handleAddImage} style={styles.button}>
+            Add Image
+          </Button>
+          <Button onPress={handleCreate} style={styles.button}>
+            Create
+          </Button>
+          {loading && <ActivityIndicator />}
+        </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
