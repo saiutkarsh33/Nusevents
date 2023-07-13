@@ -9,7 +9,11 @@ import {
 } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import RNPickerSelect from "react-native-picker-select";
+import { Dropdown } from 'react-native-element-dropdown';
+
+
+
+
 import { useRouter } from "expo-router";
 
 export default function Register() {
@@ -27,11 +31,13 @@ export default function Register() {
   const accountTypeOptions = [
     { label: "Personal", value: "Personal" },
     { label: "Business", value: "Business" },
-  ];
-  const residenceOptions = [
+];
+
+const residenceOptions = [
     { label: "Tembusu", value: "Tembusu" },
     { label: "Sheares", value: "Sheares" },
-  ];
+];
+
 
   const handleSubmit = async () => {
     if (email === "") {
@@ -104,26 +110,34 @@ export default function Register() {
               style={styles.input}
             />
           </View>
+          
           <View style={styles.inputContainer}>
-            <Text style={styles.dropdownLabel}>Account Type</Text>
-            <RNPickerSelect
-              value={accountTypeValue}
-              onValueChange={(value) => setAccountTypeValue(value)}
-              items={accountTypeOptions}
-              placeholder={{ label: "Select Account Type", value: null }}
-              style={pickerSelectStyles}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.dropdownLabel}>Residence</Text>
-            <RNPickerSelect
-              value={residenceValue}
-              onValueChange={(value) => setResidenceValue(value)}
-              items={residenceOptions}
-              placeholder={{ label: "Select Name of Residence", value: null }}
-              style={pickerSelectStyles}
-            />
-          </View>
+  <Text style={styles.dropdownLabel}>Account Type</Text>
+  <Dropdown
+    style={styles.dropdown}
+    placeholder="Select Account Type"
+    value={accountTypeValue}
+    onChange={item => setAccountTypeValue(item.value)}
+    data = {accountTypeOptions}
+    labelField="label"
+        valueField="value"
+
+  />
+</View>
+<View style={styles.inputContainer}>
+<Text style={styles.dropdownLabel}>Residence </Text>
+  <Dropdown
+    style={styles.dropdown}
+    placeholder="Select Residence "
+    value={residenceValue}
+    onChange={item => setResidenceValue(item.value)}
+    data = {residenceOptions}
+    labelField="label"
+        valueField="value"
+
+  />
+</View>
+
           <View style={styles.inputContainer}>
             <TextInput
               autoCapitalize="none"
@@ -239,25 +253,12 @@ const styles = StyleSheet.create({
     margin: 10,
     alignSelf: "left",
   },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
 });
 
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  inputAndroid: {
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
+
