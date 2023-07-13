@@ -7,13 +7,18 @@ import {
   StyleSheet,
   Alert,
   Image,
-  KeyboardAvoidingView, 
+  KeyboardAvoidingView,
   Platform,
   RefreshControl,
-
 } from "react-native";
 import { supabase } from "../../lib/supabase";
-import { Button, Card, Text, ActivityIndicator, TextInput } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Text,
+  ActivityIndicator,
+  TextInput,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
 import * as ImagePicker from "expo-image-picker";
@@ -86,6 +91,7 @@ function MyCard(props) {
   const [signupVisible, setSignupVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [name, setName] = useState(props.name);
   const [venue, setVenue] = useState(props.venue);
   const [date, setDate] = useState(props.date);
   const [time, setTime] = useState(props.time);
@@ -111,84 +117,82 @@ function MyCard(props) {
 
   const handleDonePress = async () => {
     if (user) {
+      setLoading(true);
+      if (changedPicture) {
+        let uploadedImage = null;
+        if (image) {
+          const { data, error } = await supabase.storage
+            .from("images")
+            .upload(`${new Date().getTime()}`, {
+              uri: image,
+              type: "jpg",
+              name: "name.jpg",
+            });
 
-       setLoading(true);
-    if (changedPicture)   { 
-      let uploadedImage = null;
-      if (image) {
-        const { data, error } = await supabase.storage
-          .from("images")
-          .upload(`${new Date().getTime()}`, {
-            uri: image,
-            type: "jpg",
-            name: "name.jpg",
-          });
-
-        if (error) {
-          console.log(error);
-          setErrMsg(error.message);
-          setLoading(false);
-          return;
+          if (error) {
+            console.log(error);
+            setErrMsg(error.message);
+            setLoading(false);
+            return;
+          }
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("images").getPublicUrl(data.path);
+          uploadedImage = publicUrl;
         }
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("images").getPublicUrl(data.path);
-        uploadedImage = publicUrl;
-      }
-      try {
-        // Perform the update in the Supabase table
-        const { error } = await supabase
-          .from("events")
-          .update({
-            venue: venue,
-            date: date,
-            time: time,
-            description: desc,
-            image_url: uploadedImage,
-          })
-          .eq("id", props.id);
+        try {
+          // Perform the update in the Supabase table
+          const { error } = await supabase
+            .from("events")
+            .update({
+              name: name,
+              venue: venue,
+              date: date,
+              time: time,
+              description: desc,
+              image_url: uploadedImage,
+            })
+            .eq("id", props.id);
 
-        if (error) {
+          if (error) {
+            console.error("Error updating event:", error);
+          } else {
+            console.log("Event updated successfully");
+            setEditMode(false);
+            setEditVisible(false);
+            setChangedPicture(false);
+          }
+        } catch (error) {
           console.error("Error updating event:", error);
-        } else {
-          console.log("Event updated successfully");
-          setEditMode(false);
-          setEditVisible(false);
-          setChangedPicture(false);
         }
-      } catch (error) {
-        console.error("Error updating event:", error);
-      }
-    }
-    else {
-
-    try {
-      // Perform the update in the Supabase table
-      const { error } = await supabase
-        .from("events")
-        .update({
-          venue: venue,
-          date: date,
-          time: time,
-          description: desc,
-        })
-        .eq("id", props.id);
-
-      if (error) {
-        console.error("Error updating event:", error);
       } else {
-        console.log("Event updated successfully");
-        setEditMode(false);
-        setEditVisible(false);
-        setChangedPicture(false);
-      }
-    } catch (error) {
-      console.error("Error updating event:", error);
-    }
+        try {
+          // Perform the update in the Supabase table
+          const { error } = await supabase
+            .from("events")
+            .update({
+              name: name,
+              venue: venue,
+              date: date,
+              time: time,
+              description: desc,
+            })
+            .eq("id", props.id);
 
-   }
-  }
-};
+          if (error) {
+            console.error("Error updating event:", error);
+          } else {
+            console.log("Event updated successfully");
+            setEditMode(false);
+            setEditVisible(false);
+            setChangedPicture(false);
+          }
+        } catch (error) {
+          console.error("Error updating event:", error);
+        }
+      }
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -214,10 +218,10 @@ function MyCard(props) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
     if (!result.canceled) {
-      console.log(result.assets[0].uri)
+      console.log(result.assets[0].uri);
       setImage(result.assets[0].uri);
       console.log("result successful", image);
-      setChangedPicture(true)
+      setChangedPicture(true);
     }
   };
 
@@ -257,70 +261,76 @@ function MyCard(props) {
         animationType="slide"
         onRequestClose={handleDonePress}
       >
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
+        >
+          <ScrollView contentContainerStyle={styles.modalContainer}>
+            <SafeAreaView style={styles.modalContainer}>
+              <View>
+                <Text style={styles.editValuesText}>
+                  {" "}
+                  Edit the values accordingly{" "}
+                </Text>
+                {errMsg !== "" && <Text>{errMsg}</Text>}
+                <Text style={styles.Text}>Name: </Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  editable={editMode}
+                  mode="outlined"
+                />
+                <Text style={styles.Text}>Venue: </Text>
+                <TextInput
+                  value={venue}
+                  onChangeText={setVenue}
+                  editable={editMode}
+                  mode="outlined"
+                />
+                <Text style={styles.Text}>Date: </Text>
+                <TextInput
+                  value={date}
+                  onChangeText={setDate}
+                  editable={editMode}
+                  mode="outlined"
+                />
+                <Text style={styles.Text}>Time: </Text>
+                <TextInput
+                  value={time}
+                  onChangeText={setTime}
+                  editable={editMode}
+                  mode="outlined"
+                />
+                <Text style={styles.Text}>Description: </Text>
+                <TextInput
+                  value={desc}
+                  onChangeText={setDesc}
+                  editable={editMode}
+                  multiline
+                  mode="outlined"
+                />
+                <Button
+                  onPress={handleAddProfilePic}
+                  style={styles.changePfpButton}
+                  mode="outlined"
+                >
+                  {" "}
+                  Change Profile Picture{" "}
+                </Button>
+                {image && (
+                  <Image source={{ uri: image }} style={styles.Image} />
+                )}
 
-<KeyboardAvoidingView
-       style={{ flex: 1 }}
-  behavior={Platform.OS === "ios" ? "padding" : null}
-  keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}// Adjust this offset as needed
-    >
-      <ScrollView contentContainerStyle={styles.modalContainer}>
-        <SafeAreaView style={styles.modalContainer}>
-          <View>
-            
-            <Text style={styles.editValuesText}>
-              {" "}
-              Edit the values accordingly{" "}
-            </Text>
-            {errMsg !== "" && <Text>{errMsg}</Text>}
-            <Text style={styles.Text}>Venue: </Text>
-            <TextInput
-              value={venue}
-              onChangeText={setVenue}
-              editable={editMode}
-              mode="outlined"
-            />
-            <Text style={styles.Text}>Date: </Text>
-            <TextInput
-              value={date}
-              onChangeText={setDate}
-              editable={editMode}
-              mode="outlined"
-            />
-            <Text style={styles.Text}>Time: </Text>
-            <TextInput
-              value={time}
-              onChangeText={setTime}
-              editable={editMode}
-              mode="outlined"
-            />
-            <Text style={styles.Text}>Description: </Text>
-            <TextInput
-              value={desc}
-              onChangeText={setDesc}
-              editable={editMode}
-              multiline
-              mode="outlined"
-            />
-            <Button
-              onPress={handleAddProfilePic}
-              style={styles.changePfpButton}
-              mode="outlined"
-            >
-              {" "}
-              Change Profile Picture{" "}
-              </Button>
-              {image && <Image source={{ uri: image }} style={styles.Image} />}
-            
-
-            {editMode && (
-              <Button onPress={handleDonePress} style={styles.doneButton}>
-                Done
-              </Button>
-            )}
-          </View>
-        </SafeAreaView>
-        </ScrollView>
-    </KeyboardAvoidingView>
+                {editMode && (
+                  <Button onPress={handleDonePress} style={styles.doneButton}>
+                    Done
+                  </Button>
+                )}
+              </View>
+            </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal
@@ -359,28 +369,27 @@ export default function MyEvents() {
     setRefreshing(true);
     setLoading(true);
 
-  if (user)  {
-    try {
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .eq("user_id", user.id);
+    if (user) {
+      try {
+        const { data, error } = await supabase
+          .from("events")
+          .select("*")
+          .eq("user_id", user.id);
 
-      if (error) {
+        if (error) {
+          console.error("Error fetching events:", error);
+        } else {
+          console.log(data);
+          setRefreshing(false);
+          setEventsData(data);
+        }
+      } catch (error) {
         console.error("Error fetching events:", error);
-      } else {
-        console.log(data);
-        setRefreshing(false);
-        setEventsData(data);
       }
-    } catch (error) {
-      console.error("Error fetching events:", error);
     }
+
+    setLoading(false);
   }
-
-  setLoading(false);
-
-}
 
   useEffect(() => {
     fetchData();
@@ -392,7 +401,7 @@ export default function MyEvents() {
       setRefreshing(false);
     }
   }, [refreshing]);
-   
+
   const handleRefresh = () => {
     setRefreshing(true);
     fetchData(); // Call your fetchData function to fetch the latest data
