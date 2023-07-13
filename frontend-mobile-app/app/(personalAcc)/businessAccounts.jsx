@@ -6,9 +6,16 @@ import {
   Modal,
   StyleSheet,
   RefreshControl,
+  Image,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
-import { Button, Card, Text, ActivityIndicator } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Text,
+  ActivityIndicator,
+  Switch,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
 
@@ -21,7 +28,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   cardContainer: {
-    // borderRadius: 0,
+    borderRadius: 0,
     marginVertical: 10,
   },
   cardTitle: {
@@ -154,27 +161,28 @@ function EventCard(props) {
       <Card style={styles.cardContainer} mode="outlined">
         <Card.Title title={props.name} titleStyle={styles.cardTitle} />
 
-        <TouchableOpacity>
-          <Card.Cover
-            source={{ uri: props.profile_pic_url }}
-            theme={{
-              roundness: 4,
-              isV3: false,
-            }}
-          />
-        </TouchableOpacity>
+        {/* <TouchableOpacity> */}
+        <Card.Cover
+          source={{ uri: props.profile_pic_url }}
+          theme={{
+            roundness: 4,
+            isV3: false,
+          }}
+        />
+        {/* </TouchableOpacity> */}
 
         <TouchableOpacity>
           <Card.Actions>
-            <Button
+            {/* <Button
               onPress={handleFollowPress}
               mode={"outlined"}
               style={{ backgroundColor: followedButton ? "yellow" : "white" }}
-            >
-              Follow
-            </Button>
+            > */}
+            {followedButton ? <Text>Following</Text> : <Text>Follow</Text>}
+            <Switch value={followedButton} onValueChange={handleFollowPress} />
+            {/* </Button> */}
             <Button onPress={handleViewDescPress} mode={"outlined"}>
-              View Bio
+              Learn More
             </Button>
             <Button onPress={handleViewEventsPress} mode={"outlined"}>
               View Events
@@ -204,6 +212,21 @@ function EventCard(props) {
         onRequestClose={handleCloseEventsModal}
       >
         <SafeAreaView style={styles.modalContainer}>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              alignSelf: "flex-start",
+              marginBottom: 20,
+            }}
+          >
+            {props.name}
+          </Text>
+          <Image
+            source={{ uri: props.image_url }}
+            style={styles.fullImage}
+            resizeMode="contain"
+          />
           {eventsData.map((event) => (
             <Text key={event.id} style={styles.Text}>
               {" "}
