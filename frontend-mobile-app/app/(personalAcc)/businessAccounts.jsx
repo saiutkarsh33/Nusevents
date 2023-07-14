@@ -15,6 +15,7 @@ import {
   Text,
   ActivityIndicator,
   Switch,
+  Avatar,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
@@ -22,10 +23,9 @@ import { useAuth } from "../../contexts/auth";
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
-    padding: 16,
+    paddingHorizontal: 20,
   },
   cardContainer: {
     borderRadius: 0,
@@ -35,6 +35,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 22,
     marginVertical: 10,
+  },
+
+  eventDescCard: {
+    marginTop: 30,
+    width: "100%",
+  },
+
+  eventDescContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  fullImage: {
+    width: "100%",
+    height: "30%",
   },
 
   Text: {
@@ -52,19 +66,19 @@ const styles = StyleSheet.create({
 });
 
 function EventCard(props) {
-  const [modalDescVisible, setModalDescVisible] = useState(false);
+  // const [modalDescVisible, setModalDescVisible] = useState(false);
   const [modalEventsVisible, setModalEventsVisible] = useState(false);
   const { user } = useAuth();
   const [followedButton, setFollowedButton] = useState(() => props.followed);
   const [eventsData, setEventsData] = useState([]);
 
-  const handleViewDescPress = () => {
-    setModalDescVisible(true);
-  };
+  // const handleViewDescPress = () => {
+  //   setModalDescVisible(true);
+  // };
 
-  const handleCloseDescModal = () => {
-    setModalDescVisible(false);
-  };
+  // const handleCloseDescModal = () => {
+  //   setModalDescVisible(false);
+  // };
 
   const handleViewEventsPress = async () => {
     try {
@@ -181,17 +195,17 @@ function EventCard(props) {
             {followedButton ? <Text>Following</Text> : <Text>Follow</Text>}
             <Switch value={followedButton} onValueChange={handleFollowPress} />
             {/* </Button> */}
-            <Button onPress={handleViewDescPress} mode={"outlined"}>
+            {/* <Button onPress={handleViewDescPress} mode={"outlined"}>
               Learn More
-            </Button>
+            </Button> */}
             <Button onPress={handleViewEventsPress} mode={"outlined"}>
-              View Events
+              Learn More{" "}
             </Button>
           </Card.Actions>
         </TouchableOpacity>
       </Card>
 
-      <Modal
+      {/* <Modal
         visible={modalDescVisible}
         animationType="slide"
         onRequestClose={handleCloseDescModal}
@@ -204,7 +218,7 @@ function EventCard(props) {
             </Button>
           </View>
         </SafeAreaView>
-      </Modal>
+      </Modal> */}
 
       <Modal
         visible={modalEventsVisible}
@@ -212,31 +226,71 @@ function EventCard(props) {
         onRequestClose={handleCloseEventsModal}
       >
         <SafeAreaView style={styles.modalContainer}>
-          <Text
-            style={{
-              fontSize: 30,
-              fontWeight: "bold",
-              alignSelf: "flex-start",
-              marginBottom: 20,
-            }}
-          >
-            {props.name}
-          </Text>
-          <Image
-            source={{ uri: props.image_url }}
-            style={styles.fullImage}
-            resizeMode="contain"
-          />
-          {eventsData.map((event) => (
-            <Text key={event.id} style={styles.Text}>
-              {" "}
-              {event.name} : {event.description}{" "}
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "bold",
+                alignSelf: "flex-start",
+                marginBottom: 20,
+              }}
+            >
+              {props.name}
             </Text>
-          ))}
+            <Image
+              source={{ uri: props.profile_pic_url }}
+              style={styles.fullImage}
+              resizeMode="contain"
+            />
+            <Text
+              variant="bodyLarge"
+              style={{ alignSelf: "flex-start", marginTop: 10 }}
+            >
+              Description: {props.description}
+            </Text>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "bold",
+                textDecorationLine: "underline",
+                alignSelf: "flex-start",
+                marginTop: 20,
+              }}
+            >
+              Events
+            </Text>
 
-          <Button onPress={handleCloseEventsModal} style={styles.Button}>
-            Back
-          </Button>
+            {eventsData.map((event) => (
+              <Card key={event.id} style={styles.eventDescCard} mode="outlined">
+                <Card.Title title={event.name} titleStyle={styles.cardTitle} />
+                <Card.Content>
+                  <View style={styles.eventDescContainer}>
+                    <Avatar.Icon size={40} icon="account" color="#6c8aff" />
+                    <Text variant="bodyLarge">{event.creator}</Text>
+                  </View>
+                  <View style={styles.eventDescContainer}>
+                    <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
+                    <Text variant="bodyLarge">{event.date}</Text>
+                  </View>
+                  <View style={styles.eventDescContainer}>
+                    <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
+                    <Text variant="bodyLarge">{event.time}</Text>
+                  </View>
+                  <View style={styles.eventDescContainer}>
+                    <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
+                    <Text variant="bodyLarge">{event.venue}</Text>
+                  </View>
+                  <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
+                    {event.description}
+                  </Text>
+                </Card.Content>
+              </Card>
+            ))}
+
+            <Button onPress={handleCloseEventsModal} style={styles.Button}>
+              Back
+            </Button>
+          </ScrollView>
         </SafeAreaView>
       </Modal>
     </>
