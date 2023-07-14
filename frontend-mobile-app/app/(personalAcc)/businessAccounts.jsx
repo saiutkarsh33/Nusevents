@@ -198,8 +198,12 @@ function EventCard(props) {
             {/* <Button onPress={handleViewDescPress} mode={"outlined"}>
               Learn More
             </Button> */}
-            <Button onPress={handleViewEventsPress} mode={"outlined"}>
-              Learn More{" "}
+            <Button
+              onPress={handleViewEventsPress}
+              mode={"outlined"}
+              style={{ backgroundColor: "cyan", marginLeft: 10 }}
+            >
+              Learn More
             </Button>
           </Card.Actions>
         </TouchableOpacity>
@@ -378,7 +382,7 @@ export default function BusinessAccounts() {
   console.log("this is myData", myData);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={
