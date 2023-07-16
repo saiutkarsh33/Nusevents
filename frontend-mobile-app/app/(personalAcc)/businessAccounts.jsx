@@ -7,6 +7,7 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
+  FlatList,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -25,7 +26,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "white",
-    paddingHorizontal: 20,
+    paddingVertical: "20%",
+    paddingHorizontal: "5%",
   },
   cardContainer: {
     borderRadius: 0,
@@ -230,74 +232,79 @@ function EventCard(props) {
         onRequestClose={handleCloseEventsModal}
       >
         <SafeAreaView style={styles.modalContainer}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            <Text
-              style={{
-                fontSize: 30,
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-                marginBottom: 20,
-              }}
-            >
-              {props.name}
-            </Text>
-            <Image
-              source={{ uri: props.profile_pic_url }}
-              style={styles.fullImage}
-              resizeMode="contain"
-            />
-            <Text
-              variant="bodyLarge"
-              style={{ alignSelf: "flex-start", marginTop: 10 }}
-            >
-              Description: {props.description}
-            </Text>
-            <Text
-              style={{
-                fontSize: 30,
-                fontWeight: "bold",
-                textDecorationLine: "underline",
-                alignSelf: "flex-start",
-                marginTop: 20,
-              }}
-            >
-              Events
-            </Text>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              alignSelf: "flex-start",
+              marginBottom: 20,
+            }}
+          >
+            {props.name}
+          </Text>
+          <Image
+            source={{ uri: props.profile_pic_url }}
+            style={styles.fullImage}
+            resizeMode="contain"
+          />
+          <Text
+            variant="bodyLarge"
+            style={{ alignSelf: "flex-start", marginTop: 10 }}
+          >
+            Description: {props.description}
+          </Text>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              textDecorationLine: "underline",
+              alignSelf: "flex-start",
+              marginTop: 20,
+            }}
+          >
+            Events
+          </Text>
 
-            {eventsData.map((event) => (
-              <Card key={event.id} style={styles.eventDescCard} mode="outlined">
-                <Card.Title title={event.name} titleStyle={styles.cardTitle} />
-                <Card.Content>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="account" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.creator}</Text>
-                  </View>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.date}</Text>
-                  </View>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.time}</Text>
-                  </View>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.venue}</Text>
-                  </View>
-                  <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
-                    {event.description}
-                  </Text>
-                </Card.Content>
-              </Card>
-            ))}
+          <FlatList
+            data={eventsData}
+            renderItem={({ item }) => <Event event={item} />}
+          />
 
-            <Button onPress={handleCloseEventsModal} style={styles.Button}>
-              Back
-            </Button>
-          </ScrollView>
+          <Button onPress={handleCloseEventsModal} style={styles.Button}>
+            Back
+          </Button>
         </SafeAreaView>
       </Modal>
     </>
+  );
+}
+
+function Event({ event }) {
+  return (
+    <Card key={event.id} style={styles.eventDescCard} mode="outlined">
+      <Card.Title title={event.name} titleStyle={styles.cardTitle} />
+      <Card.Content>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="account" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.creator}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.date}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.time}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.venue}</Text>
+        </View>
+        <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
+          {event.description}
+        </Text>
+      </Card.Content>
+    </Card>
   );
 }
 
