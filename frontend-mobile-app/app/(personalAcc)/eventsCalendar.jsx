@@ -226,23 +226,21 @@ export default function EventsCalendar() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        contentContainerStyle={{ flex: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {loading ? ( // Render the loading indicator when loading is true
-          <ActivityIndicator size="large" color="blue" />
-        ) : (
-          <>
-            <Calendar markedDates={markedDates} onDayPress={handleDayPress} />
-            <EventPopup />
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{ flex: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? ( // Render the loading indicator when loading is true
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        <>
+          <Calendar markedDates={markedDates} onDayPress={handleDayPress} />
+          <EventPopup />
+        </>
+      )}
+    </ScrollView>
   );
 }
 
