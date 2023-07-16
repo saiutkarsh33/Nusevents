@@ -268,7 +268,7 @@ export default function CreateEvents() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       {!eventCreated && (
         <EventForm
           onEventCreate={handleEventCreate}
