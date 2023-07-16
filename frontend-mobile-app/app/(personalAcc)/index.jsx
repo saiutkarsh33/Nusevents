@@ -382,6 +382,49 @@ async function handleSendMessage() {
         handleCloseModal={handleCloseModal}
         props={props}
       />
+
+<Modal
+  visible={chatModalVisible}
+  animationType="slide"
+  onRequestClose={() => setChatModalVisible(false)}
+>
+  <SafeAreaView style={styles.modalContainer}>
+    <Text
+      style={{
+        fontSize: 30,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        marginBottom: 20,
+      }}
+    >
+      Chat
+    </Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+    <ScrollView>
+      {messages.map((message, index) => (
+        <Text key={index}>
+         {message.name}: {message.content}
+        </Text>
+      ))}
+    </ScrollView>
+    <TextInput
+      style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+      onChangeText={setNewMessage}
+      value={newMessage}
+    />
+    <Button onPress={handleSendMessage} style={styles.sendButton}>
+      Send
+    </Button>
+
+    <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton}>
+      Close
+    </Button>
+    </KeyboardAvoidingView>
+  </SafeAreaView>
+</Modal>
     </>
   );
 }
@@ -441,6 +484,9 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
         </Button>
       </SafeAreaView>
     </Modal>
+
+
+
   );
 }
 
