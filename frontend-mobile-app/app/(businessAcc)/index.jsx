@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
+  FlatList,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -26,22 +27,19 @@ import * as ImagePicker from "expo-image-picker";
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
-    padding: 16,
+    paddingVertical: "20%",
+    paddingHorizontal: "5%",
   },
   totalSignupsText: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 8,
   },
-  totalSignupsCount: {
-    fontWeight: "bold",
-    fontSize: 24,
-  },
   signupsText: {
-    marginBottom: 16,
+    fontSize: 20,
+    margin: 10,
   },
   closeButton: {
     width: 150,
@@ -372,9 +370,24 @@ function MyCard(props) {
           <Text style={styles.totalSignupsText}>
             Total Signups: {props.signups.length}
           </Text>
-          <Text style={styles.signupsText}>
-            Names : {props.signups.map((name) => `${name}, `)}
+          <Text
+            style={{
+              fontSize: 20,
+              margin: 20,
+              textDecorationLine: "underline",
+            }}
+          >
+            Names
           </Text>
+          <FlatList
+            data={props.signups}
+            renderItem={({ item, index }) => (
+              <Text style={styles.signupsText}>
+                {index + 1}. {item}
+              </Text>
+            )}
+            style={{ width: "100%" }}
+          />
           <Button
             onPress={handleCloseSignups}
             mode="contained"
