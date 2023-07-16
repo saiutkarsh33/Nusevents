@@ -7,6 +7,8 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
+  Dimensions,
+  KeyboardAvoidingView, Platform 
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -26,6 +28,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     paddingHorizontal: 20,
+    //minHeight: '100%'
   },
   cardContainer: {
     borderRadius: 0,
@@ -228,9 +231,12 @@ function EventCard(props) {
         visible={modalEventsVisible}
         animationType="slide"
         onRequestClose={handleCloseEventsModal}
+        contentContainerStyle={{height: Dimensions.get('window').height}}
       >
-        <SafeAreaView style={styles.modalContainer}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex: 1}}>
+          <ScrollView contentContainerStyle={{ flex: 1 }}>
+          <View style={styles.modalContainer}>
+
             <Text
               style={{
                 fontSize: 30,
@@ -294,9 +300,10 @@ function EventCard(props) {
             <Button onPress={handleCloseEventsModal} style={styles.Button}>
               Back
             </Button>
-          </ScrollView>
-        </SafeAreaView>
-      </Modal>
+            </View>
+  </ScrollView>
+  </KeyboardAvoidingView>
+</Modal>
     </>
   );
 }

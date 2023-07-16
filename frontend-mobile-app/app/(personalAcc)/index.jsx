@@ -7,6 +7,9 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -84,13 +87,121 @@ const styles = StyleSheet.create({
   },
 });
 
+
+
 export function TheirCard(props) {
   // const [picVisible, setPicVisible] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedButton, setSelectedButton] = useState(() => props.selected);
+  const [chatModalVisible, setChatModalVisible] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [eventId, setEventId] = useState(props.id)
+  const [myName, setMyName] = useState(null);
 
   const { user } = useAuth();
+
+
+  const fetchName = async () => {
+    console.log('User:', user);
+    console.log('User ID:', user?.id);
+  
+    const { data, error } = await supabase
+      .from('users')
+      .select('name')
+      .eq('id', user?.id);
+  
+    if (error) {
+      console.error('Error fetching name:', error);
+    } else {
+      setMyName(data[0].name);
+      console.log('My Name:', myName);
+    }
+  };
+  
+  
+  useEffect(() => {
+    fetchName();
+  }, [myName]);
+
+  
+
+  async function getAllMessages() {
+    return await supabase.from("messages").select("*").eq("event_id", eventId);
+}
+
+
+
+const posts = supabase.channel('custom-all-channel')
+   .on(
+    'postgres_changes',
+    {event: '*', schema: 'public'},
+    async () => {
+      console.log('chats changed');
+      ({ data: allChats } = await getAllMessages());
+  }
+
+
+
+
+
+
+  )
+  .subscribe()
+
+
+  const fetchMessages = async () => {
+
+
+    if (!user || !user.id) {
+      // User is not logged in, skip fetching messages
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('event_id', eventId);
+  
+    if (error) {
+      console.error('Error fetching messages2: ', error);
+    } else {
+      setMessages(data);
+    }
+  };
+  
+  useEffect(() => {
+    fetchMessages();
+  }, [eventId, messages]);
+
+
+
+async function handleSendMessage() {
+  const { error } = await supabase.from("messages").insert([
+      {
+      event_id: eventId,
+      user_id: user.id,
+      content: newMessage,
+      name: myName,
+      },
+  ]);
+
+  if (error) {
+    console.error("Error updating message:", error);
+  } else {
+    console.log(
+      "this is message", newMessage)
+      setMessages((prevMessages) => [...prevMessages, { content: newMessage, name: myName }]);
+      await fetchMessages();
+      console.log(messages)
+    
+  }
+}
+
+
+
+  
 
   // const handleOpenPic = () => {
   //   setPicVisible(true);
@@ -253,6 +364,9 @@ export function TheirCard(props) {
             >
               Learn More
             </Button>
+            <Button onPress={() => setChatModalVisible(true)} mode="outlined" style={{backgroundColor: 'cyan', marginLeft: 10}}>
+  Chat
+</Button>
           </Card.Actions>
         </TouchableOpacity>
       </Card>
@@ -327,6 +441,50 @@ export function TheirCard(props) {
           </Button>
         </View>
       </Modal> */}
+
+<Modal
+  visible={chatModalVisible}
+  animationType="slide"
+  onRequestClose={() => setChatModalVisible(false)}
+>
+  <SafeAreaView style={styles.modalContainer}>
+    <Text
+      style={{
+        fontSize: 30,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        marginBottom: 20,
+      }}
+    >
+      Chat
+    </Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+    <ScrollView>
+      {messages.map((message, index) => (
+        <Text key={index}>
+         {message.name}: {message.content}
+        </Text>
+      ))}
+    </ScrollView>
+    <TextInput
+      style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+      onChangeText={setNewMessage}
+      value={newMessage}
+    />
+    <Button onPress={handleSendMessage} style={styles.sendButton}>
+      Send
+    </Button>
+
+    <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton}>
+      Close
+    </Button>
+    </KeyboardAvoidingView>
+  </SafeAreaView>
+</Modal>
+
     </>
   );
 }
@@ -342,6 +500,8 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuth();
+
+  
 
   const [userData, setUserData] = useState(null);
   const [followed, setFollowed] = useState([]);
