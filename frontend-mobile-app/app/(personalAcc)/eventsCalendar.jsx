@@ -1,6 +1,20 @@
 import { Calendar } from "react-native-calendars";
-import { Modal, SafeAreaView, StyleSheet, RefreshControl, ScrollView } from "react-native";
-import { Button, Text, ActivityIndicator } from "react-native-paper";
+import {
+  Modal,
+  SafeAreaView,
+  StyleSheet,
+  RefreshControl,
+  ScrollView,
+  View,
+  FlatList,
+} from "react-native";
+import {
+  Button,
+  Text,
+  ActivityIndicator,
+  Card,
+  Avatar,
+} from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/auth";
@@ -20,9 +34,24 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   popUpContainer: {
-    justifyContent: "center",
-    alignItems: "center",
     flex: 1,
+    alignItems: "center",
+    backgroundColor: "white",
+    paddingHorizontal: "10%",
+  },
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginVertical: 10,
+  },
+
+  eventDescCard: {
+    marginTop: 30,
+  },
+
+  eventDescContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 
@@ -33,46 +62,43 @@ export default function EventsCalendar() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [eventsForSelectedDate, setEventsForSelectedDate] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
-  
-    // Fetch data from Supabase
-    async function fetchData() {
-      if (user) {
-        setLoading(true); 
-        try {
-          const { data, error } = await supabase.from("events").select("*");
-          if (error) {
-            console.error("Error fetching events:", error);
-          } else {
-            setEventsData(data);
-          }
-
-          const { data: userData, error: userError } = await supabase
-            .from("users")
-            .select("selected_events")
-            .eq("id", user.id)
-            .single();
-
-          if (userError) {
-            console.error("Error fetching account data:", userError);
-          } else {
-            setUserData(userData);
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false); 
-          setRefreshing(false); // Set refreshing state to false after data fetch
+  // Fetch data from Supabase
+  async function fetchData() {
+    if (user) {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase.from("events").select("*");
+        if (error) {
+          console.error("Error fetching events:", error);
+        } else {
+          setEventsData(data);
         }
+
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("selected_events")
+          .eq("id", user.id)
+          .single();
+
+        if (userError) {
+          console.error("Error fetching account data:", userError);
+        } else {
+          setUserData(userData);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+        setRefreshing(false); // Set refreshing state to false after data fetch
       }
     }
-   useEffect(() => {
+  }
+  useEffect(() => {
     fetchData();
-   }, [user])
-    
-  
+  }, [user]);
 
   const markedDates = {};
 
@@ -160,17 +186,26 @@ export default function EventsCalendar() {
     console.log(eventsForSelectedDate);
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView>
         {eventsForSelectedDate.length > 0 && (
           <Modal visible={isPopupVisible} animationType="slide">
             <SafeAreaView style={styles.popUpContainer}>
-              {/* Render the events data in the popup */}
-              {eventsForSelectedDate.map((event, index) => (
-                <Text key={index} style={styles.Text} >
-                  {`${index + 1}. `}
-                  {event.name} at {event.time} by {event.creator}
-                </Text>
-              ))}
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  textDecorationLine: "underline",
+                  alignSelf: "center",
+                  marginTop: 20,
+                }}
+              >
+                Events
+              </Text>
+              <FlatList
+                data={eventsForSelectedDate}
+                renderItem={({ item }) => <Event event={item} />}
+                style={{ width: "100%" }}
+              />
               <Button
                 onPress={() => setIsPopupVisible(false)}
                 style={styles.Button}
@@ -191,24 +226,49 @@ export default function EventsCalendar() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        contentContainerStyle={{ flex: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {loading ? ( // Render the loading indicator when loading is true
-          <ActivityIndicator size="large" color="blue" />
-        ) : (
-          <>
-            <Calendar markedDates={markedDates} onDayPress={handleDayPress} />
-            <EventPopup />
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{ flex: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? ( // Render the loading indicator when loading is true
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        <>
+          <Calendar markedDates={markedDates} onDayPress={handleDayPress} />
+          <EventPopup />
+        </>
+      )}
+    </ScrollView>
   );
 }
 
-
+function Event({ event }) {
+  return (
+    <Card key={event.id} style={styles.eventDescCard} mode="outlined">
+      <Card.Title title={event.name} titleStyle={styles.cardTitle} />
+      <Card.Content>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="account" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.creator}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.date}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.time}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.venue}</Text>
+        </View>
+        <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
+          {event.description}
+        </Text>
+      </Card.Content>
+    </Card>
+  );
+}

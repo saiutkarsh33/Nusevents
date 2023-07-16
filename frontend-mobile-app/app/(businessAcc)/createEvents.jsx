@@ -268,7 +268,7 @@ export default function CreateEvents() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       {!eventCreated && (
         <EventForm
           onEventCreate={handleEventCreate}
@@ -283,6 +283,6 @@ export default function CreateEvents() {
           </Button>
         </SafeAreaView>
       )}
-    </SafeAreaView>
+    </View>
   );
 }

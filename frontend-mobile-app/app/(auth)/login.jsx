@@ -10,14 +10,14 @@ import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
- import { useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-   const router = useRouter();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (email === "") {
@@ -41,58 +41,56 @@ export default function LoginPage() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
-      >
-        <ScrollView contentContainerStyle={styles.contentContainer}>
-          <Image
-            source={require("frontend-mobile-app/assets/NUSevents-icon.jpg")}
-            style={styles.image}
-          />
-          <Text style={styles.welcome}>Welcome Back!</Text>
-          <Text style={[styles.details, styles.text]}>
-            Please fill in your details to login
-          </Text>
-          <TextInput
-            autoCapitalize="none"
-            textContentType="emailAddress"
-            value={email}
-            onChangeText={setEmail}
-            mode="outlined"
-            placeholder="Email"
-            style={styles.input}
-          />
-          <TextInput
-            secureTextEntry
-            autoCapitalize="none"
-            textContentType="password"
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            placeholder="Password"
-            style={styles.input}
-          />
-          <Button onPress={handleSubmit} mode="contained" style={styles.button}>
-            Submit
-          </Button>
-          {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
-          {loading && <ActivityIndicator />}
-          {/* <Link href="/register" style={styles.signup}> */}
-          <Text style={styles.signupText}>Not a Member?</Text>
-          <Button
-            mode="outlined"
-            onPress={() => router.replace("/register")}
-            style={styles.signup}
-          >
-            Sign Up
-          </Button>
-          {/* </Link> */}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
+    >
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Image
+          source={require("frontend-mobile-app/assets/NUSevents-icon.jpg")}
+          style={styles.image}
+        />
+        <Text style={styles.welcome}>Welcome Back!</Text>
+        <Text style={[styles.details, styles.text]}>
+          Please fill in your details to login
+        </Text>
+        <TextInput
+          autoCapitalize="none"
+          textContentType="emailAddress"
+          value={email}
+          onChangeText={setEmail}
+          mode="outlined"
+          placeholder="Email"
+          style={styles.input}
+        />
+        <TextInput
+          secureTextEntry
+          autoCapitalize="none"
+          textContentType="password"
+          value={password}
+          onChangeText={setPassword}
+          mode="outlined"
+          placeholder="Password"
+          style={styles.input}
+        />
+        <Button onPress={handleSubmit} mode="contained" style={styles.button}>
+          Sign In
+        </Button>
+        {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+        {loading && <ActivityIndicator />}
+        {/* <Link href="/register" style={styles.signup}> */}
+        <Text style={styles.signupText}>No Account Yet?</Text>
+        <Button
+          mode="outlined"
+          onPress={() => router.replace("/register")}
+          style={styles.signup}
+        >
+          Sign Up
+        </Button>
+        {/* </Link> */}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -106,7 +104,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   image: {
-    marginBottom: 50,
+    marginVertical: 50,
     width: "100%",
     height: "15%",
   },

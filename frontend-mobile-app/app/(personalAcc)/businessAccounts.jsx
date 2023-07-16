@@ -7,8 +7,7 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
-  Dimensions,
-  KeyboardAvoidingView, Platform 
+  FlatList,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -27,12 +26,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "white",
-    paddingHorizontal: 20,
-    //minHeight: '100%'
+    paddingVertical: "20%",
+    paddingHorizontal: "5%",
   },
   cardContainer: {
-    borderRadius: 0,
-    marginVertical: 10,
+    // borderRadius: 0,
+    margin: 10,
   },
   cardTitle: {
     fontWeight: "bold",
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
 
   eventDescCard: {
     marginTop: 30,
-    width: "100%",
   },
 
   eventDescContainer: {
@@ -177,30 +175,32 @@ function EventCard(props) {
     <>
       <Card style={styles.cardContainer} mode="outlined">
         <Card.Title title={props.name} titleStyle={styles.cardTitle} />
-
-        {/* <TouchableOpacity> */}
-        <Card.Cover
-          source={{ uri: props.profile_pic_url }}
-          theme={{
-            roundness: 4,
-            isV3: false,
-          }}
-        />
-        {/* </TouchableOpacity> */}
+        {props.profile_pic_url ? (
+          <Card.Cover
+            source={{ uri: props.profile_pic_url }}
+            theme={{
+              roundness: 4,
+              isV3: false,
+            }}
+          />
+        ) : (
+          <View style={{ backgroundColor: "#F0F0F0", paddingVertical: 35 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              No Image
+            </Text>
+          </View>
+        )}
 
         <TouchableOpacity>
           <Card.Actions>
-            {/* <Button
-              onPress={handleFollowPress}
-              mode={"outlined"}
-              style={{ backgroundColor: followedButton ? "yellow" : "white" }}
-            > */}
             {followedButton ? <Text>Following</Text> : <Text>Follow</Text>}
             <Switch value={followedButton} onValueChange={handleFollowPress} />
-            {/* </Button> */}
-            {/* <Button onPress={handleViewDescPress} mode={"outlined"}>
-              Learn More
-            </Button> */}
             <Button
               onPress={handleViewEventsPress}
               mode={"outlined"}
@@ -212,99 +212,99 @@ function EventCard(props) {
         </TouchableOpacity>
       </Card>
 
-      {/* <Modal
-        visible={modalDescVisible}
-        animationType="slide"
-        onRequestClose={handleCloseDescModal}
-      >
-        <SafeAreaView style={styles.modalContainer}>
-          <View>
-            <Text style={styles.Text}>{props.description}</Text>
-            <Button onPress={handleCloseDescModal} style={styles.Button}>
-              Close
-            </Button>
-          </View>
-        </SafeAreaView>
-      </Modal> */}
-
       <Modal
         visible={modalEventsVisible}
         animationType="slide"
         onRequestClose={handleCloseEventsModal}
         contentContainerStyle={{height: Dimensions.get('window').height}}
       >
-           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex: 1}}>
-          <ScrollView contentContainerStyle={{ flex: 1 }}>
-          <View style={styles.modalContainer}>
-
-            <Text
-              style={{
-                fontSize: 30,
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-                marginBottom: 20,
-              }}
-            >
-              {props.name}
-            </Text>
+        <SafeAreaView style={styles.modalContainer}>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              alignSelf: "flex-start",
+              marginBottom: 20,
+            }}
+          >
+            {props.name}
+          </Text>
+          {props.profile_pic_url && (
             <Image
               source={{ uri: props.profile_pic_url }}
               style={styles.fullImage}
               resizeMode="contain"
             />
-            <Text
-              variant="bodyLarge"
-              style={{ alignSelf: "flex-start", marginTop: 10 }}
-            >
-              Description: {props.description}
-            </Text>
-            <Text
-              style={{
-                fontSize: 30,
-                fontWeight: "bold",
-                textDecorationLine: "underline",
-                alignSelf: "flex-start",
-                marginTop: 20,
-              }}
-            >
-              Events
-            </Text>
+          )}
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              alignSelf: "flex-start",
+              marginTop: 10,
+            }}
+          >
+            Description
+          </Text>
+          <Text
+            variant="bodyLarge"
+            style={{ alignSelf: "flex-start", marginTop: 10 }}
+          >
+            {props.description}
+          </Text>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              textDecorationLine: "underline",
+              alignSelf: "flex-start",
+              marginTop: 20,
+            }}
+          >
+            Events
+          </Text>
 
-            {eventsData.map((event) => (
-              <Card key={event.id} style={styles.eventDescCard} mode="outlined">
-                <Card.Title title={event.name} titleStyle={styles.cardTitle} />
-                <Card.Content>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="account" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.creator}</Text>
-                  </View>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.date}</Text>
-                  </View>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.time}</Text>
-                  </View>
-                  <View style={styles.eventDescContainer}>
-                    <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
-                    <Text variant="bodyLarge">{event.venue}</Text>
-                  </View>
-                  <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
-                    {event.description}
-                  </Text>
-                </Card.Content>
-              </Card>
-            ))}
+          <FlatList
+            data={eventsData}
+            renderItem={({ item }) => <Event event={item} />}
+            style={{ width: "100%" }}
+          />
 
-            <Button onPress={handleCloseEventsModal} style={styles.Button}>
-              Back
-            </Button>
-            </View>
-  </ScrollView>
-  </KeyboardAvoidingView>
-</Modal>
+          <Button onPress={handleCloseEventsModal} style={styles.Button}>
+            Back
+          </Button>
+        </SafeAreaView>
+      </Modal>
     </>
+  );
+}
+
+function Event({ event }) {
+  return (
+    <Card key={event.id} style={styles.eventDescCard} mode="outlined">
+      <Card.Title title={event.name} titleStyle={styles.cardTitle} />
+      <Card.Content>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="account" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.creator}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.date}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.time}</Text>
+        </View>
+        <View style={styles.eventDescContainer}>
+          <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
+          <Text variant="bodyLarge">{event.venue}</Text>
+        </View>
+        <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
+          {event.description}
+        </Text>
+      </Card.Content>
+    </Card>
   );
 }
 
@@ -389,28 +389,26 @@ export default function BusinessAccounts() {
   console.log("this is myData", myData);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" />
-        ) : (
-          sortedUsersData.map((card) => (
-            <EventCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              profile_pic_url={card.profile_pic_url}
-              description={card.description}
-              followed={myData.following?.includes(card.name) ?? false}
-            />
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        sortedUsersData.map((card) => (
+          <EventCard
+            key={card.id}
+            id={card.id}
+            name={card.name}
+            profile_pic_url={card.profile_pic_url}
+            description={card.description}
+            followed={myData.following?.includes(card.name) ?? false}
+          />
+        ))
+      )}
+    </ScrollView>
   );
 }

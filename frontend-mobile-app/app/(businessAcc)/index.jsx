@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
+  FlatList,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -26,33 +27,43 @@ import * as ImagePicker from "expo-image-picker";
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
-    padding: 16,
+    paddingVertical: "20%",
+    paddingHorizontal: "5%",
   },
   totalSignupsText: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 8,
   },
-  totalSignupsCount: {
-    fontWeight: "bold",
-    fontSize: 24,
-  },
   signupsText: {
-    marginBottom: 16,
+    fontSize: 20,
+    margin: 10,
   },
   closeButton: {
     width: 150,
     marginTop: 16,
     backgroundColor: "cyan",
   },
-
   cardContainer: {
-    backgroundColor: "white", // Add this line to set the background color
+    // borderRadius: 0,
+    margin: 10,
   },
-
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginVertical: 10,
+  },
+  eventCardVenue: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginVertical: 10,
+  },
+  eventCardRed: {
+    color: "red",
+    marginBottom: 5,
+  },
   editValuesText: {
     fontWeight: "bold",
     fontSize: 18,
@@ -227,19 +238,36 @@ function MyCard(props) {
 
   return (
     <>
-      <Card style={styles.cardContainer}>
-        <Card.Content>
-          <Text variant="titleLarge">
-            {props.name} • {props.date}
-          </Text>
-          <Text variant="bodyMedium">
-            Time: {props.time} • Venue: {props.venue}
-          </Text>
-        </Card.Content>
+      <Card style={styles.cardContainer} mode="outlined">
+        <Card.Title title={props.name} titleStyle={styles.cardTitle} />
+        {props.image_url ? (
+          <Card.Cover
+            style={styles.cardCover}
+            source={{ uri: props.image_url }}
+            theme={{
+              roundness: 4,
+              isV3: false,
+            }}
+          />
+        ) : (
+          <View style={{ backgroundColor: "#F0F0F0", paddingVertical: 35 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              No Image
+            </Text>
+          </View>
+        )}
 
-        <TouchableOpacity>
-          <Card.Cover source={{ uri: props.image_url }} />
-        </TouchableOpacity>
+        <Card.Content>
+          <Text style={styles.eventCardVenue}>{props.venue}</Text>
+          <Text style={styles.eventCardRed}>Date: {props.date}</Text>
+          <Text style={styles.eventCardRed}>Time: {props.time}</Text>
+        </Card.Content>
 
         <TouchableOpacity>
           <Card.Actions>
@@ -342,9 +370,24 @@ function MyCard(props) {
           <Text style={styles.totalSignupsText}>
             Total Signups: {props.signups.length}
           </Text>
-          <Text style={styles.signupsText}>
-            Names : {props.signups.map((name) => `${name}, `)}
+          <Text
+            style={{
+              fontSize: 20,
+              margin: 20,
+              textDecorationLine: "underline",
+            }}
+          >
+            Names
           </Text>
+          <FlatList
+            data={props.signups}
+            renderItem={({ item, index }) => (
+              <Text style={styles.signupsText}>
+                {index + 1}. {item}
+              </Text>
+            )}
+            style={{ width: "100%" }}
+          />
           <Button
             onPress={handleCloseSignups}
             mode="contained"
@@ -409,32 +452,30 @@ export default function MyEvents() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" />
-        ) : (
-          eventsData.map((card) => (
-            <MyCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              date={card.date}
-              time={card.time}
-              venue={card.venue}
-              selected={card.selected}
-              image_url={card.image_url}
-              desc={card.description}
-              signups={card.signups}
-            />
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        eventsData.map((card) => (
+          <MyCard
+            key={card.id}
+            id={card.id}
+            name={card.name}
+            date={card.date}
+            time={card.time}
+            venue={card.venue}
+            selected={card.selected}
+            image_url={card.image_url}
+            desc={card.description}
+            signups={card.signups}
+          />
+        ))
+      )}
+    </ScrollView>
   );
 }

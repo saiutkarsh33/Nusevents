@@ -9,10 +9,7 @@ import {
 } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Dropdown } from 'react-native-element-dropdown';
-
-
-
+import { Dropdown } from "react-native-element-dropdown";
 
 import { useRouter } from "expo-router";
 
@@ -31,13 +28,12 @@ export default function Register() {
   const accountTypeOptions = [
     { label: "Personal", value: "Personal" },
     { label: "Business", value: "Business" },
-];
+  ];
 
-const residenceOptions = [
+  const residenceOptions = [
     { label: "Tembusu", value: "Tembusu" },
     { label: "Sheares", value: "Sheares" },
-];
-
+  ];
 
   const handleSubmit = async () => {
     if (email === "") {
@@ -86,116 +82,112 @@ const residenceOptions = [
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "padding"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+    >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <KeyboardAvoidingView
-          style={styles.keyboardAvoidingView}
-          behavior={Platform.OS === "ios" ? "padding" : "padding"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+        <Text style={styles.welcome}>Welcome!</Text>
+        <Text style={styles.details}>
+          Please fill in your details to create your account
+        </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            autoCapitalize="none"
+            value={userName}
+            onChangeText={setUserName}
+            mode="outlined"
+            placeholder="Name"
+            style={styles.input}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.dropdownLabel}>Account Type</Text>
+          <Dropdown
+            style={styles.dropdown}
+            placeholder="Select Account Type"
+            value={accountTypeValue}
+            onChange={(item) => setAccountTypeValue(item.value)}
+            data={accountTypeOptions}
+            labelField="label"
+            valueField="value"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.dropdownLabel}>Residence </Text>
+          <Dropdown
+            style={styles.dropdown}
+            placeholder="Select Residence "
+            value={residenceValue}
+            onChange={(item) => setResidenceValue(item.value)}
+            data={residenceOptions}
+            labelField="label"
+            valueField="value"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            autoCapitalize="none"
+            textContentType="emailAddress"
+            value={email}
+            onChangeText={setEmail}
+            mode="outlined"
+            placeholder="Email"
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            secureTextEntry
+            autoCapitalize="none"
+            textContentType="password"
+            value={password}
+            onChangeText={setPassword}
+            mode="outlined"
+            placeholder="Password"
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            secureTextEntry
+            autoCapitalize="none"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            mode="outlined"
+            placeholder="Confirm Password"
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            autoCapitalize="none"
+            value={description}
+            onChangeText={setDescription}
+            mode="outlined"
+            placeholder="Description"
+            style={styles.input}
+          />
+        </View>
+        <Button
+          onPress={handleSubmit}
+          mode="contained"
+          buttonColor="cyan"
+          style={styles.button}
+          labelStyle={styles.buttonLabel}
         >
-          <Text style={styles.welcome}>Welcome!</Text>
-          <Text style={styles.details}>
-            Please fill in your details to create your account
-          </Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              autoCapitalize="none"
-              value={userName}
-              onChangeText={setUserName}
-              mode="outlined"
-              placeholder="Name"
-              style={styles.input}
-            />
-          </View>
-          
-          <View style={styles.inputContainer}>
-  <Text style={styles.dropdownLabel}>Account Type</Text>
-  <Dropdown
-    style={styles.dropdown}
-    placeholder="Select Account Type"
-    value={accountTypeValue}
-    onChange={item => setAccountTypeValue(item.value)}
-    data = {accountTypeOptions}
-    labelField="label"
-        valueField="value"
-
-  />
-</View>
-<View style={styles.inputContainer}>
-<Text style={styles.dropdownLabel}>Residence </Text>
-  <Dropdown
-    style={styles.dropdown}
-    placeholder="Select Residence "
-    value={residenceValue}
-    onChange={item => setResidenceValue(item.value)}
-    data = {residenceOptions}
-    labelField="label"
-        valueField="value"
-
-  />
-</View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              autoCapitalize="none"
-              textContentType="emailAddress"
-              value={email}
-              onChangeText={setEmail}
-              mode="outlined"
-              placeholder="Email"
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              secureTextEntry
-              autoCapitalize="none"
-              textContentType="password"
-              value={password}
-              onChangeText={setPassword}
-              mode="outlined"
-              placeholder="Password"
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              secureTextEntry
-              autoCapitalize="none"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              mode="outlined"
-              placeholder="Confirm Password"
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              autoCapitalize="none"
-              value={description}
-              onChangeText={setDescription}
-              mode="outlined"
-              placeholder="Description"
-              style={styles.input}
-            />
-          </View>
-          <Button
-            onPress={handleSubmit}
-            mode="contained"
-            buttonColor="cyan"
-            style={styles.button}
-            labelStyle={styles.buttonLabel}
-          >
-            Submit
-          </Button>
-          {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
-          {loading && <ActivityIndicator />}
-        </KeyboardAvoidingView>
+          Submit
+        </Button>
+        {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+        {loading && <ActivityIndicator />}
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -204,19 +196,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     paddingHorizontal: 20,
-    paddingTop: 20,
   },
   scrollContent: {
     flexGrow: 1,
   },
-  keyboardAvoidingView: {
-    flex: 1,
-  },
+
   welcome: {
     fontSize: 40,
     fontWeight: "bold",
     textAlign: "center",
-    paddingBottom: 20,
+    marginVertical: 30,
   },
   details: {
     fontSize: 16,
@@ -256,9 +245,7 @@ const styles = StyleSheet.create({
   dropdown: {
     margin: 16,
     height: 50,
-    borderBottomColor: 'gray',
+    borderBottomColor: "gray",
     borderBottomWidth: 0.5,
   },
 });
-
-
