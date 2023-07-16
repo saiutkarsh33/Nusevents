@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: "5%",
   },
   cardContainer: {
-    borderRadius: 0,
-    marginVertical: 10,
+    // borderRadius: 0,
+    margin: 10,
   },
   cardTitle: {
     fontWeight: "bold",
@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
 
   eventDescCard: {
     marginTop: 30,
-    width: "100%",
   },
 
   eventDescContainer: {
@@ -176,30 +175,32 @@ function EventCard(props) {
     <>
       <Card style={styles.cardContainer} mode="outlined">
         <Card.Title title={props.name} titleStyle={styles.cardTitle} />
-
-        {/* <TouchableOpacity> */}
-        <Card.Cover
-          source={{ uri: props.profile_pic_url }}
-          theme={{
-            roundness: 4,
-            isV3: false,
-          }}
-        />
-        {/* </TouchableOpacity> */}
+        {props.profile_pic_url ? (
+          <Card.Cover
+            source={{ uri: props.profile_pic_url }}
+            theme={{
+              roundness: 4,
+              isV3: false,
+            }}
+          />
+        ) : (
+          <View style={{ backgroundColor: "#F0F0F0", paddingVertical: 35 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              No Image
+            </Text>
+          </View>
+        )}
 
         <TouchableOpacity>
           <Card.Actions>
-            {/* <Button
-              onPress={handleFollowPress}
-              mode={"outlined"}
-              style={{ backgroundColor: followedButton ? "yellow" : "white" }}
-            > */}
             {followedButton ? <Text>Following</Text> : <Text>Follow</Text>}
             <Switch value={followedButton} onValueChange={handleFollowPress} />
-            {/* </Button> */}
-            {/* <Button onPress={handleViewDescPress} mode={"outlined"}>
-              Learn More
-            </Button> */}
             <Button
               onPress={handleViewEventsPress}
               mode={"outlined"}
@@ -210,21 +211,6 @@ function EventCard(props) {
           </Card.Actions>
         </TouchableOpacity>
       </Card>
-
-      {/* <Modal
-        visible={modalDescVisible}
-        animationType="slide"
-        onRequestClose={handleCloseDescModal}
-      >
-        <SafeAreaView style={styles.modalContainer}>
-          <View>
-            <Text style={styles.Text}>{props.description}</Text>
-            <Button onPress={handleCloseDescModal} style={styles.Button}>
-              Close
-            </Button>
-          </View>
-        </SafeAreaView>
-      </Modal> */}
 
       <Modal
         visible={modalEventsVisible}
@@ -242,16 +228,28 @@ function EventCard(props) {
           >
             {props.name}
           </Text>
-          <Image
-            source={{ uri: props.profile_pic_url }}
-            style={styles.fullImage}
-            resizeMode="contain"
-          />
+          {props.profile_pic_url && (
+            <Image
+              source={{ uri: props.profile_pic_url }}
+              style={styles.fullImage}
+              resizeMode="contain"
+            />
+          )}
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              alignSelf: "flex-start",
+              marginTop: 10,
+            }}
+          >
+            Description
+          </Text>
           <Text
             variant="bodyLarge"
             style={{ alignSelf: "flex-start", marginTop: 10 }}
           >
-            Description: {props.description}
+            {props.description}
           </Text>
           <Text
             style={{
@@ -268,6 +266,7 @@ function EventCard(props) {
           <FlatList
             data={eventsData}
             renderItem={({ item }) => <Event event={item} />}
+            style={{ width: "100%" }}
           />
 
           <Button onPress={handleCloseEventsModal} style={styles.Button}>
@@ -389,28 +388,26 @@ export default function BusinessAccounts() {
   console.log("this is myData", myData);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" />
-        ) : (
-          sortedUsersData.map((card) => (
-            <EventCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              profile_pic_url={card.profile_pic_url}
-              description={card.description}
-              followed={myData.following?.includes(card.name) ?? false}
-            />
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        sortedUsersData.map((card) => (
+          <EventCard
+            key={card.id}
+            id={card.id}
+            name={card.name}
+            profile_pic_url={card.profile_pic_url}
+            description={card.description}
+            followed={myData.following?.includes(card.name) ?? false}
+          />
+        ))
+      )}
+    </ScrollView>
   );
 }

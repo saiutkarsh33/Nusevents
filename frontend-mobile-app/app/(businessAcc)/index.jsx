@@ -48,11 +48,24 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: "cyan",
   },
-
   cardContainer: {
-    backgroundColor: "white", // Add this line to set the background color
+    // borderRadius: 0,
+    margin: 10,
   },
-
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginVertical: 10,
+  },
+  eventCardVenue: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginVertical: 10,
+  },
+  eventCardRed: {
+    color: "red",
+    marginBottom: 5,
+  },
   editValuesText: {
     fontWeight: "bold",
     fontSize: 18,
@@ -227,19 +240,36 @@ function MyCard(props) {
 
   return (
     <>
-      <Card style={styles.cardContainer}>
-        <Card.Content>
-          <Text variant="titleLarge">
-            {props.name} • {props.date}
-          </Text>
-          <Text variant="bodyMedium">
-            Time: {props.time} • Venue: {props.venue}
-          </Text>
-        </Card.Content>
+      <Card style={styles.cardContainer} mode="outlined">
+        <Card.Title title={props.name} titleStyle={styles.cardTitle} />
+        {props.image_url ? (
+          <Card.Cover
+            style={styles.cardCover}
+            source={{ uri: props.image_url }}
+            theme={{
+              roundness: 4,
+              isV3: false,
+            }}
+          />
+        ) : (
+          <View style={{ backgroundColor: "#F0F0F0", paddingVertical: 35 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              No Image
+            </Text>
+          </View>
+        )}
 
-        <TouchableOpacity>
-          <Card.Cover source={{ uri: props.image_url }} />
-        </TouchableOpacity>
+        <Card.Content>
+          <Text style={styles.eventCardVenue}>{props.venue}</Text>
+          <Text style={styles.eventCardRed}>Date: {props.date}</Text>
+          <Text style={styles.eventCardRed}>Time: {props.time}</Text>
+        </Card.Content>
 
         <TouchableOpacity>
           <Card.Actions>
@@ -409,32 +439,30 @@ export default function MyEvents() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" />
-        ) : (
-          eventsData.map((card) => (
-            <MyCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              date={card.date}
-              time={card.time}
-              venue={card.venue}
-              selected={card.selected}
-              image_url={card.image_url}
-              desc={card.description}
-              signups={card.signups}
-            />
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        eventsData.map((card) => (
+          <MyCard
+            key={card.id}
+            id={card.id}
+            name={card.name}
+            date={card.date}
+            time={card.time}
+            venue={card.venue}
+            selected={card.selected}
+            image_url={card.image_url}
+            desc={card.description}
+            signups={card.signups}
+          />
+        ))
+      )}
+    </ScrollView>
   );
 }

@@ -31,11 +31,20 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 16,
   },
-
+  cardContainer: {
+    // borderRadius: 0,
+    margin: 10,
+  },
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginVertical: 10,
+  },
   Button: {
-    margin: 8,
+    marginTop: 16,
     backgroundColor: "cyan",
     alignSelf: "center",
+    width: "60%",
   },
 
   changePfpButton: {
@@ -170,13 +179,30 @@ function ProfileCard(props) {
 
   return (
     <>
-      <Card style={styles.cardContainer}>
-        <Card.Content>
-          <Text variant="titleLarge">{props.name}</Text>
-        </Card.Content>
-        <TouchableOpacity>
-          <Card.Cover source={{ uri: props.profile_pic_url }} />
-        </TouchableOpacity>
+      <Card style={styles.cardContainer} mode="outlined">
+        <Card.Title title={props.name} titleStyle={styles.cardTitle} />
+        {props.profile_pic_url ? (
+          <Card.Cover
+            style={styles.cardCover}
+            source={{ uri: props.profile_pic_url }}
+            theme={{
+              roundness: 4,
+              isV3: false,
+            }}
+          />
+        ) : (
+          <View style={{ backgroundColor: "#F0F0F0", paddingVertical: 35 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              No Profile Picture
+            </Text>
+          </View>
+        )}
 
         <TouchableOpacity>
           <Card.Actions>
@@ -333,50 +359,44 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        <>
+          {myData.map((card) => (
+            <ProfileCard
+              key={card.id}
+              id={card.id}
+              name={card.name}
+              profile_pic_url={card.profile_pic_url}
+              description={card.description}
+            />
+          ))}
+        </>
+      )}
+      <Button
+        onPress={() => handleChangePassword(user.email)}
+        style={styles.Button}
       >
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" />
-        ) : (
-          <>
-            <Button
-              onPress={() => handleChangePassword(user.email)}
-              style={styles.Button}
-            >
-              Change Password
-            </Button>
-            <Button
-              onPress={() => supabase.auth.signOut()}
-              style={styles.Button}
-            >
-              Logout
-            </Button>
-            <Button
-              onPress={() => {
-                handleDeleteAccount();
-              }}
-              style={styles.Button}
-            >
-              Delete Account
-            </Button>
-
-            {myData.map((card) => (
-              <ProfileCard
-                key={card.id}
-                id={card.id}
-                name={card.name}
-                profile_pic_url={card.profile_pic_url}
-                description={card.description}
-              />
-            ))}
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        Change Password
+      </Button>
+      <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
+        Logout
+      </Button>
+      <Button
+        onPress={() => {
+          handleDeleteAccount();
+        }}
+        style={styles.Button}
+      >
+        Delete Account
+      </Button>
+    </ScrollView>
   );
 }

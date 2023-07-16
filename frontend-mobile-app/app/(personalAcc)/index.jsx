@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: "5%",
   },
   cardContainer: {
-    borderRadius: 0,
-    marginVertical: 10,
+    // borderRadius: 0,
+    margin: 10,
   },
   cardTitle: {
     fontWeight: "bold",
@@ -221,16 +221,28 @@ export function TheirCard(props) {
     <>
       <Card style={styles.cardContainer} mode="outlined">
         <Card.Title title={props.creator} titleStyle={styles.cardTitle} />
-        {/* <TouchableOpacity onPress={handleOpenPic}> */}
-        <Card.Cover
-          style={styles.cardCover}
-          source={{ uri: props.image_url }}
-          theme={{
-            roundness: 4,
-            isV3: false,
-          }}
-        />
-        {/* </TouchableOpacity> */}
+        {props.image_url ? (
+          <Card.Cover
+            style={styles.cardCover}
+            source={{ uri: props.image_url }}
+            theme={{
+              roundness: 4,
+              isV3: false,
+            }}
+          />
+        ) : (
+          <View style={{ backgroundColor: "#F0F0F0", paddingVertical: 35 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              No Image
+            </Text>
+          </View>
+        )}
         <Card.Content>
           <Text style={styles.eventCardName}>{props.name}</Text>
           <Text style={styles.eventCardDate}>Date: {props.date}</Text>
@@ -238,14 +250,8 @@ export function TheirCard(props) {
 
         <TouchableOpacity>
           <Card.Actions>
-            {/* <Button
-              onPress={handleImInPress}
-              mode={"outlined"}
-              style={{ backgroundColor: selectedButton ? "yellow" : "white" }}
-            > */}
             {selectedButton ? <Text>Joined</Text> : <Text>Join</Text>}
             <Switch value={selectedButton} onValueChange={handleImInPress} />
-            {/* </Button> */}
             <Button
               onPress={handleViewMorePress}
               mode="outlined"
@@ -257,77 +263,70 @@ export function TheirCard(props) {
         </TouchableOpacity>
       </Card>
 
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        onRequestClose={handleCloseModal}
-      >
-        <SafeAreaView style={styles.modalContainer}>
-          <Text
-            style={{
-              fontSize: 30,
-              fontWeight: "bold",
-              alignSelf: "flex-start",
-              marginBottom: 20,
-            }}
-          >
-            {props.name}
-          </Text>
-          <Image
-            source={{ uri: props.image_url }}
-            style={styles.fullImage}
-            resizeMode="contain"
-          />
-          <Card style={styles.eventDescCard} mode="outlined">
-            <Card.Title
-              title="Event Description"
-              titleStyle={styles.cardTitle}
-            />
-            <Card.Content>
-              <View style={styles.eventDescContainer}>
-                <Avatar.Icon size={40} icon="account" color="#6c8aff" />
-                <Text variant="bodyLarge">{props.creator}</Text>
-              </View>
-              <View style={styles.eventDescContainer}>
-                <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
-                <Text variant="bodyLarge">{props.date}</Text>
-              </View>
-              <View style={styles.eventDescContainer}>
-                <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
-                <Text variant="bodyLarge">{props.time}</Text>
-              </View>
-              <View style={styles.eventDescContainer}>
-                <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
-                <Text variant="bodyLarge">{props.venue}</Text>
-              </View>
-              <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
-                {props.desc}
-              </Text>
-            </Card.Content>
-          </Card>
-          <Button onPress={handleCloseModal} style={styles.closeButton}>
-            Close
-          </Button>
-        </SafeAreaView>
-      </Modal>
-
-      {/* <Modal
-        visible={picVisible}
-        animationType="slide"
-        onRequestClose={handleClosePic}
-      >
-        <View style={styles.modalContainer}>
-          <Image
-            source={{ uri: props.image_url }}
-            style={styles.fullImage}
-            resizeMode="contain"
-          />
-          <Button onPress={handleClosePic} style={styles.closeButtonImage}>
-            Close
-          </Button>
-        </View>
-      </Modal> */}
+      <EventLearnMoreModal
+        modalVisible={modalVisible}
+        handleCloseModal={handleCloseModal}
+        props={props}
+      />
     </>
+  );
+}
+
+function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
+  return (
+    <Modal
+      visible={modalVisible}
+      animationType="slide"
+      onRequestClose={handleCloseModal}
+      style={styles.modalContainer}
+    >
+      <SafeAreaView style={styles.modalContainer}>
+        <Text
+          style={{
+            fontSize: 30,
+            fontWeight: "bold",
+            alignSelf: "flex-start",
+            marginBottom: 20,
+          }}
+        >
+          {props.name}
+        </Text>
+        {props.image_url && (
+          <Image
+            source={{ uri: props.image_url }}
+            style={styles.fullImage}
+            resizeMode="contain"
+          />
+        )}
+        <Card style={styles.eventDescCard} mode="outlined">
+          <Card.Title title="Event Description" titleStyle={styles.cardTitle} />
+          <Card.Content>
+            <View style={styles.eventDescContainer}>
+              <Avatar.Icon size={40} icon="account" color="#6c8aff" />
+              <Text variant="bodyLarge">{props.creator}</Text>
+            </View>
+            <View style={styles.eventDescContainer}>
+              <Avatar.Icon size={40} icon="calendar" color="#6c8aff" />
+              <Text variant="bodyLarge">{props.date}</Text>
+            </View>
+            <View style={styles.eventDescContainer}>
+              <Avatar.Icon size={40} icon="clock" color="#6c8aff" />
+              <Text variant="bodyLarge">{props.time}</Text>
+            </View>
+            <View style={styles.eventDescContainer}>
+              <Avatar.Icon size={40} icon="map-marker" color="#6c8aff" />
+              <Text variant="bodyLarge">{props.venue}</Text>
+            </View>
+            <Text variant="bodyLarge" style={{ marginVertical: 10 }}>
+              {props.desc}
+            </Text>
+          </Card.Content>
+        </Card>
+        <Button onPress={handleCloseModal} style={styles.closeButton}>
+          Close
+        </Button>
+      </SafeAreaView>
+    </Modal>
   );
 }
 
@@ -408,36 +407,34 @@ export default function EventsPage() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" />
-        ) : sortedEventsData.length > 0 ? (
-          sortedEventsData.map((card) => (
-            <TheirCard
-              key={card.id}
-              id={card.id}
-              creator={card.creator}
-              name={card.name}
-              date={card.date}
-              time={card.time}
-              venue={card.venue}
-              image_url={card.image_url}
-              desc={card.description}
-              selected={userData.selected_events?.includes(card.name) ?? false}
-            />
-          ))
-        ) : (
-          <View style={styles.noEventsContainer}>
-            <Text style={styles.noEventsText}>No events found.</Text>
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : sortedEventsData.length > 0 ? (
+        sortedEventsData.map((card) => (
+          <TheirCard
+            key={card.id}
+            id={card.id}
+            creator={card.creator}
+            name={card.name}
+            date={card.date}
+            time={card.time}
+            venue={card.venue}
+            image_url={card.image_url}
+            desc={card.description}
+            selected={userData.selected_events?.includes(card.name) ?? false}
+          />
+        ))
+      ) : (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>No events found.</Text>
+        </View>
+      )}
+    </ScrollView>
   );
 }
