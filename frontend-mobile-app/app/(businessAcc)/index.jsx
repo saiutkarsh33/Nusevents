@@ -111,6 +111,8 @@ function MyCard(props) {
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [changedPicture, setChangedPicture] = useState(false);
+  const [signupNames, setSignupNames] = useState([]);
+
   const { user } = useAuth();
 
   const handleViewSignups = () => {
@@ -236,6 +238,26 @@ function MyCard(props) {
     }
   };
 
+  useEffect(() => {
+    async function fetchSignupNames() {
+      // Fetch the names of users from Supabase based on UUIDs in props.signups
+      const { data, error } = await supabase
+        .from('users')
+        .select('name')
+        .in('id', props.signups);
+  
+      if (error) {
+        console.error('Error fetching signup names:', error);
+      } else {
+        // Map the fetched names to an array
+        const names = data.map((user) => user.name);
+        setSignupNames(names);
+      }
+    }
+  
+    fetchSignupNames();
+  }, [props.signups]);
+
   return (
     <>
       <Card style={styles.cardContainer} mode="outlined">
@@ -302,6 +324,14 @@ function MyCard(props) {
                   Edit the values accordingly{" "}
                 </Text>
                 {errMsg !== "" && <Text>{errMsg}</Text>}
+
+                <Text style={styles.Text}>Name: </Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  editable={editMode}
+                  mode="outlined"
+                />
                 
                 <Text style={styles.Text}>Venue: </Text>
                 <TextInput
@@ -374,7 +404,7 @@ function MyCard(props) {
             Names
           </Text>
           <FlatList
-            data={props.signups}
+            data={signupNames}
             renderItem={({ item, index }) => (
               <Text style={styles.signupsText}>
                 {index + 1}. {item}

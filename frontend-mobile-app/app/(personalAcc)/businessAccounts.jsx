@@ -131,12 +131,12 @@ function EventCard(props) {
 
       let updatedFollowed;
 
-      if (followed.includes(props.name)) {
+      if (followed.includes(props.id)) {
         // Remove user from followed accounts
-        updatedFollowed = followed.filter((account) => account !== props.name);
+        updatedFollowed = followed.filter((account) => account !== props.id)
       } else {
         // Add user to followed accounts
-        updatedFollowed = [...followed, props.name];
+        updatedFollowed = [...followed, props.id]
       }
 
       console.log(

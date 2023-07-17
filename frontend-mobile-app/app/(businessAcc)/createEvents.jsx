@@ -203,7 +203,7 @@ function EventForm({ onEventCreate }) {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <SafeAreaView style={{ flex: 1, paddingHorizontal: 10 }}>
           <View style={styles.inputContainer}>
-            <Text style={styles.labelText}>Name of Event</Text>
+            <Text style={styles.labelText}>Name of Event (cannot edit) </Text>
             <TextInput
               value={eventName}
               onChangeText={setEventName}

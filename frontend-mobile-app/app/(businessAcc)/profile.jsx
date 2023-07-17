@@ -239,6 +239,13 @@ function ProfileCard(props) {
                   Edit the values accordingly{" "}
                 </Text>
                 {errMsg !== "" && <Text>{errMsg}</Text>}
+                <Text style={styles.Text}> Name: </Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  editable={editMode}
+                  mode="outlined"
+                />
                 <Button
                   onPress={handleAddProfilePic}
                   style={styles.changePfpButton}

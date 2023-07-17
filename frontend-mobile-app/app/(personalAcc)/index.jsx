@@ -265,23 +265,23 @@ async function handleSendMessage() {
       let updatedSignups;
       let updatedSelected;
 
-      if (selected.includes(props.name)) {
+      if (selected.includes(props.id)) {
         // Remove event from user's selected events
         updatedSelected = selected.filter(
-          (eventName) => eventName !== props.name
+          (eventName) => eventName !== props.id
         );
 
         // Remove user from event signups
-        updatedSignups = signups.filter((signup) => signup !== userData.name);
+        updatedSignups = signups.filter((signup) => signup !== userData.id);
       } else {
         // Add event to user's selected events
-        updatedSelected = [...selected, props.name];
+        updatedSelected = [...selected, props.id];
 
         // Add user to event signups
-        updatedSignups = [...signups, userData.name];
+        updatedSignups = [...signups, userData.id];
       }
 
-      console.log("this is updated signup", props.name, updatedSignups);
+      console.log("this is updated signup", props.id, updatedSignups);
 
       // const updatedSignups = [...signups, accountData.name];
 
@@ -514,7 +514,7 @@ export default function EventsPage() {
         .from("events")
         .select("*")
         .eq("residence", residence)
-        .in("creator", followed);
+        .in("user_id", followed);
 
       if (error) {
         console.error("Error fetching events:", error);
@@ -582,6 +582,7 @@ export default function EventsPage() {
           <TheirCard
             key={card.id}
             id={card.id}
+            user_id = {card.user_id}
             creator={card.creator}
             name={card.name}
             date={card.date}
