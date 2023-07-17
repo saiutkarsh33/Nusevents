@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Image,
   FlatList,
+  Dimensions
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {

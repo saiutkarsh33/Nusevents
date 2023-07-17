@@ -250,13 +250,6 @@ function ProfileCard(props) {
                 {image && (
                   <Image source={{ uri: image }} style={styles.Image} />
                 )}
-                <Text style={styles.Text}>Name: </Text>
-                <TextInput
-                  value={name}
-                  onChangeText={setName}
-                  editable={editMode}
-                  mode="outlined"
-                />
                 <Text style={styles.Text}>Description: </Text>
                 <TextInput
                   value={description}
@@ -358,13 +351,28 @@ export default function ProfileScreen() {
       {
         text: "Ok",
         onPress: async () => {
-          // Delete the user
-          await supabase.rpc("delete_user");
-          console.log("User deleted");
-
-          // Sign out the user
-          await supabase.auth.signOut();
-          console.log("User signed out");
+          try {
+            // Delete all messages associated with the user
+            const { error } = await supabase
+              .from("messages")
+              .delete()
+              .eq("user_id", user.id);
+  
+            if (error) {
+              console.error("Error deleting messages:", error);
+              return;
+            }
+  
+            // Delete the user
+            await supabase.rpc("delete_user");
+            console.log("User deleted");
+  
+            // Sign out the user
+            await supabase.auth.signOut();
+            console.log("User signed out");
+          } catch (error) {
+            console.error("Error deleting account:", error);
+          }
         },
       },
     ]);

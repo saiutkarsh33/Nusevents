@@ -101,7 +101,7 @@ export default function Register() {
             value={userName}
             onChangeText={setUserName}
             mode="outlined"
-            placeholder="Name"
+            placeholder="Name (cannot edit) "
             style={styles.input}
           />
         </View>
