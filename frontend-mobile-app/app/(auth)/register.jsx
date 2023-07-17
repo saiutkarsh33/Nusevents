@@ -78,7 +78,6 @@ export default function Register() {
       setErrMsg(error.message);
       return;
     }
-    router.replace("/login");
   };
 
   return (
@@ -101,7 +100,7 @@ export default function Register() {
             value={userName}
             onChangeText={setUserName}
             mode="outlined"
-            placeholder="Name (cannot edit) "
+            placeholder="Name"
             style={styles.input}
           />
         </View>

@@ -94,6 +94,10 @@ const styles = StyleSheet.create({
     height: 200,
     margin: 10,
   },
+  Button: {
+    backgroundColor: "cyan",
+    alignSelf: "center",
+  },
 });
 
 // Settle the view Signups after u settle the stuff from the eventsPage's i'm in end.
@@ -242,19 +246,19 @@ function MyCard(props) {
     async function fetchSignupNames() {
       // Fetch the names of users from Supabase based on UUIDs in props.signups
       const { data, error } = await supabase
-        .from('users')
-        .select('name')
-        .in('id', props.signups);
-  
+        .from("users")
+        .select("name")
+        .in("id", props.signups);
+
       if (error) {
-        console.error('Error fetching signup names:', error);
+        console.error("Error fetching signup names:", error);
       } else {
         // Map the fetched names to an array
         const names = data.map((user) => user.name);
         setSignupNames(names);
       }
     }
-  
+
     fetchSignupNames();
   }, [props.signups]);
 
@@ -293,13 +297,25 @@ function MyCard(props) {
 
         <TouchableOpacity>
           <Card.Actions>
-            <Button onPress={handleEditPress} mode={"outlined"}>
+            <Button
+              onPress={handleEditPress}
+              mode={"outlined"}
+              style={styles.Button}
+            >
               Edit
             </Button>
-            <Button onPress={handleDelete} mode={"outlined"}>
+            <Button
+              onPress={handleDelete}
+              mode={"outlined"}
+              style={styles.Button}
+            >
               Delete
             </Button>
-            <Button onPress={handleViewSignups} mode={"outlined"}>
+            <Button
+              onPress={handleViewSignups}
+              mode={"outlined"}
+              style={styles.Button}
+            >
               View Signups
             </Button>
           </Card.Actions>
@@ -317,70 +333,66 @@ function MyCard(props) {
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
         >
           <ScrollView contentContainerStyle={styles.modalContainer}>
-            <SafeAreaView style={styles.modalContainer}>
-              <View>
-                <Text style={styles.editValuesText}>
-                  {" "}
-                  Edit the values accordingly{" "}
-                </Text>
-                {errMsg !== "" && <Text>{errMsg}</Text>}
+            <View>
+              <Text style={styles.editValuesText}>
+                {" "}
+                Edit the values accordingly{" "}
+              </Text>
+              {errMsg !== "" && <Text>{errMsg}</Text>}
 
-                <Text style={styles.Text}>Name: </Text>
-                <TextInput
-                  value={name}
-                  onChangeText={setName}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                
-                <Text style={styles.Text}>Venue: </Text>
-                <TextInput
-                  value={venue}
-                  onChangeText={setVenue}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                <Text style={styles.Text}>Date: </Text>
-                <TextInput
-                  value={date}
-                  onChangeText={setDate}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                <Text style={styles.Text}>Time: </Text>
-                <TextInput
-                  value={time}
-                  onChangeText={setTime}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                <Text style={styles.Text}>Description: </Text>
-                <TextInput
-                  value={desc}
-                  onChangeText={setDesc}
-                  editable={editMode}
-                  multiline
-                  mode="outlined"
-                />
-                <Button
-                  onPress={handleAddProfilePic}
-                  style={styles.changePfpButton}
-                  mode="outlined"
-                >
-                  {" "}
-                  Change Profile Picture{" "}
+              <Text style={styles.Text}>Name: </Text>
+              <TextInput
+                value={name}
+                onChangeText={setName}
+                editable={editMode}
+                mode="outlined"
+              />
+
+              <Text style={styles.Text}>Venue: </Text>
+              <TextInput
+                value={venue}
+                onChangeText={setVenue}
+                editable={editMode}
+                mode="outlined"
+              />
+              <Text style={styles.Text}>Date: </Text>
+              <TextInput
+                value={date}
+                onChangeText={setDate}
+                editable={editMode}
+                mode="outlined"
+              />
+              <Text style={styles.Text}>Time: </Text>
+              <TextInput
+                value={time}
+                onChangeText={setTime}
+                editable={editMode}
+                mode="outlined"
+              />
+              <Text style={styles.Text}>Description: </Text>
+              <TextInput
+                value={desc}
+                onChangeText={setDesc}
+                editable={editMode}
+                multiline
+                mode="outlined"
+              />
+              <Button
+                onPress={handleAddProfilePic}
+                style={styles.changePfpButton}
+                mode="outlined"
+              >
+                {" "}
+                Change Profile Picture{" "}
+              </Button>
+              {image && <Image source={{ uri: image }} style={styles.Image} />}
+
+              {editMode && (
+                <Button onPress={handleDonePress} style={styles.doneButton}>
+                  Done
                 </Button>
-                {image && (
-                  <Image source={{ uri: image }} style={styles.Image} />
-                )}
-
-                {editMode && (
-                  <Button onPress={handleDonePress} style={styles.doneButton}>
-                    Done
-                  </Button>
-                )}
-              </View>
-            </SafeAreaView>
+              )}
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
