@@ -324,7 +324,6 @@ function MyCard(props) {
                   Edit the values accordingly{" "}
                 </Text>
                 {errMsg !== "" && <Text>{errMsg}</Text>}
-
                 <Text style={styles.Text}>Name: </Text>
                 <TextInput
                   value={name}
@@ -332,7 +331,6 @@ function MyCard(props) {
                   editable={editMode}
                   mode="outlined"
                 />
-                
                 <Text style={styles.Text}>Venue: </Text>
                 <TextInput
                   value={venue}
