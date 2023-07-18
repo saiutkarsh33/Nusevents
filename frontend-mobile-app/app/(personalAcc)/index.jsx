@@ -7,10 +7,12 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
-  
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
+  TouchableWithoutFeedback,
 } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { supabase } from "../../lib/supabase";
 import {
   Button,
@@ -86,6 +88,46 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
   },
+
+  messageContainer: {
+    padding: 10,
+    marginVertical: 5,
+    maxWidth: '100%',
+    borderRadius: 15,
+  },
+  senderMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: 'cyan',
+  },
+  receiverMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+  },
+  senderText: {
+    color: 'black',
+  },
+  receiverText: {
+    color: 'black',
+  },
+
+  creatorMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'yellow',
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+  },
+
+  nameText: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'black',
+  },
+  creatorText: {
+    color: 'black',
+  },
+
 });
 
 
@@ -393,6 +435,7 @@ async function handleSendMessage() {
   onRequestClose={() => setChatModalVisible(false)}
 >
   <SafeAreaView style={styles.modalContainer}>
+  
     <Text
       style={{
         fontSize: 30,
@@ -403,32 +446,68 @@ async function handleSendMessage() {
     >
       Event Chat
     </Text>
+    
     <KeyboardAvoidingView
+    
+
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-    <ScrollView>
-      {messages.map((message, index) => (
-        <Text key={index}>
-         {message.name}: {message.content}
+
+<ScrollView keyboardShouldPersistTaps="handled">
+  {messages.map((message, index) => {
+    
+
+    return (
+      <View 
+        key={index} 
+        style={[
+          styles.messageContainer,
+          (user && message.user_id === user.id) 
+            ? styles.senderMessage 
+            : message.name === props.creator
+            ? styles.creatorMessage 
+            : styles.receiverMessage
+        ]}
+      >
+        {(user && message.user_id !== user.id) && <Text style={styles.nameText}>{message.name}</Text>}
+        <Text 
+          style={
+            (user && message.user_id === user.id) 
+              ? styles.senderText 
+              : message.name === props.creator
+              ? styles.creatorText
+              : styles.receiverText
+          }
+        >
+          {message.content}
         </Text>
-      ))}
-    </ScrollView>
+      </View>
+    )
+  })}
+</ScrollView>
+
+
+
+
     <TextInput
       style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
       onChangeText={setNewMessage}
       value={newMessage}
       multiline={true}
   numberOfLines={4} 
+  onSubmitEditing={handleSendMessage}
     />
-    <Button onPress={handleSendMessage} style={styles.sendButton}>
-      Send
-    </Button>
+        <Button onPress={handleSendMessage} style={styles.sendButton}>
+          Send
+        </Button>
 
-    <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton}>
-      Close
-    </Button>
+        <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton}>
+          Close
+        </Button>
+        
     </KeyboardAvoidingView>
+    
   </SafeAreaView>
 </Modal>
     </>

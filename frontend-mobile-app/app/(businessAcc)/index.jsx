@@ -46,6 +46,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: "cyan",
   },
+  closeButton2: {
+    marginTop: 16,
+    backgroundColor: "cyan",
+    alignSelf: "center",
+  },
   cardContainer: {
     // borderRadius: 0,
     margin: 10,
@@ -94,6 +99,40 @@ const styles = StyleSheet.create({
     height: 200,
     margin: 10,
   },
+
+  messageContainer: {
+    padding: 10,
+    marginVertical: 5,
+    maxWidth: '100%',
+    borderRadius: 15,
+  },
+  senderMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: 'yellow',
+  },
+  receiverMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+  },
+  senderText: {
+    color: 'black',
+  },
+  receiverText: {
+    color: 'black',
+  },
+
+  nameText: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'black',
+  },
+  sendButton: {
+    marginTop: 10,
+    color: 'black',
+  },
+
 });
 
 // Settle the view Signups after u settle the stuff from the eventsPage's i'm in end.
@@ -110,8 +149,111 @@ function MyCard(props) {
   const [image, setImage] = useState(null);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [newMessage, setNewMessage] = useState('');
+  const [eventId, setEventId] = useState(props.id)
   const [changedPicture, setChangedPicture] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [chatModalVisible, setChatModalVisible] = useState(false);
+  const [myName, setMyName] = useState(null);
   const { user } = useAuth();
+
+
+  const fetchName = async () => {
+    console.log('User:', user);
+    console.log('User ID:', user?.id);
+  
+    const { data, error } = await supabase
+      .from('users')
+      .select('name')
+      .eq('id', user?.id);
+  
+    if (error) {
+      console.error('Error fetching name:', error);
+    } else {
+      setMyName(data[0].name);
+      console.log('My Name:', myName);
+    }
+  };
+  
+  
+  useEffect(() => {
+    fetchName();
+  }, [myName]);
+
+
+
+  async function getAllMessages() {
+    return await supabase.from("messages").select("*").eq("event_id", eventId);
+  }
+
+  const posts = supabase.channel('custom-all-channel')
+   .on(
+    'postgres_changes',
+    {event: '*', schema: 'public'},
+    async () => {
+      console.log('chats changed');
+      ({ data: allChats } = await getAllMessages());
+  }
+
+
+
+
+
+
+  )
+  .subscribe()
+
+
+  const fetchMessages = async () => {
+
+
+    if (!user || !user.id) {
+      // User is not logged in, skip fetching messages
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('event_id', eventId);
+  
+    if (error) {
+      console.error('Error fetching messages2: ', error);
+    } else {
+      setMessages(data);
+    }
+  };
+  
+  useEffect(() => {
+    fetchMessages();
+  }, [eventId, messages]);
+
+
+
+async function handleSendMessage() {
+  const { error } = await supabase.from("messages").insert([
+      {
+      event_id: eventId,
+      user_id: user.id,
+      content: newMessage,
+      name: myName,
+      },
+  ]);
+
+  if (error) {
+    console.error("Error updating message:", error);
+  } else {
+    setNewMessage('')
+    console.log(
+      
+      "this is message", newMessage)
+      setMessages((prevMessages) => [...prevMessages, { content: newMessage, name: myName }]);
+      await fetchMessages();
+      console.log(messages)
+      
+    
+  }
+}
 
   const handleViewSignups = () => {
     setSignupVisible(true);
@@ -205,7 +347,27 @@ function MyCard(props) {
     }
   };
 
-  const handleDelete = async () => {
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this event? This action can't be undone.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Delete cancelled"),
+          style: "cancel"
+        },
+        { text: "Yes", onPress: () => {
+          setEditVisible(false);
+          deleteEvent();
+        }}
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const deleteEvent = async () => {
     try {
       const { error: eventError } = await supabase
         .from("events")
@@ -287,12 +449,13 @@ function MyCard(props) {
             <Button onPress={handleEditPress} mode={"outlined"}>
               Edit
             </Button>
-            <Button onPress={handleDelete} mode={"outlined"}>
-              Delete
-            </Button>
+            
             <Button onPress={handleViewSignups} mode={"outlined"}>
-              View Signups
+               Signups
             </Button>
+            <Button onPress={() => setChatModalVisible(true)} mode="outlined" style={{backgroundColor: 'cyan', marginLeft: 10}}>
+  Chat
+</Button>
           </Card.Actions>
         </TouchableOpacity>
       </Card>
@@ -356,6 +519,10 @@ function MyCard(props) {
                   <Image source={{ uri: image }} style={styles.Image} />
                 )}
 
+<Button onPress={handleDelete} mode={"outlined"} buttonColor="red">
+              Delete Event
+            </Button>
+
                 {editMode && (
                   <Button onPress={handleDonePress} style={styles.doneButton}>
                     Done
@@ -366,6 +533,94 @@ function MyCard(props) {
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
+
+     
+      <Modal
+  visible={chatModalVisible}
+  animationType="slide"
+  onRequestClose={() => setChatModalVisible(false)}
+>
+  <SafeAreaView style={styles.modalContainer}>
+  
+    <Text
+      style={{
+        fontSize: 30,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        marginBottom: 20,
+      }}
+    >
+      Event Chat
+    </Text>
+    
+    <KeyboardAvoidingView
+    
+
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+
+<ScrollView keyboardShouldPersistTaps="handled">
+  {messages.map((message, index) => (
+    <View 
+      key={index} 
+      style={[
+        styles.messageContainer, 
+        (user && message.user_id === user.id) ? styles.senderMessage : styles.receiverMessage
+      ]}
+    >
+      {(user && message.user_id !== user.id)  && <Text style={styles.nameText}>{message.name}</Text>}
+      <Text style={(user && message.user_id === user.id) ? styles.senderText : styles.receiverText}>
+        {message.content}
+      </Text>
+    </View>
+  ))}
+</ScrollView>
+
+    <TextInput
+      style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
+      onChangeText={setNewMessage}
+      value={newMessage}
+      multiline={true}
+  numberOfLines={4} 
+  onSubmitEditing={handleSendMessage}
+    />
+        <Button 
+  onPress={handleSendMessage} 
+  mode="contained"
+  buttonColor="white"
+  style={styles.sendButton}
+>
+  Send
+</Button>
+
+        <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton2}>
+          Close
+        </Button>
+        
+    </KeyboardAvoidingView>
+    
+  </SafeAreaView>
+</Modal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <Modal
         visible={signupVisible}
