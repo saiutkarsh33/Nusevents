@@ -207,22 +207,35 @@ function MyCard(props) {
 
   const handleDelete = async () => {
     try {
-      const { error } = await supabase
+      const { error: eventError } = await supabase
         .from("events")
         .delete()
         .eq("id", props.id);
-
-      if (error) {
-        console.error("Error deleting event:", error);
+  
+      if (eventError) {
+        console.error("Error deleting event:", eventError);
       } else {
         console.log("Event deleted successfully");
         Alert.alert("Success", "Event deleted successfully");
         // You can update the local state or perform any other necessary actions after deletion
       }
+  
+      const { error: messageError } = await supabase
+        .from("messages")
+        .delete()
+        .eq("event_id", props.id);
+  
+      if (messageError) {
+        console.error("Error deleting messages:", messageError);
+      } else {
+        console.log("Messages deleted successfully");
+        // You can update the local state or perform any other necessary actions after deletion
+      }
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error("Error deleting event and messages:", error);
     }
   };
+  
 
   const handleAddProfilePic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

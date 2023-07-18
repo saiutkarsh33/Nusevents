@@ -7,7 +7,7 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
-  TextInput,
+  
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -19,6 +19,7 @@ import {
   ActivityIndicator,
   Avatar,
   Switch,
+  TextInput,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
@@ -190,11 +191,14 @@ async function handleSendMessage() {
   if (error) {
     console.error("Error updating message:", error);
   } else {
+    setNewMessage('')
     console.log(
+      
       "this is message", newMessage)
       setMessages((prevMessages) => [...prevMessages, { content: newMessage, name: myName }]);
       await fetchMessages();
       console.log(messages)
+      
     
   }
 }
@@ -397,7 +401,7 @@ async function handleSendMessage() {
         marginBottom: 20,
       }}
     >
-      Chat
+      Event Chat
     </Text>
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -411,9 +415,11 @@ async function handleSendMessage() {
       ))}
     </ScrollView>
     <TextInput
-      style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+      style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
       onChangeText={setNewMessage}
       value={newMessage}
+      multiline={true}
+  numberOfLines={4} 
     />
     <Button onPress={handleSendMessage} style={styles.sendButton}>
       Send
