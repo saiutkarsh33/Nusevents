@@ -265,23 +265,23 @@ async function handleSendMessage() {
       let updatedSignups;
       let updatedSelected;
 
-      if (selected.includes(props.id)) {
+      if (selected.includes(props.name)) {
         // Remove event from user's selected events
         updatedSelected = selected.filter(
-          (eventName) => eventName !== props.id
+          (eventName) => eventName !== props.name
         );
 
         // Remove user from event signups
-        updatedSignups = signups.filter((signup) => signup !== userData.id);
+        updatedSignups = signups.filter((signup) => signup !== userData.name);
       } else {
         // Add event to user's selected events
-        updatedSelected = [...selected, props.id];
+        updatedSelected = [...selected, props.name];
 
         // Add user to event signups
-        updatedSignups = [...signups, userData.id];
+        updatedSignups = [...signups, userData.name];
       }
 
-      console.log("this is updated signup", props.id, updatedSignups);
+      console.log("this is updated signup", props.name, updatedSignups);
 
       // const updatedSignups = [...signups, accountData.name];
 
@@ -382,6 +382,49 @@ async function handleSendMessage() {
         handleCloseModal={handleCloseModal}
         props={props}
       />
+
+<Modal
+  visible={chatModalVisible}
+  animationType="slide"
+  onRequestClose={() => setChatModalVisible(false)}
+>
+  <SafeAreaView style={styles.modalContainer}>
+    <Text
+      style={{
+        fontSize: 30,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        marginBottom: 20,
+      }}
+    >
+      Chat
+    </Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+    <ScrollView>
+      {messages.map((message, index) => (
+        <Text key={index}>
+         {message.name}: {message.content}
+        </Text>
+      ))}
+    </ScrollView>
+    <TextInput
+      style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+      onChangeText={setNewMessage}
+      value={newMessage}
+    />
+    <Button onPress={handleSendMessage} style={styles.sendButton}>
+      Send
+    </Button>
+
+    <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton}>
+      Close
+    </Button>
+    </KeyboardAvoidingView>
+  </SafeAreaView>
+</Modal>
     </>
   );
 }
@@ -441,6 +484,9 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
         </Button>
       </SafeAreaView>
     </Modal>
+
+
+
   );
 }
 
@@ -468,7 +514,7 @@ export default function EventsPage() {
         .from("events")
         .select("*")
         .eq("residence", residence)
-        .in("user_id", followed);
+        .in("creator", followed);
 
       if (error) {
         console.error("Error fetching events:", error);
@@ -536,7 +582,6 @@ export default function EventsPage() {
           <TheirCard
             key={card.id}
             id={card.id}
-            user_id = {card.user_id}
             creator={card.creator}
             name={card.name}
             date={card.date}

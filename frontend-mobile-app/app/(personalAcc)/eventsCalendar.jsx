@@ -103,7 +103,7 @@ export default function EventsCalendar() {
   const markedDates = {};
 
   eventsData.forEach((event) => {
-    if (userData && userData.selected_events.includes(event.id)) {
+    if (userData && userData.selected_events.includes(event.name)) {
       const eventDate = event.date;
 
       if (!markedDates[eventDate]) {
@@ -149,7 +149,7 @@ export default function EventsCalendar() {
         }
 
         const filteredEvents = events.filter(
-          (event) => userData && userData.selected_events.includes(event.id)
+          (event) => userData && userData.selected_events.includes(event.name)
         );
 
         return filteredEvents;

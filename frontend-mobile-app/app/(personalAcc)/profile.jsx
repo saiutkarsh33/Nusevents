@@ -232,14 +232,6 @@ function ProfileCard(props) {
                   Edit the values accordingly{" "}
                 </Text>
                 {errMsg !== "" && <Text>{errMsg}</Text>}
-
-                <Text style={styles.Text}> Name: </Text>
-                <TextInput
-                  value={name}
-                  onChangeText={setName}
-                  editable={editMode}
-                  mode="outlined"
-                />
                 <Button
                   onPress={handleAddProfilePic}
                   style={styles.changePfpButton}
@@ -251,13 +243,6 @@ function ProfileCard(props) {
                 {image && (
                   <Image source={{ uri: image }} style={styles.Image} />
                 )}
-                <Text style={styles.Text}>Name: </Text>
-                <TextInput
-                  value={name}
-                  onChangeText={setName}
-                  editable={editMode}
-                  mode="outlined"
-                />
                 <Text style={styles.Text}> Bio: </Text>
                 <TextInput
                   value={description}
@@ -344,22 +329,6 @@ export default function ProfileScreen() {
       // Handle error
     }
   };
-  
-  useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "PASSWORD_RECOVERY") {
-        const newPassword = prompt("What would you like your new password to be?");
-        const { data, error } = await supabase.auth.updateUser({ password: newPassword });
-        
-        if (data) {
-          alert("Password updated successfully!");
-        }
-        if (error) {
-          alert("There was an error updating your password.");
-        }
-      }
-    });
-  }, []);
 
   const handleDeleteAccount = async () => {
     Alert.alert("Are you sure?", "This action cannot be undone.", [

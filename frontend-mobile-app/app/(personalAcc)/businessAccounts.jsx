@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Image,
   FlatList,
+  Dimensions
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -130,12 +131,12 @@ function EventCard(props) {
 
       let updatedFollowed;
 
-      if (followed.includes(props.id)) {
+      if (followed.includes(props.name)) {
         // Remove user from followed accounts
-        updatedFollowed = followed.filter((account) => account !== props.id)
+        updatedFollowed = followed.filter((account) => account !== props.name);
       } else {
         // Add user to followed accounts
-        updatedFollowed = [...followed, props.id]
+        updatedFollowed = [...followed, props.name];
       }
 
       console.log(
