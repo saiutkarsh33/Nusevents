@@ -575,6 +575,8 @@ async function handleSendMessage() {
   ))}
 </ScrollView>
 
+</KeyboardAvoidingView>
+
     <TextInput
       style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
       onChangeText={setNewMessage}
@@ -596,7 +598,7 @@ async function handleSendMessage() {
           Close
         </Button>
         
-    </KeyboardAvoidingView>
+    
     
   </SafeAreaView>
 </Modal>
