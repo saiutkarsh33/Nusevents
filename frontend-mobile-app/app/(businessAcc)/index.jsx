@@ -23,6 +23,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
 import * as ImagePicker from "expo-image-picker";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -461,78 +462,75 @@ async function handleSendMessage() {
       </Card>
 
       <Modal
-        visible={editVisible}
-        animationType="slide"
-        onRequestClose={handleDonePress}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
-        >
-          <ScrollView contentContainerStyle={styles.modalContainer}>
-            <SafeAreaView style={styles.modalContainer}>
-              <View>
-                <Text style={styles.editValuesText}>
-                  {" "}
-                  Edit the values accordingly{" "}
-                </Text>
-                {errMsg !== "" && <Text>{errMsg}</Text>}
-                <Text style={styles.Text}>Venue: </Text>
-                <TextInput
-                  value={venue}
-                  onChangeText={setVenue}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                <Text style={styles.Text}>Date: </Text>
-                <TextInput
-                  value={date}
-                  onChangeText={setDate}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                <Text style={styles.Text}>Time: </Text>
-                <TextInput
-                  value={time}
-                  onChangeText={setTime}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                <Text style={styles.Text}>Description: </Text>
-                <TextInput
-                  value={desc}
-                  onChangeText={setDesc}
-                  editable={editMode}
-                  multiline
-                  mode="outlined"
-                />
-                <Button
-                  onPress={handleAddProfilePic}
-                  style={styles.changePfpButton}
-                  mode="outlined"
-                >
-                  {" "}
-                  Change Profile Picture{" "}
-                </Button>
-                {image && (
-                  <Image source={{ uri: image }} style={styles.Image} />
-                )}
+  visible={editVisible}
+  animationType="slide"
+  onRequestClose={handleDonePress}
+>
+<KeyboardAwareScrollView>
+       
+        <SafeAreaView style = {styles.modalContainer}>
+          <View>
+          <Text style={styles.editValuesText}>
+            {" "}
+            Edit the values accordingly{" "}
+          </Text>
+          {errMsg !== "" && <Text>{errMsg}</Text>}
+          <Text style={styles.Text}>Venue: </Text>
+          <TextInput
+            value={venue}
+            onChangeText={setVenue}
+            editable={editMode}
+            mode="outlined"
+          />
+          <Text style={styles.Text}>Date: </Text>
+          <TextInput
+            value={date}
+            onChangeText={setDate}
+            editable={editMode}
+            mode="outlined"
+          />
+          <Text style={styles.Text}>Time: </Text>
+          <TextInput
+            value={time}
+            onChangeText={setTime}
+            editable={editMode}
+            mode="outlined"
+          />
+          <Text style={styles.Text}>Description: </Text>
+          <TextInput
+            value={desc}
+            onChangeText={setDesc}
+            editable={editMode}
+            multiline
+            mode="outlined"
+          />
+          <Button
+            onPress={handleAddProfilePic}
+            style={styles.changePfpButton}
+            mode="outlined"
+          >
+            {" "}
+            Change Profile Picture{" "}
+          </Button>
+          {image && (
+            <Image source={{ uri: image }} style={styles.Image} />
+          )}
 
-<Button onPress={handleDelete} mode={"outlined"} buttonColor="red">
-              Delete Event
+          <Button onPress={handleDelete} mode={"outlined"} buttonColor="red">
+            Delete Event
+          </Button>
+
+          {editMode && (
+            <Button onPress={handleDonePress} style={styles.doneButton}>
+              Done
             </Button>
-
-                {editMode && (
-                  <Button onPress={handleDonePress} style={styles.doneButton}>
-                    Done
-                  </Button>
-                )}
-              </View>
-            </SafeAreaView>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </Modal>
+          )}
+          </View>
+        </SafeAreaView>
+      
+      </KeyboardAwareScrollView>
+</Modal>
+ 
 
      
       <Modal
