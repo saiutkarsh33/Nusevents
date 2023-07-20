@@ -81,13 +81,10 @@ export default function Register() {
     router.replace("/login");
   };
 
-  return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "padding"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
-    >
-      <ScrollView
+
+
+  const content = (
+    <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
@@ -187,7 +184,20 @@ export default function Register() {
         {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
         {loading && <ActivityIndicator />}
       </ScrollView>
+  );
+
+  return Platform.OS === 'ios' ? (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+    >
+      {content}
     </KeyboardAvoidingView>
+  ) : (
+    <SafeAreaView style={styles.container}>
+      {content}
+    </SafeAreaView>
   );
 }
 
