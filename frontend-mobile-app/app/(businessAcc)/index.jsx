@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingVertical: "20%",
     paddingHorizontal: "5%",
+    paddingBottom: 100
   },
   totalSignupsText: {
     fontSize: 30,
@@ -533,13 +534,12 @@ async function handleSendMessage() {
  
 
      
-      <Modal
+<Modal
   visible={chatModalVisible}
   animationType="slide"
   onRequestClose={() => setChatModalVisible(false)}
 >
   <SafeAreaView style={styles.modalContainer}>
-  
     <Text
       style={{
         fontSize: 30,
@@ -550,56 +550,111 @@ async function handleSendMessage() {
     >
       Event Chat
     </Text>
-    
-    <KeyboardAvoidingView
-    
 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    {Platform.OS === "ios" ? (
+      <KeyboardAvoidingView
+        behavior="padding"
+        style={styles.container}
+      >
+        <ScrollView keyboardShouldPersistTaps="handled">
+          {messages.map((message, index) => {
+            return (
+              <View 
+                key={index} 
+                style={[
+                  styles.messageContainer,
+                  (user && message.user_id === user.id) 
+                    ? styles.senderMessage 
+                    : message.name === props.creator
+                    ? styles.creatorMessage 
+                    : styles.receiverMessage
+                ]}
+              >
+                {(user && message.user_id !== user.id) && <Text style={styles.nameText}>{message.name}</Text>}
+                <Text 
+                  style={
+                    (user && message.user_id === user.id) 
+                      ? styles.senderText 
+                      : message.name === props.creator
+                      ? styles.creatorText
+                      : styles.receiverText
+                  }
+                >
+                  {message.content}
+                </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
 
-<ScrollView keyboardShouldPersistTaps="handled">
-  {messages.map((message, index) => (
-    <View 
-      key={index} 
-      style={[
-        styles.messageContainer, 
-        (user && message.user_id === user.id) ? styles.senderMessage : styles.receiverMessage
-      ]}
-    >
-      {(user && message.user_id !== user.id)  && <Text style={styles.nameText}>{message.name}</Text>}
-      <Text style={(user && message.user_id === user.id) ? styles.senderText : styles.receiverText}>
-        {message.content}
-      </Text>
-    </View>
-  ))}
-</ScrollView>
+        <TextInput
+          style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
+          onChangeText={setNewMessage}
+          value={newMessage}
+          multiline={true}
+          numberOfLines={4} 
+          onSubmitEditing={handleSendMessage}
+        />
 
-</KeyboardAvoidingView>
-
-    <TextInput
-      style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
-      onChangeText={setNewMessage}
-      value={newMessage}
-      multiline={true}
-  numberOfLines={4} 
-  onSubmitEditing={handleSendMessage}
-    />
-        <Button 
-  onPress={handleSendMessage} 
-  mode="contained"
-  buttonColor="white"
-  style={styles.sendButton}
->
-  Send
-</Button>
+        <Button onPress={handleSendMessage} style={styles.sendButton}>
+          Send
+        </Button>
 
         <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton2}>
           Close
         </Button>
-        
-    
-    
+      </KeyboardAvoidingView>
+    ) : (
+      <View>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          {messages.map((message, index) => {
+            return (
+              <View 
+                key={index} 
+                style={[
+                  styles.messageContainer,
+                  (user && message.user_id === user.id) 
+                    ? styles.senderMessage 
+                    : message.name === props.creator
+                    ? styles.creatorMessage 
+                    : styles.receiverMessage
+                ]}
+              >
+                {(user && message.user_id !== user.id) && <Text style={styles.nameText}>{message.name}</Text>}
+                <Text 
+                  style={
+                    (user && message.user_id === user.id) 
+                      ? styles.senderText 
+                      : message.name === props.creator
+                      ? styles.creatorText
+                      : styles.receiverText
+                  }
+                >
+                  {message.content}
+                </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+
+        <TextInput
+          style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
+          onChangeText={setNewMessage}
+          value={newMessage}
+          multiline={true}
+          numberOfLines={4} 
+          onSubmitEditing={handleSendMessage}
+        />
+
+        <Button onPress={handleSendMessage} style={styles.sendButton}>
+          Send
+        </Button>
+
+        <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton2}>
+          Close
+        </Button>
+      </View>
+    )}
   </SafeAreaView>
 </Modal>
 
