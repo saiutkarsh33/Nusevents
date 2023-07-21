@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: "cyan",
     alignSelf: "center",
-    width: "60%",
+    width: "50%",
   },
 
   cardContainer: {
@@ -387,11 +387,8 @@ export default function ProfileScreen() {
           ))}
         </>
       )}
-      <Button
-        onPress={() => handleChangePassword(user.email)}
-        style={styles.Button}
-      >
-        Change Password
+      <Button style={styles.Button}>
+        <Link href="../../components/changePassword">Change Password</Link>
       </Button>
       <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
         Logout

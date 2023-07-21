@@ -18,6 +18,8 @@ import { Button, Card, Text, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/auth";
+import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: "cyan",
     alignSelf: "center",
-    width: "60%",
+    width: "50%",
   },
 
   changePfpButton: {
@@ -266,6 +268,7 @@ function ProfileCard(props) {
 
 export default function ProfileScreen() {
   const { user } = useAuth();
+  const router = useRouter();
 
   const [myData, setMyData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -311,25 +314,6 @@ export default function ProfileScreen() {
     setRefreshing(false);
   };
 
-  const handleChangePassword = async (email) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
-      if (error) {
-        console.error("Error resetting password:", error);
-        // Handle error
-      } else {
-        Alert.alert(
-          "Password Reset",
-          "Password reset email sent. Please check your email.",
-          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-        );
-      }
-    } catch (error) {
-      console.error("Error resetting password:", error);
-      // Handle error
-    }
-  };
-
   const handleDeleteAccount = async () => {
     Alert.alert("Are you sure?", "This action cannot be undone.", [
       {
@@ -373,11 +357,8 @@ export default function ProfileScreen() {
           ))}
         </>
       )}
-      <Button
-        onPress={() => handleChangePassword(user.email)}
-        style={styles.Button}
-      >
-        Change Password
+      <Button style={styles.Button}>
+        <Link href="../../components/changePassword">Change Password</Link>
       </Button>
       <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
         Logout

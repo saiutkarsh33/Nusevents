@@ -79,7 +79,6 @@ export default function LoginPage() {
         </Button>
         {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
         {loading && <ActivityIndicator />}
-        {/* <Link href="/register" style={styles.signup}> */}
         <Text style={styles.signupText}>No Account Yet?</Text>
         <Button
           mode="outlined"
@@ -88,7 +87,6 @@ export default function LoginPage() {
         >
           Sign Up
         </Button>
-        {/* </Link> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );
