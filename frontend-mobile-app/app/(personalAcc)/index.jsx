@@ -12,7 +12,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { supabase } from "../../lib/supabase";
 import {
   Button,
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingVertical: "20%",
     paddingHorizontal: "5%",
-    paddingBottom: 100
+    paddingBottom: 100,
   },
   cardContainer: {
     // borderRadius: 0,
@@ -93,45 +93,42 @@ const styles = StyleSheet.create({
   messageContainer: {
     padding: 10,
     marginVertical: 5,
-    maxWidth: '100%',
+    maxWidth: "100%",
     borderRadius: 15,
   },
   senderMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: 'cyan',
+    alignSelf: "flex-end",
+    backgroundColor: "cyan",
   },
   receiverMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#FFFFFF',
+    alignSelf: "flex-start",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderColor: "#ECECEC",
   },
   senderText: {
-    color: 'black',
+    color: "black",
   },
   receiverText: {
-    color: 'black',
+    color: "black",
   },
 
   creatorMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'yellow',
+    alignSelf: "flex-start",
+    backgroundColor: "yellow",
     borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderColor: "#ECECEC",
   },
 
   nameText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
-    color: 'black',
+    color: "black",
   },
   creatorText: {
-    color: 'black',
+    color: "black",
   },
-
 });
-
-
 
 export function TheirCard(props) {
   // const [picVisible, setPicVisible] = useState(false);
@@ -140,115 +137,90 @@ export function TheirCard(props) {
   const [selectedButton, setSelectedButton] = useState(() => props.selected);
   const [chatModalVisible, setChatModalVisible] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [eventId, setEventId] = useState(props.id)
+  const [newMessage, setNewMessage] = useState("");
+  const [eventId, setEventId] = useState(props.id);
   const [myName, setMyName] = useState(null);
 
   const { user } = useAuth();
 
-
   const fetchName = async () => {
-    console.log('User:', user);
-    console.log('User ID:', user?.id);
-  
+    console.log("User:", user);
+    console.log("User ID:", user?.id);
+
     const { data, error } = await supabase
-      .from('users')
-      .select('name')
-      .eq('id', user?.id);
-  
+      .from("users")
+      .select("name")
+      .eq("id", user?.id);
+
     if (error) {
-      console.error('Error fetching name:', error);
+      console.error("Error fetching name:", error);
     } else {
       setMyName(data[0].name);
-      console.log('My Name:', myName);
+      console.log("My Name:", myName);
     }
   };
-  
-  
+
   useEffect(() => {
     fetchName();
   }, [myName]);
 
-  
-
   async function getAllMessages() {
     return await supabase.from("messages").select("*").eq("event_id", eventId);
-}
-
-
-
-const posts = supabase.channel('custom-all-channel')
-   .on(
-    'postgres_changes',
-    {event: '*', schema: 'public'},
-    async () => {
-      console.log('chats changed');
-      ({ data: allChats } = await getAllMessages());
   }
 
-
-
-
-
-
-  )
-  .subscribe()
-
+  const posts = supabase
+    .channel("custom-all-channel")
+    .on("postgres_changes", { event: "*", schema: "public" }, async () => {
+      console.log("chats changed");
+      ({ data: allChats } = await getAllMessages());
+    })
+    .subscribe();
 
   const fetchMessages = async () => {
-
-
     if (!user || !user.id) {
       // User is not logged in, skip fetching messages
       return;
     }
 
     const { data, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('event_id', eventId);
-  
+      .from("messages")
+      .select("*")
+      .eq("event_id", eventId);
+
     if (error) {
-      console.error('Error fetching messages2: ', error);
+      console.error("Error fetching messages2: ", error);
     } else {
       setMessages(data);
     }
   };
-  
+
   useEffect(() => {
     fetchMessages();
   }, [eventId, messages]);
 
-
-
-async function handleSendMessage() {
-  const { error } = await supabase.from("messages").insert([
+  async function handleSendMessage() {
+    const { error } = await supabase.from("messages").insert([
       {
-      event_id: eventId,
-      user_id: user.id,
-      content: newMessage,
-      name: myName,
+        event_id: eventId,
+        user_id: user.id,
+        content: newMessage,
+        name: myName,
       },
-  ]);
+    ]);
 
-  if (error) {
-    console.error("Error updating message:", error);
-  } else {
-    setNewMessage('')
-    console.log(
-      
-      "this is message", newMessage)
-      setMessages((prevMessages) => [...prevMessages, { content: newMessage, name: myName }]);
+    if (error) {
+      console.error("Error updating message:", error);
+    } else {
+      setNewMessage("");
+      console.log("this is message", newMessage);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { content: newMessage, name: myName },
+      ]);
       await fetchMessages();
-      console.log(messages)
-      
-    
+      console.log(messages);
+    }
   }
-}
-
-
-
-  
 
   // const handleOpenPic = () => {
   //   setPicVisible(true);
@@ -408,7 +380,7 @@ async function handleSendMessage() {
 
         <TouchableOpacity>
           <Card.Actions>
-            {selectedButton ? <Text>Joinedd</Text> : <Text>Join</Text>}
+            {selectedButton ? <Text>Joined</Text> : <Text>Join</Text>}
             <Switch value={selectedButton} onValueChange={handleImInPress} />
             <Button
               onPress={handleViewMorePress}
@@ -417,9 +389,13 @@ async function handleSendMessage() {
             >
               Learn More
             </Button>
-            <Button onPress={() => setChatModalVisible(true)} mode="outlined" style={{backgroundColor: 'cyan', marginLeft: 10}}>
-  Chat
-</Button>
+            <Button
+              onPress={() => setChatModalVisible(true)}
+              mode="outlined"
+              style={{ backgroundColor: "cyan", marginLeft: 10 }}
+            >
+              Chat
+            </Button>
           </Card.Actions>
         </TouchableOpacity>
       </Card>
@@ -430,130 +406,146 @@ async function handleSendMessage() {
         props={props}
       />
 
-<Modal
-  visible={chatModalVisible}
-  animationType="slide"
-  onRequestClose={() => setChatModalVisible(false)}
->
-  <SafeAreaView style={styles.modalContainer}>
-    <Text
-      style={{
-        fontSize: 30,
-        fontWeight: 'bold',
-        alignSelf: 'flex-start',
-        marginBottom: 20,
-      }}
-    >
-      Event Chat
-    </Text>
-
-    {Platform.OS === "ios" ? (
-      <KeyboardAvoidingView
-        behavior="padding"
-        style={styles.container}
+      <Modal
+        visible={chatModalVisible}
+        animationType="slide"
+        onRequestClose={() => setChatModalVisible(false)}
       >
-        <ScrollView keyboardShouldPersistTaps="handled">
-          {messages.map((message, index) => {
-            return (
-              <View 
-                key={index} 
-                style={[
-                  styles.messageContainer,
-                  (user && message.user_id === user.id) 
-                    ? styles.senderMessage 
-                    : message.name === props.creator
-                    ? styles.creatorMessage 
-                    : styles.receiverMessage
-                ]}
+        <SafeAreaView style={styles.modalContainer}>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              alignSelf: "flex-start",
+              marginBottom: 20,
+            }}
+          >
+            Event Chat
+          </Text>
+
+          {Platform.OS === "ios" ? (
+            <KeyboardAvoidingView behavior="padding" style={styles.container}>
+              <ScrollView keyboardShouldPersistTaps="handled">
+                {messages.map((message, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.messageContainer,
+                        user && message.user_id === user.id
+                          ? styles.senderMessage
+                          : message.name === props.creator
+                          ? styles.creatorMessage
+                          : styles.receiverMessage,
+                      ]}
+                    >
+                      {user && message.user_id !== user.id && (
+                        <Text style={styles.nameText}>{message.name}</Text>
+                      )}
+                      <Text
+                        style={
+                          user && message.user_id === user.id
+                            ? styles.senderText
+                            : message.name === props.creator
+                            ? styles.creatorText
+                            : styles.receiverText
+                        }
+                      >
+                        {message.content}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+
+              <TextInput
+                style={{
+                  height: 40,
+                  borderColor: "gray",
+                  borderWidth: 1,
+                  borderRadius: 10,
+                }}
+                onChangeText={setNewMessage}
+                value={newMessage}
+                multiline={true}
+                numberOfLines={4}
+                onSubmitEditing={handleSendMessage}
+              />
+
+              <Button onPress={handleSendMessage} style={styles.sendButton}>
+                Send
+              </Button>
+
+              <Button
+                onPress={() => setChatModalVisible(false)}
+                style={styles.closeButton}
               >
-                {(user && message.user_id !== user.id) && <Text style={styles.nameText}>{message.name}</Text>}
-                <Text 
-                  style={
-                    (user && message.user_id === user.id) 
-                      ? styles.senderText 
-                      : message.name === props.creator
-                      ? styles.creatorText
-                      : styles.receiverText
-                  }
-                >
-                  {message.content}
-                </Text>
-              </View>
-            );
-          })}
-        </ScrollView>
+                Close
+              </Button>
+            </KeyboardAvoidingView>
+          ) : (
+            <View>
+              <ScrollView keyboardShouldPersistTaps="handled">
+                {messages.map((message, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.messageContainer,
+                        user && message.user_id === user.id
+                          ? styles.senderMessage
+                          : message.name === props.creator
+                          ? styles.creatorMessage
+                          : styles.receiverMessage,
+                      ]}
+                    >
+                      {user && message.user_id !== user.id && (
+                        <Text style={styles.nameText}>{message.name}</Text>
+                      )}
+                      <Text
+                        style={
+                          user && message.user_id === user.id
+                            ? styles.senderText
+                            : message.name === props.creator
+                            ? styles.creatorText
+                            : styles.receiverText
+                        }
+                      >
+                        {message.content}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
 
-        <TextInput
-          style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
-          onChangeText={setNewMessage}
-          value={newMessage}
-          multiline={true}
-          numberOfLines={4} 
-          onSubmitEditing={handleSendMessage}
-        />
+              <TextInput
+                style={{
+                  height: 40,
+                  borderColor: "gray",
+                  borderWidth: 1,
+                  borderRadius: 10,
+                }}
+                onChangeText={setNewMessage}
+                value={newMessage}
+                multiline={true}
+                numberOfLines={4}
+                onSubmitEditing={handleSendMessage}
+              />
 
-        <Button onPress={handleSendMessage} style={styles.sendButton}>
-          Send
-        </Button>
+              <Button onPress={handleSendMessage} style={styles.sendButton}>
+                Send
+              </Button>
 
-        <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton}>
-          Close
-        </Button>
-      </KeyboardAvoidingView>
-    ) : (
-      <View>
-        <ScrollView keyboardShouldPersistTaps="handled">
-          {messages.map((message, index) => {
-            return (
-              <View 
-                key={index} 
-                style={[
-                  styles.messageContainer,
-                  (user && message.user_id === user.id) 
-                    ? styles.senderMessage 
-                    : message.name === props.creator
-                    ? styles.creatorMessage 
-                    : styles.receiverMessage
-                ]}
+              <Button
+                onPress={() => setChatModalVisible(false)}
+                style={styles.closeButton}
               >
-                {(user && message.user_id !== user.id) && <Text style={styles.nameText}>{message.name}</Text>}
-                <Text 
-                  style={
-                    (user && message.user_id === user.id) 
-                      ? styles.senderText 
-                      : message.name === props.creator
-                      ? styles.creatorText
-                      : styles.receiverText
-                  }
-                >
-                  {message.content}
-                </Text>
-              </View>
-            );
-          })}
-        </ScrollView>
-
-        <TextInput
-          style={{height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
-          onChangeText={setNewMessage}
-          value={newMessage}
-          multiline={true}
-          numberOfLines={4} 
-          onSubmitEditing={handleSendMessage}
-        />
-
-        <Button onPress={handleSendMessage} style={styles.sendButton}>
-          Send
-        </Button>
-
-        <Button onPress={() => setChatModalVisible(false)} style={styles.closeButton}>
-          Close
-        </Button>
-      </View>
-    )}
-  </SafeAreaView>
-</Modal>
-
+                Close
+              </Button>
+            </View>
+          )}
+        </SafeAreaView>
+      </Modal>
     </>
   );
 }
@@ -613,9 +605,6 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
         </Button>
       </SafeAreaView>
     </Modal>
-
-
-
   );
 }
 
@@ -630,8 +619,6 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuth();
-
-  
 
   const [userData, setUserData] = useState(null);
   const [followed, setFollowed] = useState([]);
