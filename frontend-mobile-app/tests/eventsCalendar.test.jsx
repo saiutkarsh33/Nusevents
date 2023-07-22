@@ -64,7 +64,7 @@ test("Pressing on a day results in 'Events' showing up", async () => {
 test("Pressing on a day results in the sample event 'Test Event' showing up", async () => {
   const { getByText, findByText } = render(<EventsCalendar />);
 
-  // Get the Learn More button and press it
+  // Get the date 20 July / August and press it
   fireEvent.press(getByText("20"));
 
   // Use findByText which returns a Promise that resolves when the element is found
