@@ -16,7 +16,6 @@ import {
   TextInput,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "../../contexts/auth";
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -150,14 +149,10 @@ export function TheirCard(props) {
   return (
     <>
       <Card style={styles.cardContainer} mode="outlined">
-        <View testID="creatorName">
-          <Card.Title title={props.creator} titleStyle={styles.cardTitle} />
-        </View>
-        <View testID="eventName">
-          <Card.Content>
-            <Text style={styles.eventCardName}>{props.name}</Text>
-          </Card.Content>
-        </View>
+        <Card.Title title={props.creator} titleStyle={styles.cardTitle} />
+        <Card.Content>
+          <Text style={styles.eventCardName}>{props.name}</Text>
+        </Card.Content>
         <TouchableOpacity>
           <Card.Actions>
             {selectedButton ? <Text>Joined</Text> : <Text>Join</Text>}
