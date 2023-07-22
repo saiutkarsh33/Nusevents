@@ -169,6 +169,7 @@ export default function Register() {
           style={styles.input}
         />
       </View>
+      {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
       <Button
         onPress={handleSubmit}
         mode="contained"
@@ -178,7 +179,6 @@ export default function Register() {
       >
         Submit
       </Button>
-      {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
     </ScrollView>
   );
