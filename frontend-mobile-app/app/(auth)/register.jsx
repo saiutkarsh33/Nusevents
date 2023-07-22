@@ -187,7 +187,7 @@ export default function Register() {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 100}
     >
       {content}
     </KeyboardAvoidingView>

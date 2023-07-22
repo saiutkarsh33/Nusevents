@@ -82,6 +82,48 @@ const styles = StyleSheet.create({
     height: 200,
     margin: 10,
   },
+  container8: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingTop: 50,   // Add padding top here
+},
+  scrollContent8: {
+    flexGrow: 1,
+  },
+
+  text8: {
+    fontSize: 16,
+    textAlign: "center",
+    paddingVertical: 25,
+  },
+  inputContainer8: {
+    marginBottom: 10,
+  },
+  input8: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  button8: {
+    marginTop: 15,
+    backgroundColor: "cyan",
+    alignSelf: "center",
+    width: "60%",
+  },
+  back8: {
+    marginTop: 15,
+    backgroundColor: "white",
+    alignSelf: "center",
+    width: "60%",
+  },
+  buttonLabel8: {
+    fontSize: 15,
+  },
+  error8: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
+  },
 });
 
 function ProfileCard(props) {
@@ -289,6 +331,45 @@ export default function ProfileScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [currPassword, setCurrPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+
+
+
+  const handleSubmit = async () => {
+
+    if (newPassword.length < 6) {
+      setErrMsg("Password must be at least 6 characters long");
+      return;
+  }
+
+
+    if (newPassword === "") {
+      setErrMsg("New Password cannot be empty");
+      return;
+    }
+    if (confirmNewPassword != newPassword) {
+      setErrMsg("Password does not match");
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setLoading(false);
+    if (error) {
+      setErrMsg(error.message);
+      return;
+    }
+    // Sign out the user
+    setPasswordVisible(false)
+    await supabase.auth.signOut();
+    console.log("User signed out");
+    
+  };
+
 
   const fetchData = async () => {
     setRefreshing(true);
@@ -376,6 +457,8 @@ export default function ProfileScreen() {
   // <Button onPress={handleDonePress}>Done</Button>
 
   return (
+
+    <>
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
       refreshControl={
@@ -397,7 +480,7 @@ export default function ProfileScreen() {
           ))}
         </>
       )}
-      <Button style={styles.Button}onPress={() => router.replace("../../components/changePasswordBusiness")}>
+      <Button style={styles.Button}onPress={() => setPasswordVisible(true)}>
         Change Password
       </Button>
       <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
@@ -412,5 +495,70 @@ export default function ProfileScreen() {
         Delete Account
       </Button>
     </ScrollView>
+
+<Modal
+visible={passwordVisible}
+animationType="slide"
+
+>
+  
+<ScrollView
+contentContainerStyle={styles.scrollContent8}
+keyboardShouldPersistTaps="handled"
+>
+<SafeAreaView style={styles.container8}>
+<Text style={styles.text8}>Fill in below to Change Password</Text>
+
+<View style={styles.inputContainer8}>
+  <TextInput
+    secureTextEntry
+    autoCapitalize="none"
+    textContentType="newPassword"
+    value={newPassword}
+    onChangeText={setNewPassword}
+    mode="outlined"
+    placeholder="New Password"
+    placeholderTextColor="#888888"
+    style={styles.input8}
+  />
+</View>
+<View style={styles.inputContainer8}>
+  <TextInput
+    secureTextEntry
+    autoCapitalize="none"
+    value={confirmNewPassword}
+    onChangeText={setConfirmNewPassword}
+    mode="outlined"
+    placeholder="Confirm New Password"
+    placeholderTextColor="#888888"
+    style={styles.input8}
+  />
+</View>
+<Button
+  onPress={handleSubmit}
+  mode="contained"
+  buttonColor="cyan"
+  style={styles.button8}
+  labelStyle={styles.buttonLabel8}
+>
+  Submit
+</Button>
+<Button
+  onPress={() => setPasswordVisible(false)}
+  mode="outlined"
+  buttonColor="cyan"
+  style={styles.back8}
+  labelStyle={styles.buttonLabel8}
+>
+  Back
+</Button>
+{errMsg !== "" && <Text style={styles.error8}>{errMsg}</Text>}
+{loading && <ActivityIndicator />}
+</SafeAreaView>
+</ScrollView>
+
+</Modal>
+
+</>
   );
 }

@@ -356,9 +356,10 @@ export default function ProfileScreen() {
       return;
     }
     // Sign out the user
+    setPasswordVisible(false)
     await supabase.auth.signOut();
     console.log("User signed out");
-    router.replace("../../login");
+    
   };
 
   const fetchData = async () => {

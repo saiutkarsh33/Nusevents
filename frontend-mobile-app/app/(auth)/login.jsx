@@ -44,7 +44,7 @@ export default function LoginPage() {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : null}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
+      keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 100} // Adjust this offset as needed
     >
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Image
