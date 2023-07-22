@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function EventForm({ onEventCreate }) {
+export function EventForm({ onEventCreate }) {
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -205,6 +205,7 @@ function EventForm({ onEventCreate }) {
           <View style={styles.inputContainer}>
             <Text style={styles.labelText}>Name of Event</Text>
             <TextInput
+            testID='eventNameInput'
               value={eventName}
               onChangeText={setEventName}
               mode="outlined"
@@ -212,6 +213,7 @@ function EventForm({ onEventCreate }) {
             />
             <Text style={styles.labelText}>Venue</Text>
             <TextInput
+              testID='eventVenueInput'
               value={eventVenue}
               onChangeText={setEventVenue}
               mode="outlined"
@@ -219,6 +221,8 @@ function EventForm({ onEventCreate }) {
             />
             <Text style={styles.labelText}>Date (in YYYY-MM-DD) </Text>
             <TextInput
+              testID='eventDateInput'
+
               value={eventDate}
               onChangeText={setEventDate}
               mode="outlined"
@@ -227,6 +231,7 @@ function EventForm({ onEventCreate }) {
             />
             <Text style={styles.labelText}>Time</Text>
             <TextInput
+              testID='eventTimeInput'
               value={eventTime}
               onChangeText={setEventTime}
               mode="outlined"
@@ -234,6 +239,7 @@ function EventForm({ onEventCreate }) {
             />
             <Text style={styles.labelText}>Description</Text>
             <TextInput
+              testID='eventDescriptionInput'
               value={description}
               onChangeText={setDescription}
               mode="outlined"
@@ -246,9 +252,10 @@ function EventForm({ onEventCreate }) {
           <Button onPress={handleAddImage} style={styles.button}>
             Add Image
           </Button>
-          <Button onPress={handleCreate} style={styles.button}>
-            Create
-          </Button>
+          <Button testID="createEventButton" onPress={handleCreate} style={styles.button}>
+  Create
+</Button>
+
           {loading && <ActivityIndicator />}
         </SafeAreaView>
       </ScrollView>
@@ -260,6 +267,7 @@ export default function CreateEvents() {
   const [eventCreated, setEventCreated] = useState(false);
 
   const handleEventCreate = () => {
+    console.log('handleEventCreate is called'); 
     setEventCreated(true);
   };
 
@@ -277,7 +285,8 @@ export default function CreateEvents() {
       )}
       {eventCreated && (
         <SafeAreaView>
-          <Text style={styles.successText}>Event created successfully!</Text>
+          <Text testID='successMessage' style={styles.successText}>Event created successfully!</Text>
+
           <Button onPress={handleCreateAnotherEvent} style={styles.button}>
             Create Another Event
           </Button>

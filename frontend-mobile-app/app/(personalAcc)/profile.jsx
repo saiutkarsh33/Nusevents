@@ -37,6 +37,14 @@ const styles = StyleSheet.create({
     // borderRadius: 0,
     margin: 10,
   },
+
+  deleteButton: {
+    marginTop: 16,
+    backgroundColor: "red",
+    alignSelf: "center",
+    width: "50%",
+  },
+  
   cardTitle: {
     fontWeight: "bold",
     fontSize: 22,
@@ -367,7 +375,7 @@ export default function ProfileScreen() {
         onPress={() => {
           handleDeleteAccount();
         }}
-        style={styles.Button}
+        style={styles.deleteButton}
       >
         Delete Account
       </Button>
