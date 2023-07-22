@@ -82,6 +82,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  container: {
+    flex: 1,
+    width: "100%",
+  },
 
   noEventsText: {
     fontWeight: "bold",
@@ -93,7 +97,7 @@ const styles = StyleSheet.create({
   messageContainer: {
     padding: 10,
     marginVertical: 5,
-    maxWidth: "100%",
+    maxWidth: "80%",
     borderRadius: 15,
   },
   senderMessage: {
@@ -420,7 +424,7 @@ export function TheirCard(props) {
               marginBottom: 20,
             }}
           >
-            Event Chat
+            Chat
           </Text>
 
           {Platform.OS === "ios" ? (

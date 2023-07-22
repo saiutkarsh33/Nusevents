@@ -18,6 +18,8 @@ import { Button, Card, Text, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/auth";
+import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 
 const styles = StyleSheet.create({
   cardContainer: {
