@@ -89,3 +89,16 @@ test("'Chat' button press results in 'Event Chat' showing up", async () => {
 
   expect(chat).toBeTruthy();
 });
+
+test("'Join' switch press results in 'Joined' showing up", async () => {
+  const { getByTestId, findByText } = render(<EventsPage />);
+
+  // Get the Join switch and click it
+  fireEvent(getByTestId("joinSwitch"), "valueChange", true);
+
+  // Use findByText which returns a Promise that resolves when the element is found
+  // If the element is not found within the timeout, the Promise rejects
+  const joinedText = await findByText("Joined");
+
+  expect(joinedText).toBeTruthy();
+});

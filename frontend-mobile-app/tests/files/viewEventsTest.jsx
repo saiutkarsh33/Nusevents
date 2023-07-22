@@ -133,6 +133,7 @@ export function TheirCard(props) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [chatModalVisible, setChatModalVisible] = useState(false);
+  const [selectedButton, setSelectedButton] = useState(false);
 
   const handleViewMorePress = () => {
     setModalVisible(true);
@@ -140,6 +141,10 @@ export function TheirCard(props) {
 
   const handleCloseModal = () => {
     setModalVisible(false);
+  };
+
+  const handleImInPress = async () => {
+    setSelectedButton(!selectedButton);
   };
 
   return (
@@ -155,6 +160,12 @@ export function TheirCard(props) {
         </View>
         <TouchableOpacity>
           <Card.Actions>
+            {selectedButton ? <Text>Joined</Text> : <Text>Join</Text>}
+            <Switch
+              value={selectedButton}
+              onValueChange={handleImInPress}
+              testID="joinSwitch"
+            />
             <Button
               onPress={handleViewMorePress}
               mode="outlined"
