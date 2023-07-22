@@ -288,6 +288,7 @@ export default function ProfileScreen() {
   const [myData, setMyData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const fetchData = async () => {
     setRefreshing(true);
@@ -396,8 +397,8 @@ export default function ProfileScreen() {
           ))}
         </>
       )}
-      <Button style={styles.Button}>
-        <Link href="../../components/changePassword">Change Password</Link>
+      <Button style={styles.Button}onPress={() => router.replace("../../components/changePasswordBusiness")}>
+        Change Password
       </Button>
       <Button onPress={() => supabase.auth.signOut()} style={styles.Button}>
         Logout

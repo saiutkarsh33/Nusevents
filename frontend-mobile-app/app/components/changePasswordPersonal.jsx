@@ -148,7 +148,7 @@ export default function ChangePassword() {
           Submit
         </Button>
         <Button
-          onPress={() => router.back()}
+          onPress={() => router.replace("../../(personalAcc)/profile.jsx")}
           mode="outlined"
           buttonColor="cyan"
           style={styles.back}
