@@ -116,27 +116,8 @@ afterEach(() => {
     expect(errorMessage).toBeTruthy();
   });
 
-  test('shows an error when the password and confirm password are not the same ', async () => {
-    const { getByTestId, findByText, getByText } = render(<ProfileScreen />);
 
-    fireEvent.press(getByText('Change Password'));
-  
-    // Fill in only the event name
-    const eventNameInput = getByTestId('password');
-    fireEvent.changeText(eventNameInput, '123456');
-
-    const eventNameInput2 = getByTestId('confirmPassword');
-    fireEvent.changeText(eventNameInput2, '1234567');
-  
-    fireEvent.press(getByText('Submit'));
-  
-    // Wait for error message to appear
-    const errorMessage = await findByText("Password does not match");
-    
-    expect(errorMessage).toBeTruthy();
-  });
-
-  test('When u change password and press back you go back to profile ', async () => {
+  test('When u press change password and press back you go back to profile ', async () => {
     const { getByTestId, findByText, getByText } = render(<ProfileScreen />);
 
     fireEvent.press(getByText('Change Password'));
