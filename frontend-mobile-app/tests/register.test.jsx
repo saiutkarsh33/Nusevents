@@ -3,6 +3,8 @@ import { supabase } from "../lib/supabase";
 import { RegisterTest } from './files/registerTest.jsx';
 
 
+// Creating register page tests
+
 afterEach(() => {
     cleanup();
     jest.clearAllMocks();

@@ -67,20 +67,15 @@ const styles = StyleSheet.create({
   },
 });
 
+// This is the card of each Business Account's profile
+
 function EventCard(props) {
-  // const [modalDescVisible, setModalDescVisible] = useState(false);
   const [modalEventsVisible, setModalEventsVisible] = useState(false);
   const { user } = useAuth();
   const [followedButton, setFollowedButton] = useState(() => props.followed);
   const [eventsData, setEventsData] = useState([]);
 
-  // const handleViewDescPress = () => {
-  //   setModalDescVisible(true);
-  // };
 
-  // const handleCloseDescModal = () => {
-  //   setModalDescVisible(false);
-  // };
 
   const handleViewEventsPress = async () => {
     try {
@@ -107,6 +102,8 @@ function EventCard(props) {
   const handleCloseEventsModal = () => {
     setModalEventsVisible(false);
   };
+
+  // If followed, will add to the user's followed array. Using this, the user can only view the events from accounts followed.
 
   const handleFollowPress = async () => {
     console.log("pressed");
@@ -280,6 +277,8 @@ function EventCard(props) {
   );
 }
 
+// Below is the code for the events of each business account, to be obtained when pressed Learn More
+
 function Event({ event }) {
   return (
     <Card key={event.id} style={styles.eventDescCard} mode="outlined">
@@ -316,6 +315,8 @@ export default function BusinessAccounts() {
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuth();
+
+  // Obtaining data of the user itself to show if the business accounts are followed or not
 
   async function fetchData() {
     setRefreshing(true);
@@ -358,6 +359,8 @@ export default function BusinessAccounts() {
     fetchData();
   }, [user]);
 
+  // upon refresh, reload data each time
+
   useEffect(() => {
     if (refreshing) {
       fetchData();
@@ -373,6 +376,8 @@ export default function BusinessAccounts() {
 
   console.log("this is biz acc", usersData);
   console.log("middle");
+
+  // sort according to alphabetical order.
 
   const sortedUsersData = usersData.sort((a, b) => {
     const nameA = a.name.toLowerCase();

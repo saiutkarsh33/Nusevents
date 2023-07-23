@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// Settle the view Signups after u settle the stuff from the eventsPage's i'm in end.
+// This is the event card of each event created by the business account
 
 function MyCard(props) {
   const [signupVisible, setSignupVisible] = useState(false);
@@ -166,6 +166,8 @@ function MyCard(props) {
   const [myName, setMyName] = useState(null);
   const { user } = useAuth();
 
+  // get the name of user
+
   const fetchName = async () => {
     console.log("User:", user);
     console.log("User ID:", user?.id);
@@ -186,6 +188,8 @@ function MyCard(props) {
   useEffect(() => {
     fetchName();
   }, [myName]);
+
+  // get all the messages tied to the event
 
   async function getAllMessages() {
     return await supabase.from("messages").select("*").eq("event_id", eventId);
@@ -217,9 +221,13 @@ function MyCard(props) {
     }
   };
 
+  // fetch soon as theres a new message
+
   useEffect(() => {
     fetchMessages();
   }, [eventId, messages]);
+
+  // add new message to database
 
   async function handleSendMessage() {
     const { error } = await supabase.from("messages").insert([
@@ -245,6 +253,8 @@ function MyCard(props) {
     }
   }
 
+  // following 3 functions are to handle opening and closing of modals
+
   const handleViewSignups = () => {
     setSignupVisible(true);
   };
@@ -257,6 +267,8 @@ function MyCard(props) {
     setEditMode(true);
     setEditVisible(true);
   };
+
+  // This is handling the editing of the event - image, description, venue etc
 
   const handleDonePress = async () => {
     if (user) {
@@ -336,6 +348,8 @@ function MyCard(props) {
       }
     }
   };
+
+  // This is handling the deletion of the event
 
   const handleDelete = () => {
     Alert.alert(
@@ -428,6 +442,7 @@ function MyCard(props) {
             </Text>
           </View>
         )}
+
 
         <Card.Content>
           <Text style={styles.eventCardVenue}>{props.venue}</Text>
@@ -663,6 +678,7 @@ function MyCard(props) {
           )}
         </SafeAreaView>
       </Modal>
+
       <Modal
         visible={signupVisible}
         animationType="slide"
@@ -710,6 +726,8 @@ export default function MyEvents() {
 
   const { user } = useAuth();
 
+  // Obtaining the events created by user
+
   async function fetchData() {
     setRefreshing(true);
     setLoading(true);
@@ -739,6 +757,8 @@ export default function MyEvents() {
   useEffect(() => {
     fetchData();
   }, [user]);
+
+  // fetch the data if refreshed
 
   useEffect(() => {
     if (refreshing) {

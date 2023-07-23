@@ -337,7 +337,7 @@ export default function ProfileScreen() {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
-
+// this handles the submission of the new password
 
   const handleSubmit = async () => {
 
@@ -410,7 +410,7 @@ export default function ProfileScreen() {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchData(); // Call your fetchData function to fetch the latest data
+    fetchData(); // Call my fetchData function to fetch the latest data
     setRefreshing(false);
   };
 
@@ -419,7 +419,7 @@ export default function ProfileScreen() {
       const { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) {
         console.error("Error resetting password:", error);
-        // Handle error
+        
       } else {
         Alert.alert(
           "Password Reset",
@@ -429,9 +429,11 @@ export default function ProfileScreen() {
       }
     } catch (error) {
       console.error("Error resetting password:", error);
-      // Handle error
+     
     }
   };
+
+  // this handles the deletion of account, removed from database and signs user out
 
   const handleDeleteAccount = async () => {
     Alert.alert("Are you sure?", "This action cannot be undone.", [
@@ -454,7 +456,7 @@ export default function ProfileScreen() {
     ]);
   };
 
-  // <Button onPress={handleDonePress}>Done</Button>
+  /// below is the layout of the code
 
   return (
 

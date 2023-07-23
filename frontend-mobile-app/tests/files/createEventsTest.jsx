@@ -60,6 +60,8 @@ const styles = StyleSheet.create({
     },
   });
 
+  // This is a simpler version of Event form, for testing
+
   export function EventForm({ onEventCreate }) {
     const [eventName, setEventName] = useState("");
     const [eventVenue, setEventVenue] = useState("");
@@ -202,6 +204,7 @@ const styles = StyleSheet.create({
       );
     }
 
+     // This is a simpler version of Create Events, for testing
 
     export default function CreateEvents() {
         const [eventCreated, setEventCreated] = useState(false);

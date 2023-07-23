@@ -3,6 +3,8 @@ import { useRouter } from "expo-router";
 import LoginPage from '../app/(auth)/login';
 import { supabase } from "../lib/supabase";
 
+// Testing Login Page
+
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();

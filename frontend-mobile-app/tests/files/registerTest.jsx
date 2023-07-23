@@ -13,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useRouter } from "expo-router";
 
+ // This is a simpler version of Register , for testing
+
 export function RegisterTest() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

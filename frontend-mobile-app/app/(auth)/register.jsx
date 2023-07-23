@@ -13,6 +13,11 @@ import { Dropdown } from "react-native-element-dropdown";
 
 import { useRouter } from "expo-router";
 
+// Register account has an event form which takes in inputs - name, account type, residence, email, password, description.
+// Shows error when a key field has not been submitted or wrongly submitted.
+// there is a back button if one wishes to go back to login screen
+// if everything is correct, wil redirect user straight to the app itself.
+
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,6 +39,7 @@ export default function Register() {
     { label: "Tembusu", value: "Tembusu" },
     { label: "Sheares", value: "Sheares" },
   ];
+  // handles errors for handle submit
 
   const handleSubmit = async () => {
     if (email === "") {
@@ -79,7 +85,7 @@ export default function Register() {
       return;
     }
   };
-
+  // content of the event form itself.
   const content = (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
@@ -182,6 +188,8 @@ export default function Register() {
       {loading && <ActivityIndicator />}
     </ScrollView>
   );
+
+  // different ways of preventing the keyboard from blocking the screen , on iOS and Android
 
   return Platform.OS === "ios" ? (
     <KeyboardAvoidingView

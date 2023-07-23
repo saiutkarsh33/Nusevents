@@ -62,6 +62,10 @@ const styles = StyleSheet.create({
   },
 });
 
+// Form which requires inputting of key information like name, venue, date, time
+// Able to insert an image as well
+
+
 export function EventForm({ onEventCreate }) {
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
@@ -94,6 +98,8 @@ export function EventForm({ onEventCreate }) {
       setImage(result.assets[0].uri);
     }
   };
+
+  // Error handling if there is an issue with the event form - if any keye field is missing
 
   const handleCreate = async () => {
     setErrMsg("");
@@ -262,6 +268,8 @@ export function EventForm({ onEventCreate }) {
     </KeyboardAvoidingView>
   );
 }
+
+// Once form is created, "Event Created Successfully" is rendered - with a button to create another form
 
 export default function CreateEvents() {
   const [eventCreated, setEventCreated] = useState(false);

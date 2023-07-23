@@ -134,6 +134,8 @@ const styles = StyleSheet.create({
   },
 });
 
+// This is the event card itself
+
 export function TheirCard(props) {
   // const [picVisible, setPicVisible] = useState(false);
 
@@ -146,6 +148,8 @@ export function TheirCard(props) {
   const [myName, setMyName] = useState(null);
 
   const { user } = useAuth();
+
+  /// get user's name
 
   const fetchName = async () => {
     console.log("User:", user);
@@ -167,6 +171,8 @@ export function TheirCard(props) {
   useEffect(() => {
     fetchName();
   }, [myName]);
+
+  // get all messages associated with the event
 
   async function getAllMessages() {
     return await supabase.from("messages").select("*").eq("event_id", eventId);
@@ -202,6 +208,8 @@ export function TheirCard(props) {
     fetchMessages();
   }, [eventId, messages]);
 
+  // add the message created to supabase's database
+
   async function handleSendMessage() {
     const { error } = await supabase.from("messages").insert([
       {
@@ -226,13 +234,7 @@ export function TheirCard(props) {
     }
   }
 
-  // const handleOpenPic = () => {
-  //   setPicVisible(true);
-  // };
-
-  // const handleClosePic = () => {
-  //   setPicVisible(false);
-  // };
+  
 
   const handleViewMorePress = () => {
     setModalVisible(true);
@@ -242,11 +244,7 @@ export function TheirCard(props) {
     setModalVisible(false);
   };
 
-  // For this, there are 3 issues.
-  // it doesent work
-  // when u press im in when its yellow it shld remove it from the props.signups as well
-  // the selected prop shldnt be in events but on thr personal accounts' end, where they
-  // should have a eventsSelected array or sth and the I'm in button shld be affecting that.
+  // When an event is joined, event is added to user's selected event array and user's name is added to the event's signup array
 
   const handleImInPress = async () => {
     console.log("pressed");
@@ -305,10 +303,6 @@ export function TheirCard(props) {
       }
 
       console.log("this is updated signup", props.name, updatedSignups);
-
-      // const updatedSignups = [...signups, accountData.name];
-
-      // const updatedSelected = [...selected, eventData.name];
 
       const { data: updatedEventData, error: updateEventError } = await supabase
         .from("events")
@@ -554,6 +548,8 @@ export function TheirCard(props) {
   );
 }
 
+// This is the modal to learn more about the event
+
 function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
   return (
     <Modal
@@ -612,9 +608,6 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
   );
 }
 
-// ...import statements and styles
-
-// ...import statements and styles
 
 export default function EventsPage() {
   const [eventsData, setEventsData] = useState([]);
@@ -626,6 +619,8 @@ export default function EventsPage() {
 
   const [userData, setUserData] = useState(null);
   const [followed, setFollowed] = useState([]);
+
+  // Get data of all the events in residence, created by business accounts whom user follows
 
   async function fetchData() {
     setLoading(true);
@@ -648,6 +643,8 @@ export default function EventsPage() {
       setRefreshing(false);
     }
   }
+
+  // Get user data - important because each user follows different business accounts and signed up for different events 
 
   async function fetchUserData() {
     if (user) {
@@ -673,6 +670,8 @@ export default function EventsPage() {
     fetchData();
   }, [user, residence, followed]);
 
+  // Fecth data again upon refresh
+
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchUserData();
@@ -684,9 +683,13 @@ export default function EventsPage() {
     return <Text>Loading account data...</Text>;
   }
 
+  // Sorted the events based on Date
+
   const sortedEventsData = eventsData.sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
+
+  // Returning the event cards themselves
 
   return (
     <ScrollView
