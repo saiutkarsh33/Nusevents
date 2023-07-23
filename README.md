@@ -14,6 +14,6 @@ A cross-platform mobile application (written in React Native) to help students l
 
 **Project README:** [Link](https://docs.google.com/document/d/1B_HHCTbkaLnzMXAcASsP5bDuz4ZWpt0j1p6eeTnqsDU/edit?usp=sharing)
 
-## Mockups for some pages
+## Figma Mockups for some pages
 
 ![Project Image](Screenshot%202023-05-28%20at%2011.33.33%20AM.png)
