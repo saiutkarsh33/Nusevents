@@ -53,6 +53,8 @@ const styles = StyleSheet.create({
   },
 });
 
+// This is a simpler version of EventsCalendar, for testing
+
 export function EventsCalendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
