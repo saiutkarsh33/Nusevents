@@ -1,9 +1,12 @@
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, cleanup} from '@testing-library/react-native';
 import { supabase } from "../lib/supabase";
 import { RegisterTest } from './files/registerTest.jsx';
 
 
-
+afterEach(() => {
+    cleanup();
+    jest.clearAllMocks();
+  });
 
 
 
