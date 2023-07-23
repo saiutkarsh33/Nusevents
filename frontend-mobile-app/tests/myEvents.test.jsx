@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 import { render, fireEvent, waitFor, screen, cleanup } from '@testing-library/react-native';
 import  { MyCard, MyEvents } from './files/myEventsTest.jsx';
