@@ -78,3 +78,17 @@ test("'Follow' switch press results in 'Following' showing up", async () => {
 
   expect(followingText).toBeTruthy();
 });
+
+test("'Follow' switch pressed twice results in 'Follow' showing up", async () => {
+  const { getByTestId, findByText } = render(<BusinessAccounts />);
+
+  // Get the Follow switch and click it
+  fireEvent(getByTestId("followSwitch"), "valueChange", true);
+  fireEvent(getByTestId("followSwitch"), "valueChange", true);
+
+  // Use findByText which returns a Promise that resolves when the element is found
+  // If the element is not found within the timeout, the Promise rejects
+  const followingText = await findByText("Follow");
+
+  expect(followingText).toBeTruthy();
+});
