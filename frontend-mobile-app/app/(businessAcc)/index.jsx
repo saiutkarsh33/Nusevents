@@ -238,7 +238,7 @@ function MyCard(props) {
         name: myName,
       },
     ]);
-
+  
     if (error) {
       console.error("Error updating message:", error);
     } else {
@@ -246,7 +246,7 @@ function MyCard(props) {
       console.log("this is message", newMessage);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { content: newMessage, name: myName },
+        { content: newMessage, name: myName, user_id: user.id },
       ]);
       await fetchMessages();
       console.log(messages);
@@ -616,7 +616,7 @@ function MyCard(props) {
               </Button>
             </KeyboardAvoidingView>
           ) : (
-            <View>
+            <View style={styles.container} behavior="padding">
               <ScrollView keyboardShouldPersistTaps="handled">
                 {messages.map((message, index) => {
                   return (

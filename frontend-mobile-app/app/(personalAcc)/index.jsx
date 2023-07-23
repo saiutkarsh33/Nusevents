@@ -219,7 +219,7 @@ export function TheirCard(props) {
         name: myName,
       },
     ]);
-
+  
     if (error) {
       console.error("Error updating message:", error);
     } else {
@@ -227,12 +227,13 @@ export function TheirCard(props) {
       console.log("this is message", newMessage);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { content: newMessage, name: myName },
+        { content: newMessage, name: myName, user_id: user.id },
       ]);
       await fetchMessages();
       console.log(messages);
     }
   }
+  
 
   
 
@@ -482,7 +483,7 @@ export function TheirCard(props) {
               </Button>
             </KeyboardAvoidingView>
           ) : (
-            <View>
+            <View style={styles.container} behavior="padding">
               <ScrollView keyboardShouldPersistTaps="handled">
                 {messages.map((message, index) => {
                   return (
@@ -518,7 +519,7 @@ export function TheirCard(props) {
 
               <TextInput
                 style={{
-                  height: 40,
+                  height: 60,
                   borderColor: "gray",
                   borderWidth: 1,
                   borderRadius: 10,
