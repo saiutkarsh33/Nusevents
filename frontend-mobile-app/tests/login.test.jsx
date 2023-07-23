@@ -1,7 +1,12 @@
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, cleanup } from '@testing-library/react-native';
 import { useRouter } from "expo-router";
 import LoginPage from '../app/(auth)/login';
 import { supabase } from "../lib/supabase";
+
+afterEach(() => {
+  cleanup();
+  jest.clearAllMocks();
+});
 
 // Mock useRouter
 jest.mock('expo-router', () => ({

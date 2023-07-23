@@ -1,14 +1,16 @@
 
 import { render, fireEvent, waitFor, screen, cleanup } from '@testing-library/react-native';
-import CreateEvents, { EventForm } from '../app/(businessAcc)/createEvents';
+import CreateEvents, { EventForm } from './files/createEventsTest.jsx';
+
+
 import { act } from 'react-test-renderer';
 
 
-//import { server } from './msw/server.js'
 
-//beforeAll(() => server.listen()) // Start the server at the start of your tests
-// afterEach(() => server.resetHandlers()) // Reset any runtime handlers
-// afterAll(() => server.close()) // Clean up once the tests are done
+afterEach(() => {
+    cleanup();
+    jest.clearAllMocks();
+  });
 
 
 jest.mock('react-native-paper', () => ({
@@ -34,23 +36,9 @@ jest.mock('react-native-paper', () => ({
     },
   }));
 
-  const mockInsert = jest.fn(() => Promise.resolve());
+  
 
-let mockSupabase = {
-  from: jest.fn().mockImplementation(() => ({ insert: mockInsert })),
-  single: jest.fn(),
-  storage: {
-    from: jest.fn().mockReturnThis(),
-    upload: jest.fn(),
-    getPublicUrl: jest.fn(),
-  },
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
-};
 
-jest.mock('../lib/supabase', () => ({
-  supabase: mockSupabase,
-}));
   
 
   
@@ -83,6 +71,29 @@ jest.mock('../lib/supabase', () => ({
     
     expect(errorMessage).toBeTruthy();
   });
+
+
+  test('renders success message when all fields are filled and create button is pressed', async () => {
+    const { getByTestId, findByTestId } = render(<CreateEvents />);
+    
+    // Fill in all fields
+    fireEvent.changeText(getByTestId('eventNameInput'), 'Test Event Name');
+    fireEvent.changeText(getByTestId('eventVenueInput'), 'Test Venue');
+    fireEvent.changeText(getByTestId('eventDateInput'), '2023-07-25');
+    fireEvent.changeText(getByTestId('eventTimeInput'), '13:00');
+    fireEvent.changeText(getByTestId('eventDescriptionInput'), 'This is a test event description.');
+  
+    // Press the create button
+    fireEvent.press(getByTestId('createEventButton'));
+    
+    // Await for success message
+    const successMessage = await findByTestId('successMessage');
+    
+    expect(successMessage).toBeTruthy();
+  });
+
+
+  
 
 
  
