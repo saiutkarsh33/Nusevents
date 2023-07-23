@@ -203,29 +203,24 @@ function MyCard(props) {
     })
     .subscribe();
 
-  const fetchMessages = async () => {
-    if (!user || !user.id) {
-      // User is not logged in, skip fetching messages
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("event_id", eventId);
-
-    if (error) {
-      console.error("Error fetching messages2: ", error);
-    } else {
-      setMessages(data);
-    }
-  };
-
-  // fetch soon as theres a new message
-
-  useEffect(() => {
-    fetchMessages();
-  }, [eventId, messages]);
+    const fetchMessages = async () => {
+      if (!user || !user.id) {
+        // User is not logged in, skip fetching messages
+        return;
+      }
+    
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("event_id", eventId)
+        .order('created_at', { ascending: true });
+    
+      if (error) {
+        console.error("Error fetching messages2: ", error);
+      } else {
+        setMessages(data);
+      }
+    };
 
   // add new message to database
 

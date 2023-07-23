@@ -178,25 +178,20 @@ export function TheirCard(props) {
     return await supabase.from("messages").select("*").eq("event_id", eventId);
   }
 
-  const posts = supabase
-    .channel("custom-all-channel")
-    .on("postgres_changes", { event: "*", schema: "public" }, async () => {
-      console.log("chats changed");
-      ({ data: allChats } = await getAllMessages());
-    })
-    .subscribe();
+
 
   const fetchMessages = async () => {
     if (!user || !user.id) {
       // User is not logged in, skip fetching messages
       return;
     }
-
+  
     const { data, error } = await supabase
       .from("messages")
       .select("*")
-      .eq("event_id", eventId);
-
+      .eq("event_id", eventId)
+      .order('created_at', { ascending: true });
+  
     if (error) {
       console.error("Error fetching messages2: ", error);
     } else {
