@@ -6,6 +6,9 @@ export const unstable_settings = {
   initialRouteName: "login",
 };
 
+// This is our layout for login and signup page, follows stack screen.
+
+
 export default function AuthRoot() {
   const router = useRouter();
   return (

@@ -125,6 +125,8 @@ const styles = StyleSheet.create({
   },
 });
 
+
+
 function ProfileCard(props) {
   const [editVisible, setEditVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -136,10 +138,14 @@ function ProfileCard(props) {
   const [changedImage, setChangedImage] = useState(false);
   const { user } = useAuth();
 
+  // Edit one's account - not really important in Personal Account.
+
   const handleEditPress = () => {
     setEditMode(true);
     setEditVisible(true);
   };
+
+  // Handling the editing or pforile - changing description and profile picture
 
   const handleDonePress = async () => {
     if (user) {
@@ -216,6 +222,8 @@ function ProfileCard(props) {
       }
     }
   };
+
+  // Changing profile picture
 
   const handleAddProfilePic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -330,6 +338,7 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   
+  // Handling some edge cases in creating new password
 
   const handleSubmit = async () => {
 
@@ -401,6 +410,8 @@ export default function ProfileScreen() {
     fetchData();
     setRefreshing(false);
   };
+
+  // Handling the deletion of account
 
   const handleDeleteAccount = async () => {
     Alert.alert("Are you sure?", "This action cannot be undone.", [

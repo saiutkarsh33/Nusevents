@@ -5,6 +5,8 @@ import CreateEvents, { EventForm } from './files/createEventsTest.jsx';
 
 import { act } from 'react-test-renderer';
 
+// Testing Create Events Page
+
 
 
 afterEach(() => {

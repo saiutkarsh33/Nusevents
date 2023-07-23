@@ -28,8 +28,7 @@ import {
 import { act } from 'react-test-renderer';
 
 
-
-
+// Creating my Events page tests
 
 
 

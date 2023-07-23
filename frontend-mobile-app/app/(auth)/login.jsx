@@ -12,6 +12,10 @@ import { supabase } from "../../lib/supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 
+// our login page, has text inputs for email and password, shows error messages when there are issues with them
+// able to redirect to sign up page when theres an issue
+// logs the user into their respecive layout (business or personal)
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -5,6 +5,16 @@ import { supabase } from "../lib/supabase";
 
 const AuthContext = createContext({});
 
+// When user is logged in as a personal account, he will enter the app with screens of a personal account
+// and vice versa for a business account
+
+
+
+
+// Creation of AuthContext and useAuth which we use to obtain our user, throughout the entire application
+
+
+
 export function useAuth() {
   return useContext(AuthContext);
 }

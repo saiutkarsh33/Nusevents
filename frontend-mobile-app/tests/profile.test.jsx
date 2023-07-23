@@ -25,6 +25,8 @@ import {
     TextInput,
   } from "react-native-paper";
 
+// Creating Profile page tests
+
 afterEach(() => {
     cleanup();
     jest.clearAllMocks();

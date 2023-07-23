@@ -1,6 +1,8 @@
 import { Tabs } from "expo-router";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+// Layout for personal account's screens , using tabs. Used material community icons for the page icons.
+
 export default function HomeScreen() {
   return (
     <Tabs>

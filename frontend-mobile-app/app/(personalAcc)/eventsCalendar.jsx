@@ -102,6 +102,8 @@ export default function EventsCalendar() {
 
   const markedDates = {};
 
+  // Get the dates of each event selected
+
   eventsData.forEach((event) => {
     if (userData && userData.selected_events.includes(event.name)) {
       const eventDate = event.date;
@@ -117,6 +119,8 @@ export default function EventsCalendar() {
       }
     }
   });
+
+  // open up relevant modals when day is pressed
 
   const handleDayPress = (day) => {
     const { dateString } = day;
@@ -158,6 +162,8 @@ export default function EventsCalendar() {
         return [];
       }
     };
+
+    // Get the actual events for eachs selected date, to appear in the modal
 
     async function fetchEventsForSelectedDate() {
       try {
@@ -243,6 +249,8 @@ export default function EventsCalendar() {
     </ScrollView>
   );
 }
+
+// Below is the code for the events themselves, the ones that are  shown when the date is pressed,
 
 function Event({ event }) {
   return (

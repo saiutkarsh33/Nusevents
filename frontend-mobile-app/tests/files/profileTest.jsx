@@ -120,6 +120,8 @@ import {
       marginTop: 10,
     },
   });
+
+   // This is a simpler version of ProfileScreen, for testing
   
   export function ProfileCard(props) {
     const [editVisible, setEditVisible] = useState(false);
@@ -164,6 +166,8 @@ import {
       </>
     );
   }
+
+   // This is a simpler version of Profile Screen, for testing
   
   export function ProfileScreen() {
     const { user } = useAuth();

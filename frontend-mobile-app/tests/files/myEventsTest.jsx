@@ -135,6 +135,8 @@ const styles = StyleSheet.create({
   },
 });
 
+ // This is a simpler version of MyCard, for testing
+
 export function MyCard(props) {
   const [signupVisible, setSignupVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
@@ -246,6 +248,8 @@ export function MyCard(props) {
   );
 
             }
+
+   // This is a simpler version of MyEvents, for testing
 
   export function MyEvents() {
 
