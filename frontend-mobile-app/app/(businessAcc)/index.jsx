@@ -195,13 +195,7 @@ function MyCard(props) {
     return await supabase.from("messages").select("*").eq("event_id", eventId);
   }
 
-  const posts = supabase
-    .channel("custom-all-channel")
-    .on("postgres_changes", { event: "*", schema: "public" }, async () => {
-      console.log("chats changed");
-      ({ data: allChats } = await getAllMessages());
-    })
-    .subscribe();
+  
 
     const fetchMessages = async () => {
       if (!user || !user.id) {
@@ -221,6 +215,10 @@ function MyCard(props) {
         setMessages(data);
       }
     };
+
+    useEffect(() => {
+      fetchMessages();
+    }, [eventId, messages]);
 
   // add new message to database
 
