@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// This is the event card itself
+// This is the event card itself, simplified for testing
 
 export function TheirCard(props) {
   // const [picVisible, setPicVisible] = useState(false);
@@ -244,6 +244,8 @@ export function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
     </Modal>
   );
 }
+
+// This is the events page, simplified for testing
 
 export function EventsPage() {
   const card = {

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// This is the card of each Business Account's profile
+// This is the card of each Business Account's profile, simplified for testing
 
 function EventCard(props) {
   const [modalEventsVisible, setModalEventsVisible] = useState(false);
@@ -153,6 +153,7 @@ function EventCard(props) {
     </>
   );
 }
+// Simplified BusinessAccounts, for testing purposes,
 
 export function BusinessAccounts() {
   const card = {
