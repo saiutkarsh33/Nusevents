@@ -146,6 +146,7 @@ export function TheirCard(props) {
   const [newMessage, setNewMessage] = useState("");
   const [eventId, setEventId] = useState(props.id);
   const [myName, setMyName] = useState(null);
+  
 
   const { user } = useAuth();
 
@@ -206,6 +207,11 @@ export function TheirCard(props) {
   // add the message created to supabase's database
 
   async function handleSendMessage() {
+    // Trim the message to remove leading/trailing whitespace, then check if it's empty
+    if (newMessage.trim() === "") {
+      return; // Exit early if the message is empty
+    }
+  
     const { error } = await supabase.from("messages").insert([
       {
         event_id: eventId,
@@ -462,9 +468,10 @@ export function TheirCard(props) {
                 onChangeText={setNewMessage}
                 value={newMessage}
                 multiline={true}
-                numberOfLines={4}
+                //numberOfLines={4}
                 onSubmitEditing={handleSendMessage}
               />
+
 
               <Button onPress={handleSendMessage} style={styles.sendButton}>
                 Send

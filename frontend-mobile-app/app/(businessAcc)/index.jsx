@@ -142,6 +142,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: "black",
   },
+  noEventsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noEventsText: {
+    fontWeight: "bold",
+    fontSize: 18,
+    textAlign: "center",
+    marginVertical: 10,
+  },
 });
 
 // This is the event card of each event created by the business account
@@ -223,6 +234,11 @@ function MyCard(props) {
   // add new message to database
 
   async function handleSendMessage() {
+    // Trim the message to remove leading/trailing whitespace, then check if it's empty
+    if (newMessage.trim() === "") {
+      return; // Exit early if the message is empty
+    }
+  
     const { error } = await supabase.from("messages").insert([
       {
         event_id: eventId,
@@ -775,7 +791,7 @@ export default function MyEvents() {
     >
       {loading ? (
         <ActivityIndicator size="large" color="blue" />
-      ) : (
+      ) : eventsData.length > 0 ? (
         eventsData.map((card) => (
           <MyCard
             key={card.id}
@@ -790,7 +806,14 @@ export default function MyEvents() {
             signups={card.signups}
           />
         ))
+      ) : (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>
+            No Current Events Found. Create an event!
+          </Text>
+        </View>
       )}
     </ScrollView>
   );
+  
 }

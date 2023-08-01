@@ -65,6 +65,18 @@ const styles = StyleSheet.create({
     backgroundColor: "cyan",
     alignSelf: "center",
   },
+  noEventsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noEventsText: {
+    fontWeight: "bold",
+    fontSize: 18,
+    textAlign: "center",
+    marginVertical: 10,
+  },
+
 });
 
 // This is the card of each Business Account's profile
@@ -403,7 +415,7 @@ export default function BusinessAccounts() {
     >
       {loading ? (
         <ActivityIndicator size="large" color="blue" />
-      ) : (
+      ) : sortedUsersData.length > 0 ? (
         sortedUsersData.map((card) => (
           <EventCard
             key={card.id}
@@ -414,6 +426,12 @@ export default function BusinessAccounts() {
             followed={myData.following?.includes(card.name) ?? false}
           />
         ))
+      ) : (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>
+            No Business Accounts Found
+          </Text>
+        </View>
       )}
     </ScrollView>
   );

@@ -74,7 +74,7 @@ export default function Register() {
           name: userName,
           account_type: accountTypeValue,
           residence: residenceValue,
-          description,
+          
         },
       },
     });
