@@ -625,61 +625,54 @@ export default function EventsPage() {
 
   // Get data of all the events in residence, created by business accounts whom user follows
 
-  async function fetchData() {
+  async function fetchAllData() {
+    if (!user) return;
+  
     setLoading(true);
+  
     try {
-      const { data, error } = await supabase
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+  
+      if (userError) {
+        console.error("Error fetching user data:", userError);
+        return;
+      }
+  
+      const { data: eventsData, error: eventsError } = await supabase
         .from("events")
         .select("*")
-        .eq("residence", residence)
-        .in("creator", followed);
-
-      if (error) {
-        console.error("Error fetching events:", error);
-      } else {
-        setEventsData(data);
+        .eq("residence", userData.residence)
+        .in("creator", userData.following);
+  
+      if (eventsError) {
+        console.error("Error fetching events:", eventsError);
+        return;
       }
+  
+      setEventsData(eventsData);
+      setResidence(userData.residence);
+      setFollowed(userData.following);
+      setUserData(userData);
+  
     } catch (error) {
-      console.error("Error fetching events:", error);
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   }
-
-  // Get user data - important because each user follows different business accounts and signed up for different events 
-
-  async function fetchUserData() {
-    if (user) {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-      if (error) {
-        console.error("Error fetching user data:", error);
-      } else {
-        setResidence(data.residence);
-        setFollowed(data.following);
-        setUserData(data);
-      }
-    }
-  }
-
+  
   useEffect(() => {
-    if (user && userData === null) {
-      fetchUserData();
-    }
-    fetchData();
-  }, [user, residence, followed]);
-
-  // Fecth data again upon refresh
-
+    fetchAllData();
+  }, [user]);
+  
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchUserData();
-    await fetchData(); // Wait for fetchData to complete
-    setRefreshing(false);
+    await fetchAllData();
   };
 
   if (!userData) {
