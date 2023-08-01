@@ -25,7 +25,6 @@ export default function Register() {
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  const [description, setDescription] = useState("");
   const [accountTypeValue, setAccountTypeValue] = useState(null);
   const [residenceValue, setResidenceValue] = useState(null);
   const router = useRouter();
@@ -162,16 +161,6 @@ export default function Register() {
           onChangeText={setConfirmPassword}
           mode="outlined"
           placeholder="Confirm Password"
-          style={styles.input}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          autoCapitalize="none"
-          value={description}
-          onChangeText={setDescription}
-          mode="outlined"
-          placeholder="Description"
           style={styles.input}
         />
       </View>
