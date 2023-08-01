@@ -19,6 +19,22 @@ import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/auth";
 
+const customMarkingType = {
+  customStyles: {
+    container: {
+      backgroundColor: 'cyan', 
+      borderRadius: 16, 
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    text: {
+      color: 'black', 
+      fontWeight: 'bold',
+    },
+  },
+};
+
+
 const styles = StyleSheet.create({
   Text: {
     fontWeight: "bold",
@@ -107,18 +123,13 @@ export default function EventsCalendar() {
   eventsData.forEach((event) => {
     if (userData && userData.selected_events.includes(event.name)) {
       const eventDate = event.date;
-
+  
       if (!markedDates[eventDate]) {
-        markedDates[eventDate] = {
-          marked: true,
-          dotColor: "green",
-        };
-      } else {
-        // If the date is already marked, update the dotColor to 'green'
-        markedDates[eventDate].dotColor = "green";
+        markedDates[eventDate] = customMarkingType;
       }
     }
   });
+  
 
   // open up relevant modals when day is pressed
 
@@ -242,7 +253,7 @@ export default function EventsCalendar() {
         <ActivityIndicator size="large" color="blue" />
       ) : (
         <>
-          <Calendar markedDates={markedDates} onDayPress={handleDayPress} />
+          <Calendar  markingType={'custom'} markedDates={markedDates} onDayPress={handleDayPress} />
           <EventPopup />
         </>
       )}
