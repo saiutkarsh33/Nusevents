@@ -124,6 +124,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
+  smallGreyText: {
+    fontSize: 14,
+    color: 'grey',
+    paddingLeft: 18
+},
 });
 
 function ProfileCard(props) {
@@ -482,6 +487,7 @@ export default function ProfileScreen() {
           ))}
         </>
       )}
+      <Text style={styles.smallGreyText}>Please regularly update your profile card as Personal accounts will be able to view them in their "All CCAs" page. </Text>
       <Button style={styles.Button}onPress={() => setPasswordVisible(true)}>
         Change Password
       </Button>

@@ -153,6 +153,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
   },
+  smallGreyText: {
+    fontSize: 12,
+    color: 'grey'
+},
+smallCentreGreyText: {
+  fontSize: 12,
+  color: 'grey',
+  textAlign: "center",
+}
 });
 
 // This is the event card of each event created by the business account
@@ -506,6 +515,7 @@ function MyCard(props) {
                 editable={editMode}
                 mode="outlined"
               />
+              <Text style={styles.smallGreyText}>Ensure that venue is already booked. </Text>
               <Text style={styles.Text}>Date: </Text>
               <TextInput
                 value={date}
@@ -513,6 +523,8 @@ function MyCard(props) {
                 editable={editMode}
                 mode="outlined"
               />
+              <Text style={styles.smallGreyText}> Input in DD-MM-YY. </Text>
+             
               <Text style={styles.Text}>Time: </Text>
               <TextInput
                 value={time}
@@ -520,6 +532,7 @@ function MyCard(props) {
                 editable={editMode}
                 mode="outlined"
               />
+              <Text style={styles.smallGreyText}>Include both starting and ending time. </Text>
               <Text style={styles.Text}>Description: </Text>
               <TextInput
                 value={desc}
@@ -528,6 +541,7 @@ function MyCard(props) {
                 multiline
                 mode="outlined"
               />
+               <Text style={styles.smallGreyText}>Please inform those who signed up of the changes, via chat or otherwise. </Text>
 
               <Button
                 onPress={handleDelete}
@@ -536,6 +550,7 @@ function MyCard(props) {
               >
                 Delete Event
               </Button>
+              <Text style={styles.smallCentreGreyText}>Please delete event after completion. </Text>
 
               {editMode && (
                 <Button onPress={handleDonePress} style={styles.doneButton}>

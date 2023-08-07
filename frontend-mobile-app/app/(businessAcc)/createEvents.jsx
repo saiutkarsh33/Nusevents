@@ -60,6 +60,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
+  smallGreyText: {
+    fontSize: 12,
+    color: 'grey'
+},
+smallCentreGreyText: {
+  fontSize: 12,
+  color: 'grey',
+  textAlign: "center",
+}
 });
 
 // Form which requires inputting of key information like name, venue, date, time
@@ -217,6 +226,7 @@ export function EventForm({ onEventCreate }) {
               mode="outlined"
               style={styles.inputBox}
             />
+            <Text style={styles.smallGreyText}>This cannot be changed. </Text>
             <Text style={styles.labelText}>Venue</Text>
             <TextInput
               testID='eventVenueInput'
@@ -225,6 +235,7 @@ export function EventForm({ onEventCreate }) {
               mode="outlined"
               style={styles.inputBox}
             />
+            <Text style={styles.smallGreyText}>Ensure that venue is already booked. </Text>
             <Text style={styles.labelText}>Date (in YYYY-MM-DD) </Text>
             <TextInput
               testID='eventDateInput'
@@ -235,6 +246,7 @@ export function EventForm({ onEventCreate }) {
               placeholder="YYYY-DD-MM"
               style={styles.inputBox}
             />
+            <Text style={styles.smallGreyText}>TBC can be entered if date is not confimed. </Text>
             <Text style={styles.labelText}>Time</Text>
             <TextInput
               testID='eventTimeInput'
@@ -243,6 +255,7 @@ export function EventForm({ onEventCreate }) {
               mode="outlined"
               style={styles.inputBox}
             />
+            <Text style={styles.smallGreyText}> Please include both starting and ending time. </Text>
             <Text style={styles.labelText}>Description</Text>
             <TextInput
               testID='eventDescriptionInput'
@@ -252,12 +265,14 @@ export function EventForm({ onEventCreate }) {
               style={styles.inputBox}
               multiline
             />
+            <Text style={styles.smallGreyText}> Please provide some essential information. </Text>
           </View>
           {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
           {image && <Image source={{ uri: image }} style={styles.Image} />}
           <Button onPress={handleAddImage} style={styles.button}>
             Add Image
           </Button>
+          
           <Button testID="createEventButton" onPress={handleCreate} style={styles.button}>
   Create
 </Button>
