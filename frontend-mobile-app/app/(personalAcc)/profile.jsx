@@ -123,210 +123,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
+  smallGreyText: {
+    fontSize: 16,
+    color: 'grey'
+},
 });
 
 
-
-function ProfileCard(props) {
-  const [editVisible, setEditVisible] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [name, setName] = useState(props.name);
-  const [description, setDescription] = useState(props.description);
-  const [image, setImage] = useState(null);
-  const [errMsg, setErrMsg] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [changedImage, setChangedImage] = useState(false);
-  const { user } = useAuth();
-
-  // Edit one's account - not really important in Personal Account.
-
-  const handleEditPress = () => {
-    setEditMode(true);
-    setEditVisible(true);
-  };
-
-  // Handling the editing or pforile - changing description and profile picture
-
-  const handleDonePress = async () => {
-    if (user) {
-      if (changedImage) {
-        setLoading(true);
-        let uploadedImage = null;
-        if (image) {
-          const { data, error } = await supabase.storage
-            .from("profile_pic")
-            .upload(`${new Date().getTime()}`, {
-              uri: image,
-              type: "jpg",
-              name: "name.jpg",
-            });
-
-          if (error) {
-            console.log(error);
-            setErrMsg(error.message);
-            setLoading(false);
-            return;
-          }
-          const {
-            data: { publicUrl },
-          } = supabase.storage.from("profile_pic").getPublicUrl(data.path);
-          uploadedImage = publicUrl;
-        }
-        // Perform the update in the Supabase table
-        const { error } = await supabase
-          .from("users")
-          .update({
-            name: name,
-            description: description,
-            profile_pic_url: uploadedImage,
-          })
-          .eq("id", user.id);
-
-        if (error) {
-          console.error("Error updating account:", error);
-        } else {
-          console.log("Account updated successfully");
-          setEditMode(false);
-          setEditVisible(false);
-          const { error2 } = await supabase
-            .from("events")
-            .update({
-              creator: name,
-            })
-            .eq("user_id", user.id);
-        }
-
-        setLoading(false);
-      } else {
-        const { error } = await supabase
-          .from("users")
-          .update({
-            name: name,
-            description: description,
-          })
-          .eq("id", user.id);
-
-        if (error) {
-          console.error("Error updating account:", error);
-        } else {
-          console.log("Account updated successfully");
-          setEditMode(false);
-          setEditVisible(false);
-          const { error2 } = await supabase
-            .from("events")
-            .update({
-              creator: name,
-            })
-            .eq("user_id", user.id);
-        }
-      }
-    }
-  };
-
-  // Changing profile picture
-
-  const handleAddProfilePic = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-    if (!result.canceled && result.assets.length > 0) {
-      const selectedAsset = result.assets[0];
-      setImage(selectedAsset.uri);
-      console.log("result successful", selectedAsset.uri);
-      setChangedImage(true);
-    }
-  };
-
-  return (
-    <>
-      <Card style={styles.cardContainer} mode="outlined">
-        <Card.Title title={props.name} titleStyle={styles.cardTitle} />
-        {props.profile_pic_url ? (
-          <Card.Cover
-            style={styles.cardCover}
-            source={{ uri: props.profile_pic_url }}
-            theme={{
-              roundness: 4,
-              isV3: false,
-            }}
-          />
-        ) : (
-          <View style={{ backgroundColor: "#F0F0F0", paddingVertical: 35 }}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 18,
-                textAlign: "center",
-              }}
-            >
-              No Profile Picture
-            </Text>
-          </View>
-        )}
-
-        <TouchableOpacity>
-          <Card.Actions>
-            <Button onPress={handleEditPress} mode={"outlined"}>
-              Edit
-            </Button>
-          </Card.Actions>
-        </TouchableOpacity>
-      </Card>
-
-      <Modal
-        visible={editVisible}
-        animationType="slide"
-        onRequestClose={handleDonePress}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust this offset as needed
-        >
-          <ScrollView contentContainerStyle={styles.modalContainer}>
-            <SafeAreaView style={styles.modalContainer}>
-              <View>
-                {loading && <ActivityIndicator />}
-                <Text style={styles.editValuesText}>
-                  {" "}
-                  Edit the values accordingly{" "}
-                </Text>
-                {errMsg !== "" && <Text>{errMsg}</Text>}
-                <Button
-                  onPress={handleAddProfilePic}
-                  style={styles.changePfpButton}
-                  mode="outlined"
-                >
-                  {" "}
-                  Change Profile Picture{" "}
-                </Button>
-                {image && (
-                  <Image source={{ uri: image }} style={styles.Image} />
-                )}
-                <Text style={styles.Text}> Bio: </Text>
-                <TextInput
-                  value={description}
-                  onChangeText={setDescription}
-                  editable={editMode}
-                  mode="outlined"
-                />
-                {editMode && (
-                  <Button onPress={handleDonePress} style={styles.Button}>
-                    Done
-                  </Button>
-                )}
-              </View>
-            </SafeAreaView>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </Modal>
-    </>
-  );
-}
-
 export default function ProfileScreen() {
   const { user } = useAuth();
-  const router = useRouter();
+  
 
   const [myData, setMyData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -437,26 +243,13 @@ export default function ProfileScreen() {
   return (
     <>
     <ScrollView
-      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white", justifyContent: 'center', alignItems: 'center' }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
-      {loading ? (
-        <ActivityIndicator size="large" color="blue" />
-      ) : (
-        <>
-          {myData.map((card) => (
-            <ProfileCard
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              profile_pic_url={card.profile_pic_url}
-              description={card.description}
-            />
-          ))}
-        </>
-      )}
+      
+      
       <Button style={styles.Button} onPress={() => setPasswordVisible(true)}>
         Change Password
       </Button>
@@ -512,6 +305,9 @@ export default function ProfileScreen() {
             style={styles.input8}
           />
         </View>
+        < Text style={styles.smallGreyText}>
+          Please ensure password is of at least 6 characters and is not the same as the previous password. 
+        </Text>
         <Button
           onPress={handleSubmit}
           mode="contained"

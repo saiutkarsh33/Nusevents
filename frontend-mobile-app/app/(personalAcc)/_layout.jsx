@@ -10,6 +10,9 @@ export default function HomeScreen() {
         name="index"
         options={{
           title: "View Events",
+          headerStyle: {
+            backgroundColor: 'skyblue',  // Set the header background color
+          },
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
@@ -19,6 +22,9 @@ export default function HomeScreen() {
         name="eventsCalendar"
         options={{
           title: "My Calendar",
+          headerStyle: {
+            backgroundColor: 'skyblue',  // Set the header background color
+          },
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="calendar" color={color} size={size} />
           ),
@@ -28,6 +34,9 @@ export default function HomeScreen() {
         name="businessAccounts"
         options={{
           title: "View CCAs",
+          headerStyle: {
+            backgroundColor: 'skyblue',  // Set the header background color
+          },
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="magnify" color={color} size={size} />
           ),
@@ -36,7 +45,10 @@ export default function HomeScreen() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: "Settings",
+          headerStyle: {
+            backgroundColor: 'skyblue',  // Set the header background color
+          },
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
