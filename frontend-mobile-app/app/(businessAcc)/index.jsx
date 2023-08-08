@@ -161,7 +161,18 @@ smallCentreGreyText: {
   fontSize: 12,
   color: 'grey',
   textAlign: "center",
-}
+},
+sendButton: {
+  marginTop: 16,
+  backgroundColor: "lightgrey",
+  alignSelf: "center",
+},
+smallChatGreyText: {
+  fontSize: 16,
+  color: 'grey',
+  paddingLeft: -30, // adjust the value as needed
+  paddingRight: -10,
+},
 });
 
 // This is the event card of each event created by the business account
@@ -576,8 +587,11 @@ function MyCard(props) {
               marginBottom: 20,
             }}
           >
-            Chat
+             Event Chat
           </Text>
+          < Text style={styles.smallChatGreyText}>
+          Chat with students in your residency about your event!
+        </Text>
 
           {Platform.OS === "ios" ? (
             <KeyboardAvoidingView behavior="padding" style={styles.container}>

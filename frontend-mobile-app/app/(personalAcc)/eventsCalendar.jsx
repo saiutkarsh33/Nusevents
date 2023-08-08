@@ -69,6 +69,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  noEventsText: {
+    fontWeight: "bold",
+    fontSize: 18,
+    textAlign: "center",
+    marginVertical: 10,
+  }, 
 });
 
 export default function EventsCalendar() {
@@ -80,20 +86,23 @@ export default function EventsCalendar() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const [selectedEventsData, setSelectedEventsData] = useState(null);
+
+
 
   // Fetch data from Supabase
   async function fetchData() {
     if (user) {
       setLoading(true);
       try {
-        const { data, error } = await supabase.from("events").select("*");
+        const { data: allEvents, error: error } = await supabase.from("events").select("*");
         if (error) {
           console.error("Error fetching events:", error);
         } else {
-          setEventsData(data);
+          setEventsData(allEvents);
         }
 
-        const { data: userData, error: userError } = await supabase
+        const { data: userData2, error: userError } = await supabase
           .from("users")
           .select("selected_events")
           .eq("id", user.id)
@@ -102,13 +111,24 @@ export default function EventsCalendar() {
         if (userError) {
           console.error("Error fetching account data:", userError);
         } else {
-          setUserData(userData);
+          setUserData(userData2);
+          const selectedEventsNames = userData2.selected_events || [];
+          
+          const selectedEvents = allEvents.filter(event => 
+            selectedEventsNames.includes(event.name)  // Assuming the name property of an event is called 'name'
+          );
+  
+          // Here, you can set the filtered events to another state or use them as needed
+          setSelectedEventsData(selectedEvents);
+
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
-        setRefreshing(false); // Set refreshing state to false after data fetch
+        setRefreshing(false);
+        console.log(userData)
+         // Set refreshing state to false after data fetch
       }
     }
   }
@@ -244,7 +264,7 @@ export default function EventsCalendar() {
 
   return (
     <ScrollView
-      contentContainerStyle={{ flex: 1, backgroundColor: "white" }}
+      contentContainerStyle={{ backgroundColor: "white" }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
@@ -257,6 +277,30 @@ export default function EventsCalendar() {
           <EventPopup />
         </>
       )}
+
+         <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              textDecorationLine: "underline",
+              alignSelf: "center",
+              marginTop: 20,
+              marginLeft:10
+            }}
+          >
+            Events Signed Up
+          </Text>
+
+
+             
+
+          
+          {selectedEventsData && selectedEventsData.length > 0 ? (
+        selectedEventsData.map((event, index) => <Event key={index} event={event} />)
+      ) : (
+        <Text style={styles.noEventsText}>No events found. Sign up for one!</Text>
+      )}
+          
     </ScrollView>
   );
 }

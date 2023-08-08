@@ -13,13 +13,24 @@ export default function AuthRoot() {
   const router = useRouter();
   return (
     <Stack>
-      <Stack.Screen name="login" options={{ title: "Sign in" }} />
+      <Stack.Screen name="login" options={{ title: "Sign in", headerStyle: {
+            backgroundColor: 'cyan',
+          }, }} />
       <Stack.Screen
         name="register"
         options={{
           title: "Sign up",
+          headerStyle: {
+            backgroundColor: 'cyan',
+          },
           headerLeft: () => (
-            <Button mode="contained" onPress={() => router.replace("/login")}>
+            <Button
+              mode="contained"
+              onPress={() => router.replace("/login")}
+              style={{ marginBottom: 100 }} 
+              contentStyle={{ paddingHorizontal: 4, paddingVertical: 2 }} 
+              labelStyle={{ fontWeight: 'bold', fontSize: 16 }} 
+            >
               Back
             </Button>
           ),

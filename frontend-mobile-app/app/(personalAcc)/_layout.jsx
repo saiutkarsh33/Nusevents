@@ -5,7 +5,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 export default function HomeScreen() {
   return (
-    <Tabs>
+    <Tabs
+    screenOptions={{
+      tabBarActiveTintColor: 'blue',
+      tabBarInactiveTintColor: 'black',
+      
+    }}
+  >
       <Tabs.Screen
         name="index"
         options={{

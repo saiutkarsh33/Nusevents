@@ -75,7 +75,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     marginVertical: 10,
-  },
+  }, 
+  smallGreyText: {
+    fontSize: 16,
+    color: 'grey',
+    paddingLeft: 14, // adjust the value as needed
+    paddingRight: 0,
+    paddingTop: 10,
+},
 
 });
 
@@ -413,10 +420,14 @@ export default function BusinessAccounts() {
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
+      < Text style={styles.smallGreyText}>
+          View all the Business accounts tied to your residency!
+        </Text>
       {loading ? (
         <ActivityIndicator size="large" color="blue" />
       ) : sortedUsersData.length > 0 ? (
         sortedUsersData.map((card) => (
+          
           <EventCard
             key={card.id}
             id={card.id}
@@ -429,7 +440,7 @@ export default function BusinessAccounts() {
       ) : (
         <View style={styles.noEventsContainer}>
           <Text style={styles.noEventsText}>
-            No Business Accounts Found
+            No Business Accounts Found.
           </Text>
         </View>
       )}

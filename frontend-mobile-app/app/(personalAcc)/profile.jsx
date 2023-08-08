@@ -248,6 +248,9 @@ export default function ProfileScreen() {
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
+      < Text style={styles.smallGreyText}>
+          If you find this app useful, do share it with your friends in your residency!
+        </Text>
       
       
       <Button style={styles.Button} onPress={() => setPasswordVisible(true)}>

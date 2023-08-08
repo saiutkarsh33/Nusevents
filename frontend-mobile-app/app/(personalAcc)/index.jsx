@@ -132,6 +132,30 @@ const styles = StyleSheet.create({
   creatorText: {
     color: "black",
   },
+  smallChatGreyText: {
+    fontSize: 16,
+    color: 'grey',
+    paddingLeft: -30, // adjust the value as needed
+    paddingRight: -10,
+},
+sendButton: {
+  marginTop: 16,
+  backgroundColor: "lightgrey",
+  alignSelf: "center",
+},
+smallGreyText: {
+  fontSize: 16,
+  color: 'grey',
+  paddingLeft: 14, // adjust the value as needed
+  paddingRight: 0,
+  paddingTop: 10,
+},
+noEventsText: {
+  fontWeight: "bold",
+  fontSize: 18,
+  textAlign: "center",
+  marginVertical: 10,
+}, 
 });
 
 // This is the event card itself
@@ -420,8 +444,12 @@ export function TheirCard(props) {
               marginBottom: 20,
             }}
           >
-            Chat
+             Event Chat
           </Text>
+
+          < Text style={styles.smallChatGreyText}>
+          Chat with {props.creator} and other students in your residency!
+        </Text>
 
           {Platform.OS === "ios" ? (
             <KeyboardAvoidingView behavior="padding" style={styles.container}>
@@ -676,7 +704,7 @@ export default function EventsPage() {
   };
 
   if (!userData) {
-    return <Text>Loading account data...</Text>;
+    return <Text style={styles.noEventsText} >Loading account data...</Text>;
   }
 
   // Sorted the events based on Date
@@ -694,6 +722,9 @@ export default function EventsPage() {
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
+      < Text style={styles.smallGreyText}>
+          View all the Events created by Business Accounts you follow!
+        </Text>
       {loading ? (
         <ActivityIndicator size="large" color="blue" />
       ) : sortedEventsData.length > 0 ? (

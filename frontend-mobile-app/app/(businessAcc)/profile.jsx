@@ -131,6 +131,8 @@ const styles = StyleSheet.create({
 },
 });
 
+// This is the profile card.
+
 function ProfileCard(props) {
   const [editVisible, setEditVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -314,6 +316,9 @@ function ProfileCard(props) {
                   multiline
                   mode="outlined"
                 />
+                < Text style={styles.smallGreyText}>
+           Please include point(s) of contact and a short paragraph about the types of events you organise.
+        </Text>
                 {editMode && (
                   <Button onPress={handleDonePress} style={styles.Button}>
                     Done
@@ -542,6 +547,9 @@ keyboardShouldPersistTaps="handled"
     style={styles.input8}
   />
 </View>
+< Text style={styles.smallGreyText}>
+          Please ensure password is of at least 6 characters and is not the same as the previous password. 
+        </Text>
 <Button
   onPress={handleSubmit}
   mode="contained"
