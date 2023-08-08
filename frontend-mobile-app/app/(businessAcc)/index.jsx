@@ -68,8 +68,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   eventCardRed: {
-    color: "red",
+    color: "#006666",
     marginBottom: 5,
+    fontWeight: "600"
   },
   editValuesText: {
     fontWeight: "bold",
@@ -447,7 +448,7 @@ function MyCard(props) {
 
   return (
     <>
-      <Card style={styles.cardContainer} mode="outlined">
+      <Card style={styles.cardContainer} mode="contained">
         <Card.Title title={props.name} titleStyle={styles.cardTitle} />
         {props.image_url ? (
           <Card.Cover

@@ -50,7 +50,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   eventCardDate: {
-    color: "red",
+    color: "#006666",
+    fontWeight: "600",
+    marginBottom: 5,
   },
   eventDescCard: {
     marginTop: 30,
@@ -373,7 +375,7 @@ export function TheirCard(props) {
 
   return (
     <>
-      <Card style={styles.cardContainer} mode="outlined">
+      <Card style={styles.cardContainer} mode="contained">
         <Card.Title title={props.creator} titleStyle={styles.cardTitle} />
         {props.image_url ? (
           <Card.Cover
@@ -400,6 +402,7 @@ export function TheirCard(props) {
         <Card.Content>
           <Text style={styles.eventCardName}>{props.name}</Text>
           <Text style={styles.eventCardDate}>Date: {props.date}</Text>
+          <Text style={styles.eventCardDate}>Time: {props.time}</Text>
         </Card.Content>
 
         <TouchableOpacity>
