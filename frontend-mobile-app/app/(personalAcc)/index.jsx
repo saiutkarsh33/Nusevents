@@ -278,6 +278,8 @@ export function TheirCard(props) {
     console.log("pressed");
     console.log(props.id);
 
+    setSelectedButton(prevState => !prevState);
+
     try {
       const { data: eventData, error: eventError } = await supabase
         .from("events")
@@ -363,12 +365,13 @@ export function TheirCard(props) {
       if (updateUserError) {
         console.error("Error updating users:", updateUserError);
       } else {
-        setSelectedButton(!selectedButton);
+        
         props.selected = selectedButton;
       }
 
       console.log("this is final selected", selectedButton);
     } catch (error) {
+      setSelectedButton(prevState => !prevState);
       console.error("Error updating event:", error);
     }
   };

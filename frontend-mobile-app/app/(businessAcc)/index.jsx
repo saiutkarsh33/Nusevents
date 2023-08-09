@@ -535,7 +535,7 @@ function MyCard(props) {
                 editable={editMode}
                 mode="outlined"
               />
-              <Text style={styles.smallGreyText}> Input in DD-MM-YY. </Text>
+              <Text style={styles.smallGreyText}> Input in YYYY-MM-DD. </Text>
              
               <Text style={styles.Text}>Time: </Text>
               <TextInput
@@ -812,6 +812,10 @@ export default function MyEvents() {
     setRefreshing(false);
   };
 
+  const sortedEventsData = eventsData.sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
@@ -821,8 +825,8 @@ export default function MyEvents() {
     >
       {loading ? (
         <ActivityIndicator size="large" color="blue" />
-      ) : eventsData.length > 0 ? (
-        eventsData.map((card) => (
+      ) : sortedEventsData.length > 0 ? (
+        sortedEventsData.map((card) => (
           <MyCard
             key={card.id}
             id={card.id}

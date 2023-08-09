@@ -86,7 +86,7 @@ export default function EventsCalendar() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-  const [selectedEventsData, setSelectedEventsData] = useState(null);
+  const [selectedEventsData, setSelectedEventsData] = useState([]);
 
 
 
@@ -262,8 +262,14 @@ export default function EventsCalendar() {
     await fetchData();
   };
 
+  const sortedEventsData = selectedEventsData && Array.isArray(selectedEventsData) 
+    ? selectedEventsData.sort((a, b) => new Date(a.date) - new Date(b.date)) 
+    : [];
+
+
   return (
     <ScrollView
+    style={{ backgroundColor: "white" }} 
       contentContainerStyle={{ backgroundColor: "white" }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
@@ -295,8 +301,8 @@ export default function EventsCalendar() {
              
 
           
-          {selectedEventsData && selectedEventsData.length > 0 ? (
-        selectedEventsData.map((event, index) => <Event key={index} event={event} />)
+          {sortedEventsData && sortedEventsData.length > 0 ? (
+        sortedEventsData.map((event, index) => <Event key={index} event={event} />)
       ) : (
         <Text style={styles.noEventsText}>No events found. Sign up for one!</Text>
       )}
