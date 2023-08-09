@@ -127,7 +127,9 @@ const styles = StyleSheet.create({
   smallGreyText: {
     fontSize: 14,
     color: 'grey',
-    paddingLeft: 18
+    paddingLeft: 18,
+    paddingRight: 12,
+
 },
 });
 

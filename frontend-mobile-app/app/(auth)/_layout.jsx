@@ -15,6 +15,7 @@ export default function AuthRoot() {
     <Stack>
       <Stack.Screen name="login" options={{ title: "Sign in", headerStyle: {
             backgroundColor: 'cyan',
+            headerTitleAlign: 'center',
           }, }} />
       <Stack.Screen
         name="register"
@@ -23,11 +24,12 @@ export default function AuthRoot() {
           headerStyle: {
             backgroundColor: 'cyan',
           },
+          headerTitleAlign: 'center',
           headerLeft: () => (
             <Button
               mode="contained"
               onPress={() => router.replace("/login")}
-              style={{ marginBottom: 100 }} 
+              
               contentStyle={{ paddingHorizontal: 4, paddingVertical: 2 }} 
               labelStyle={{ fontWeight: 'bold', fontSize: 16 }} 
             >
