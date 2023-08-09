@@ -35,6 +35,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: "5%",
     paddingBottom: 100,
   },
+  modalContainer2: {
+    flex: 1,
+   
+    backgroundColor: "white",
+    paddingTop: "20%",
+    paddingHorizontal: "5%",
+    
+  },
+  contentContainer: {
+    alignItems: "center",
+    flexGrow: 1,
+
+    paddingBottom: 100,
+},
+
   cardContainer: {
     // borderRadius: 0,
     margin: 10,
@@ -593,9 +608,10 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
       visible={modalVisible}
       animationType="slide"
       onRequestClose={handleCloseModal}
-      style={styles.modalContainer}
+      presentationStyle="fullScreen"
     >
-      <SafeAreaView style={styles.modalContainer}>
+      <SafeAreaView style={styles.modalContainer2}>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text
           style={{
             fontSize: 30,
@@ -613,6 +629,7 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
             resizeMode="contain"
           />
         )}
+        <ScrollView>
         <Card style={styles.eventDescCard} mode="outlined">
           <Card.Title title="Event Description" titleStyle={styles.cardTitle} />
           <Card.Content>
@@ -637,9 +654,12 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
             </Text>
           </Card.Content>
         </Card>
+        </ScrollView>
         <Button onPress={handleCloseModal} style={styles.closeButton}>
           Close
         </Button>
+        
+      </ScrollView>
       </SafeAreaView>
     </Modal>
   );
