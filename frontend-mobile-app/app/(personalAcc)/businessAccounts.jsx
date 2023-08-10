@@ -28,7 +28,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     paddingVertical: "20%",
-    paddingHorizontal: "5%",
+    marginHorizontal: 10,
+    marginTop:10,
+    
   },
   cardContainer: {
     // borderRadius: 0,
@@ -221,7 +223,7 @@ function EventCard(props) {
             <Button
               onPress={handleViewEventsPress}
               mode={"outlined"}
-              style={{ backgroundColor: "cyan", marginLeft: 10 }}
+              style={{ backgroundColor: "skyblue", marginLeft: 10 }}
             >
               Learn More
             </Button>
@@ -236,6 +238,7 @@ function EventCard(props) {
         contentContainerStyle={{height: Dimensions.get('window').height}}
       >
         <SafeAreaView style={styles.modalContainer}>
+          
           <Text
             style={{
               fontSize: 30,
@@ -269,6 +272,8 @@ function EventCard(props) {
           >
             {props.description}
           </Text>
+
+          
           <Text
             style={{
               fontSize: 30,
@@ -280,6 +285,7 @@ function EventCard(props) {
           >
             Events
           </Text>
+          
 
           <FlatList
             data={eventsData}
@@ -290,6 +296,7 @@ function EventCard(props) {
           <Button onPress={handleCloseEventsModal} style={styles.Button}>
             Back
           </Button>
+          
         </SafeAreaView>
       </Modal>
     </>

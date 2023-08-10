@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "white",
-    paddingHorizontal: "10%",
+    //paddingHorizontal: "10%",
   },
   cardTitle: {
     fontWeight: "bold",
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
 
   eventDescCard: {
     marginTop: 30,
+    marginHorizontal: 20,
   },
 
   eventDescContainer: {

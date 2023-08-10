@@ -19,6 +19,7 @@ export default function HomeScreen() {
           headerStyle: {
             backgroundColor: 'skyblue',  // Set the header background color
           },
+          headerTitleAlign: 'center',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
@@ -31,6 +32,7 @@ export default function HomeScreen() {
           headerStyle: {
             backgroundColor: 'skyblue',  // Set the header background color
           },
+          headerTitleAlign: 'center',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="calendar" color={color} size={size} />
           ),
@@ -43,6 +45,7 @@ export default function HomeScreen() {
           headerStyle: {
             backgroundColor: 'skyblue',  // Set the header background color
           },
+          headerTitleAlign: 'center',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="magnify" color={color} size={size} />
           ),
@@ -55,6 +58,7 @@ export default function HomeScreen() {
           headerStyle: {
             backgroundColor: 'skyblue',  // Set the header background color
           },
+          headerTitleAlign: 'center',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),

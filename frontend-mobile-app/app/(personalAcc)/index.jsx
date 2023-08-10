@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
+  TextInput
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { supabase } from "../../lib/supabase";
@@ -21,7 +22,7 @@ import {
   ActivityIndicator,
   Avatar,
   Switch,
-  TextInput,
+  
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth";
@@ -31,23 +32,27 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "white",
-    paddingVertical: "20%",
-    paddingHorizontal: "5%",
-    paddingBottom: 100,
+    
+    paddingHorizontal: 20,
+    paddingBottom: 70,
+    
+    paddingTop: 50,
+    marginTop:15,
   },
   modalContainer2: {
     flex: 1,
    
     backgroundColor: "white",
     paddingTop: "20%",
-    paddingHorizontal: "5%",
+    paddingHorizontal: 20,
     
   },
   contentContainer: {
     alignItems: "center",
     flexGrow: 1,
-
+    paddingHorizontal: 10,
     paddingBottom: 100,
+    paddingTop: 20,
 },
 
   cardContainer: {
@@ -116,6 +121,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     maxWidth: "80%",
     borderRadius: 15,
+    padddingTop:20,
   },
   senderMessage: {
     alignSelf: "flex-end",
@@ -430,7 +436,7 @@ export function TheirCard(props) {
             <Button
               onPress={handleViewMorePress}
               mode="outlined"
-              style={{ backgroundColor: "cyan", marginLeft: 10 }}
+              style={{ backgroundColor: "white", marginLeft: 10 }}
             >
               Learn More
             </Button>
@@ -463,6 +469,8 @@ export function TheirCard(props) {
               fontWeight: "bold",
               alignSelf: "flex-start",
               marginBottom: 20,
+              marginTop:15,
+              
             }}
           >
              Event Chat
@@ -611,7 +619,7 @@ function EventLearnMoreModal({ modalVisible, handleCloseModal, props }) {
       presentationStyle="fullScreen"
     >
       <SafeAreaView style={styles.modalContainer2}>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView contentContainerStyle={styles.contentContainer} nestedScrollEnabled={true} >
         <Text
           style={{
             fontSize: 30,

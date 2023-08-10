@@ -11,6 +11,8 @@ import {
   Platform,
   RefreshControl,
   FlatList,
+  TextInput as NormalTextInput,
+
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 import {
@@ -31,8 +33,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     paddingVertical: "20%",
-    paddingHorizontal: "5%",
-    paddingBottom: 100,
+    paddingHorizontal: 20,
+    paddingBottom: 80,
+    
+    marginVertical: 10,
+    paddingTop: 50,
   },
   totalSignupsText: {
     fontSize: 30,
@@ -116,6 +121,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     maxWidth: "80%",
     borderRadius: 15,
+    padddingTop:20,
   },
   senderMessage: {
     alignSelf: "flex-end",
@@ -631,7 +637,7 @@ function MyCard(props) {
 
               <TextInput
                 style={{
-                  height: 40,
+                  height: 60,
                   borderColor: "gray",
                   borderWidth: 1,
                   borderRadius: 10,
@@ -639,7 +645,7 @@ function MyCard(props) {
                 onChangeText={setNewMessage}
                 value={newMessage}
                 multiline={true}
-                numberOfLines={4}
+                //numberOfLines={4}
                 onSubmitEditing={handleSendMessage}
               />
 
@@ -689,7 +695,7 @@ function MyCard(props) {
                 })}
               </ScrollView>
 
-              <TextInput
+              <NormalTextInput
                 style={{
                   height: 40,
                   borderColor: "gray",

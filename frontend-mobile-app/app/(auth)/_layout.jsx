@@ -13,10 +13,16 @@ export default function AuthRoot() {
   const router = useRouter();
   return (
     <Stack>
-      <Stack.Screen name="login" options={{ title: "Sign in", headerStyle: {
+      <Stack.Screen 
+        name="login" 
+        options={{ 
+          title: "Sign in", 
+          headerStyle: {
             backgroundColor: 'cyan',
-            headerTitleAlign: 'center',
-          }, }} />
+          }, 
+          headerTitleAlign: 'center', // Center the title
+        }} 
+      />
       <Stack.Screen
         name="register"
         options={{
@@ -24,12 +30,11 @@ export default function AuthRoot() {
           headerStyle: {
             backgroundColor: 'cyan',
           },
-          headerTitleAlign: 'center',
+          headerTitleAlign: 'center', // Center the title
           headerLeft: () => (
             <Button
               mode="contained"
               onPress={() => router.replace("/login")}
-              
               contentStyle={{ paddingHorizontal: 4, paddingVertical: 2 }} 
               labelStyle={{ fontWeight: 'bold', fontSize: 16 }} 
             >
@@ -41,3 +46,4 @@ export default function AuthRoot() {
     </Stack>
   );
 }
+

@@ -18,6 +18,7 @@ export default function HomeScreen() {
         headerStyle: {
           backgroundColor: 'lightgreen',  // Set the header background color
         },
+        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="home" color={color} size={size} />
         ),}}
@@ -25,16 +26,22 @@ export default function HomeScreen() {
       <Tabs.Screen
         name="createEvents"
         options={{ title: "Create Events", headerStyle: {
-          backgroundColor: 'lightgreen',  // Set the header background color
-        },tabBarIcon: ({ color, size }) => (
+          backgroundColor: 'lightgreen', 
+           // Set the header background color
+        },
+        headerTitleAlign: 'center',
+         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="clipboard-edit" color={color} size={size} />
         ),}}
       />
       <Tabs.Screen
         name="profile"
         options={{ title: "Profile", headerStyle: {
-          backgroundColor: 'lightgreen',  // Set the header background color
-        },tabBarIcon: ({ color, size }) => (
+          backgroundColor: 'lightgreen',
+           // Set the header background color
+        },
+        headerTitleAlign: 'center',
+        tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         ),}}
       />
